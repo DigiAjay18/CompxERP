@@ -1,0 +1,56 @@
+﻿ 
+     @model IEnumerable<CompxERP.Models.tblCallDet>
+<div class="modal-body input_popup">
+    <div class="table_j">
+        <table class="table table-fixed table-bordered j_table_new table-striped">
+            <thead>
+                <tr><th width="10%"> NO </th> 
+                <th width="15%">@Html.DisplayNameFor(model => model.Mobile)  </th> 
+                <th width="45%"> @Html.DisplayNameFor(model => model.Remark) </th>
+                <th width="20%"> @Html.DisplayNameFor(model => model.Status) </th>
+                <th width="10%">@Html.DisplayNameFor(model => model.Ratio)</th>
+                @*<th width="10%">@Html.DisplayNameFor(model => model.CreatedOn)</th>
+                  <th width="20%"> @Html.DisplayNameFor(model => model.isLead)</th> *@
+                 </tr>
+              </thead>
+              <tbody style="height:420px;">
+                              @{
+                                  var iIndex = 0;
+                                 foreach (var item in Model) {
+                                   iIndex = iIndex + 1;
+                            <tr>
+                                @*<td>
+                                    @Html.DisplayFor(modelItem => item.CallID)
+                                </td>*@
+                                <td width="10%">
+                                     @iIndex
+                                </td >
+                                <td width="15%">
+                                    @Html.DisplayFor(modelItem => item.Mobile)
+                                </td >
+                                <td width="45%">
+                                    @Html.DisplayFor(modelItem => item.Remark)
+                                </td> 
+                                  
+                              @if (item.Status == 2) { <td width="20%">  Done   </td>}
+                              @if (item.Status == 3) { <td width="20%">  Not Useful   </td>}
+                              @if (item.Status == 4) { <td width="20%">  Call Again   </td>}
+                                
+                                   
+                                <td width="10%">
+                                    @Html.DisplayFor(modelItem => item.Ratio)
+                                </td>
+                                
+                                @*<td width="20%">
+                                    @Html.DisplayFor(modelItem => item.isLead)
+                                </td>*@
+        
+                            </tr>
+}
+}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    

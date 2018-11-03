@@ -1,0 +1,877 @@
+﻿@model CompxERP.Models.Jourmaster
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Inquiry</title>
+
+
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+   @* <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/bootstrap/js/jquery.min.js"></script>*@
+
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+
+    <script src="~/Scripts/ddaccordion.js"></script>
+
+    <link href="~/Scripts/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <link href="~/Content/css/menu.css" rel="stylesheet" />
+    <link href="~/Content/css/my-style.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/jquery.ui.tabs.css" rel="stylesheet" />
+
+    @* <script>
+         $(document).ready(function () {
+             $("#H-tabs1").click(function () {
+                 $(".tab-raw").show();
+                 $(".tab-finish").hide();
+                 $(".tab-pack").hide();
+                 $(".tab-exp").hide();
+                 
+             });         
+
+         });
+    </script>*@
+
+    <script>
+        $(function () {
+           // $("#mstDate").datepicker();
+
+
+
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            if (hashes.length > 1) {
+                $('#MstCode').val(getUrl()["mstCode"]);
+            }
+            else {
+                $('#MstCode').val(0);
+            }
+
+            var iType = 0;
+            iType = getUrl()["MstType"]
+
+            $('#MstType').val(iType);
+
+            if (iType == 74) {
+                $('#lgId').html("Production Scheme Information");
+                $('#sHeader').html("Production Scheme Information");
+            }
+            else if (iType == 75) { $('#lgId').html("Production Voucher"); $('#sHeader').html("Production Voucher"); }
+
+            var iMstCode = 0;
+            iMstCode = getUrl()["MstCode"]
+            if (iMstCode > 0) {
+                $('#IsEdit').val('true');
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetProduction", "PuSL")',
+                    data: { "iMstcode": +getUrl()["MstCode"], "iCompcode": +getUrl()["comp"], "iType": +getUrl()["MstType"] },
+                    success: function (data) {
+                        debugger;
+                        itmRaw = data.oItmRaw;
+                        itmFinish = data.oItmFini;
+                        itmPack = data.oItmPack;
+                        itmExp = data.oItmExp;
+
+                        if (data.oItmRaw.length > 0) GenratedItemRaw(data.oItmRaw);
+                        
+                    }
+                });
+            }
+            function getUrl() {
+                var vars = [], hash;
+                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            }
+
+            SetVoucherNo();
+            function SetVoucherNo() {
+                var sVoucher = ""; var someDate = new Date();
+                debugger;
+                //alert($('#mstcode').val());
+                sVoucher = someDate.getFullYear().toString().substr(2, 2) + '' + zeroFill(someDate.getMonth() + 1) + '' + someDate.getDate() + '' + GetVoucherNo($('#mstcode').val());
+                $('#mstchno').val(sVoucher);
+                //$('#mstdate').val( someDate.getDate()+ '/' +  zeroFill(someDate.getMonth() + 1) + '/' + someDate.getFullYear()  );
+
+            }
+
+            function zeroFill(i) {
+                return (i < 10 ? '0' : '') + i
+            }
+            function GetVoucherNo(ChNo) {
+                var str = new String(ChNo);
+                if (str.length == 1)
+                    return "000" + str;
+                else if (str.length == 2)
+                    return "00" + str;
+                else if (str.length == 3)
+                    return "0" + str;
+                else
+                    return str;
+            }
+
+        });
+         
+        //-------------------------------------- 
+        var itmRaw = [];
+       
+        var iPack = 0;
+    
+
+        $(document).ready(function () {
+
+            $('#addRaw').click(function () {
+
+                itmRaw.push({
+                    SrNo: itmRaw.length + 1,
+                    CateID: $('#CateID').val(),
+                    CateNm: $('#CateNm').val(),
+                    GrouID: $('#GrouID').val(),
+                    GrouNm: $('#GrouNm').val(),
+                    ItemID: $('#ItemID').val(),
+                    ddlItem: $('#ItemNm').val(),
+                    Cases: $('#Cases').val(),
+                    Tax_S: $('#Tax_S').val(),
+                    Tax_C: $('#Tax_C').val(),
+                    Tax_I: $('#Tax_I').val(),
+
+                    Qty: $('#Qty').val(),
+                    Rate: $('#Rate').val(),
+                    Amt: $('#Amt').val(),
+                    UnitID: $('#UnitID').val().split("~")[0].toString(), //$('#UnitID').val(),
+                    unitname: $('#UnitID :selected').text()
+                });
+
+                $('#ItemNm').val('').focus(); $('#Qty').val(''); $('#Rate').val('');
+                $('#Amt').val(''); $('#ItemNetAmt').val('');
+
+                GenratedItemRaw(itmRaw);
+            });
+            
+            $(document).on("click", ".deleteContact", function () {
+                if (itm.length > 0) {
+                    debugger;
+                    var index = $(this).closest("tr").index();
+
+                    var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+    $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+                    $('#ItemID').val(itm[index].ItemID);
+
+                    $('#ItemNm').val($row.find("td:nth-child(2)").text());
+                    $('#Qty').val($row.find("td:nth-child(3)").text());
+                    $('#Rate').val($row.find("td:nth-child(4)").text());
+                    $('#Amt').val($row.find("td:nth-child(5)").text());
+                    $('#Remark').val($row.find("td:nth-child(6)").text());
+
+                    $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                    itm.splice(index, 1);
+                    GetTotal(itm);
+                    $('#sItemDet').val('{"LstItem":' + JSON.stringify(itm) + '}');
+                }
+
+            });
+
+         
+            $('#Qty').blur(function () {
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Qty').val() != "") iQty = $('#Qty').val(); else iQty = 0;
+
+                if ($('#UnitID').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID').val().split("~")[1].toString(); else iUnitVal = 0;
+
+                iTotal = (iQty / iUnitVal).toFixed(2);
+                $('#Cases').val(iTotal);
+
+                Calc_Amt(); GetItemAmt()
+            });
+
+            $('#Rate').blur(function () {
+                Calc_Amt(); GetItemAmt()
+            });
+ 
+
+        
+        
+        });
+
+        function GenratedItemRaw(itmRaw) {
+            if (itmRaw.length > 0) {
+                var $table = $('<table/>');
+                $table.append('<thead><tr><th style="width: 5%">S.No.</th><th>Category</th><th>Group</th><th>Item</th><th style="width: 5%">UOM </th><th style="width: 5%">Thickness </th><th style="width: 5%">Length </th><th style="width: 5%">Width </th><th style="width: 5%">Weight </th><th style="width: 10%">Quantity</th><th style="width: 10%">Rate</th><th style="width: 10%">Amount</th><th style="width: 15%">Remove</th></tr></thead>');
+                var $tbody = $('<tbody/>');
+                var iTotal = 0;
+                var iTax = 0;
+                debugger;
+                $.each(itmRaw, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.CateNm));
+                    $row.append($('<td/>').html(val.GrouNm));
+                    $row.append($('<td/>').html(val.ddlItem )); 
+                    $row.append($('<td/>').html(val.unitname));
+                    $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.Tax_S));
+                    $row.append($('<td/>').html(val.Tax_C));
+                    $row.append($('<td/>').html(val.Tax_I));
+
+                    $row.append($('<td/>').html(val.Qty));
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(val.Amt));
+                    $row.append('<button type="button" id="btnDelete" class="deleteContact btn-color"></button>');
+                    $tbody.append($row);
+                    iTotal = iTotal + parseFloat(val.Amt);
+                    iTax = iTax + parseFloat(val.Qty);
+                });
+                $table.append($tbody);
+                $('#tblRaw').html($table);
+                $('#TotQtyRaw').val((iTax).toFixed(2));
+                $('#TotalRaw').val((iTotal).toFixed(2));
+
+                debugger;
+
+                $('#sItemRaw').val('{"LstItem":' + JSON.stringify(itmRaw) + '}');
+            }
+        }
+        
+        function Calc_Amt() {
+            var iRate; var iQty; var iTotal;
+
+            if ($('#Rate').val() != "") iRate = $('#Rate').val(); else iRate = 0;
+            if ($('#Qty').val() != "") iQty = $('#Qty').val(); else iQty = 0;
+
+            iTotal = (iRate * iQty).toFixed(2);
+            $('#Amt').val(iTotal);
+
+        }
+
+
+
+        function getUrl() {
+            debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+
+    </script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+             
+            debugger;
+            $("#acctname").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    //  alert(document.getElementById("compcode").value);
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/Cateogry", "OpeningBal"))",
+
+                        data: { "cateory": request.term, "iType": +getUrl()["MstType"] },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $('#PartyID').val(ui.item.Id);
+                }
+            });
+
+            $("#mstchnm").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetScheme", "PuSL"))",
+                        data: { "Schm": request.term },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].mstchnm, Id: data[i].mstcode };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                 select: function (event, ui) {
+                   
+                }
+
+             });
+
+            $('#mstchnm').blur(function () {
+                debugger;
+                var sSchname;
+                sSchname = $('#mstchnm').val();
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetProduction_Scm", "PuSL")',
+                    data: { "sSchmNm": sSchname },
+                    success: function (data) {
+                        debugger;
+                        itmRaw = data.oItmRaw;
+                        itmFinish = data.oItmFini;
+                        itmPack = data.oItmPack;
+                        itmExp = data.oItmExp;
+
+                        if (data.oItmRaw.length > 0) GenratedItemRaw(data.oItmRaw); else $('#tblRaw').html("");
+                        
+                    }
+                });
+            });
+
+
+
+            $("#UnitID").change(function () {
+                debugger;
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Cases').val() != "") iCases = $('#Cases').val(); else iCases = 0;
+
+                if ($('#UnitID').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID').val().split("~")[1].toString(); else iUnitVal = 0;
+                iTotal = (iCases * iUnitVal).toFixed(2);
+                $('#Qty').val(iTotal);
+                Calc_Amt(); GetItemAmt()
+            });
+            $("#CateNm").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    //  alert(document.getElementById("compcode").value);
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/getCategory", "Comm"))",
+
+                        data: { "sName": request.term },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $('#CateID').val(ui.item.Id);
+                }
+            });
+
+            $("#GrouNm").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    //  alert(document.getElementById("compcode").value);
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/getGroup", "Comm"))",
+
+                        data: { "sName": request.term, "iCateID": +$('#CateID').val() },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $('#GrouID').val(ui.item.Id);
+                }
+            });
+            $("#ItemNm").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItem", "Comm"))",
+                        data: { "sName": request.term, "iGrouID": $('#GrouID').val() },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $.ajax({
+                        cache: false,
+                        async: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItemDet", "Comm"))",
+                        data: { "iItemID": ui.item.Id },
+
+                        success: function (data) {
+                            debugger;
+                            $('#ItemID').val(ui.item.Id);
+                            $('#TaxPer').val(data[0]["vat"]);
+                            $('#PU_Qty2').val(data[0]["unitqty2"]);
+                            $('#UnitId').val(data[0]["unitcode"]);
+                            $('#Rate').val(data[0]["Rate"]);
+                            $('#acctcode').val(data[0]["Acctcode"]);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                            $('#TaxPer').val('');
+                            $('#PU_Qty2').val('');
+                            $('#UnitId').val('');
+                            $('#Rate').val('');
+                            $('#acctcode').val('');
+                        }
+                    });
+                }
+            });
+             
+           
+            $('.pickdate').each(function () {
+                if ($(this).val() == '') {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    $(this).val(today);
+                }
+            });
+           
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" }); 
+        });
+    </script>
+
+
+    <style>
+        body {
+            background-color: #e6e4e4;
+        }
+       
+
+        .add {
+            background-image:url(/Images/addmore.svg);
+            background-repeat:no-repeat;
+            background-size:contain;
+            background-position-x:center;
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:brown;
+        }
+        .add:hover {
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:#FF8C00;
+        }
+             .next {
+            background-image:url(/Images/prev.svg);
+            background-repeat:no-repeat;
+            background-size:contain;
+            background-position-x:center;
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:brown;
+        }
+        .next:hover {
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:#FF8C00;
+        }
+      
+
+        .btn-color {
+            background-color: transparent;
+            border: none;
+            background-image: url(/Images/remove.svg);
+            background-repeat: no-repeat;
+            height: 25px;
+            width: 25px;
+        }
+        /*div.tablecontainer  table tr td:nth-child(1), th:nth-child(1) {width: 5%; }
+		div.tablecontainer  table tr td:nth-child(2), th:nth-child(2) {width: 35%;} 
+        div.tablecontainer  table tr td:nth-child(3), th:nth-child(3) {width: 5%; text-indent:7px;} 
+        div.tablecontainer  table tr td:nth-child(4), th:nth-child(4) {width: 5%; text-indent:5px;}
+        div.tablecontainer  table tr td:nth-child(5), th:nth-child(5) {width: 5%; text-indent:5px} 
+        div.tablecontainer  table tr td:nth-child(6), th:nth-child(6) {width: 5%; text-indent:5px} 
+        div.tablecontainer  table tr td:nth-child(7), th:nth-child(7) {width: 5%; text-indent:5px } 
+        div.tablecontainer  table tr td:nth-child(8), th:nth-child(8) {width: 10%; text-indent:5px} 
+         div.tablecontainer  table tr td:nth-child(9), th:nth-child(9) {width: 5%; text-indent:5px} 
+         div.tablecontainer  table tr td:nth-child(10), th:nth-child(10) {width:5%; text-indent:5px} 
+        div.tablecontainer  table tr td:nth-child(11), th:nth-child(11) {width: 10%; text-indent:5px}
+        div.tablecontainer  table tr td:nth-child(12), th:nth-child(12) {width: 5%;}*/
+
+
+        /*div.tablecontainer  table tr th:nth-child(1) {width: 40px;} 
+		 div.tablecontainer  table tr th:nth-child(2) {width: 25%;}*/
+
+        div.tablecontainer table thead tr {
+            color: #fff;
+            background-color: brown;
+            border-bottom: 1px solid #ccc;
+        }
+
+        div.tablecontainer table tbody tr {
+            border-bottom: 1px solid #ccc;
+        }
+
+            div.tablecontainer table tbody tr td {
+                font-size: 12px;
+            }
+
+        div.tablecontainer table thead tr th {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+      
+    </style>
+    </head>
+<body>
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+         <div>
+                        @{
+        if (TempData["message"] != null)
+        {
+                            <script type="text/javascript">
+                                alert(@Html.Raw(Json.Encode(TempData["message"])));
+                            </script>
+        }
+                        }
+                    </div>
+
+        <!--page header start-->
+        <div id="page-header" class="row" style="padding-right: 0; background-color: #fff; margin-left: 0px; box-shadow: 2px 2px 2px #ccc;">
+            <div class="box-padd col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="logo col-sm-2 col-md-2 col-lg-2 " style="padding: 10px 10px 0px 0; border: none;">
+                    <div style="width: 130px; border-right: 1px solid bisque; height: 50px;">
+                        <a href="#" style="font-family: 'Agency FB'; font-size: 30px; color: #951818; font-weight: 600; padding-left: 0;">
+                            <img src="~/Images/compx_logo.png" width="40" height="40" class="img-responsive" style="float: left; margin-right: 5px;" /><span style="float: left;">C<span style="color: #FF8C00;">o</span><span>m</span><span style="color: #FF8C00;">p</span>x</a>
+                    </div>
+                </div>
+
+                <div class="main-nav col-sm-6 col-md-6 col-lg-6" style="text-align: center;">
+                    <h3 id="sHeader" style="margin-top: 3px; margin-bottom: 0;"></h3>
+                </div>
+                <div class="right-nav col-sm-4 col-md-4 col-lg-4 " style="text-align: right;">
+                    <div class=" user-stat" style="padding: 10px 10px 10px 0; border-left: 1px solid bisque; padding-right: 0; border-right: none; float: right; text-align: right; padding-left: 10px;">
+                        <div id='cssmenu' style="padding-right: 0;">
+                            <h3 style="color: brown; font-size: 30px; font-family: 'Agency FB'; font-weight: 600; margin-top: 8px; margin-bottom: 0; margin-right: 10px;">ACCIL</h3>
+                            <ul class="menu-ul" style="padding-right: 0; padding-top: 5px;">
+
+
+                                <li style="border-left: 1px solid bisque;">
+                                <li><a href="/Home/Allmenu">
+                                    <img src="~/Images/home.svg" width="30" height="30" style="margin-top: -7px;" /></a></li>
+
+                                <li>@Html.ActionLink("PuSL", "PorductionList", new { MstType = ViewBag.MstType }, new { style = "background-image:url('/Images/list2.svg');background-position:center 3px; background-repeat:no-repeat; color:transparent;background-size:30px 30px; text-align:right;", title = "Back to list" })</li>
+
+                                <li><a href='#' style="border: none; font-size: 14px;">
+                                    @*<img src="~/Images/logout.svg" width="30" height="30" /><span style="margin-top:3px;">*@Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     
+        <div class="container-fluid" style="margin-top:5px;">           
+
+        @*<div> 
+          <div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 0; padding-right: 0;">
+                <fieldset>
+                    <legend id="Legend1" align="left"></legend>
+                    <table>
+                        <tr>
+                            <td>Party</td>
+                            <td colspan="3">
+                                @Html.TextBoxFor(model => model.acctname)
+                                @Html.HiddenFor(model => model.PartyID)
+                            </td>
+
+                        </tr>
+
+
+                    </table>
+                </fieldset>
+            </div>
+        </div>*@
+        <div class="row">
+            <div class="col-lg-12" style="background-color:#fff; padding-top:10px; padding-left:0;">                
+                      <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:15px;" >
+                        <fieldset>
+                             @Html.ValidationMessageFor(model => model.mstcode, "", new { style = "color:red;" })
+                    @Html.ValidationMessageFor(a => a.msttimes, "", new { style = "color:red;" })
+                            <table>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>
+
+                                        @Html.HiddenFor(model => model.sItemRaw)
+                                        @Html.HiddenFor(model => model.sItemFinish)
+                                        @Html.HiddenFor(model => model.sItemPacking)
+                                        @Html.HiddenFor(model => model.sItemExp)
+                                      
+
+                                        @Html.HiddenFor(model => model.ItemID_Fini)
+                                        @Html.HiddenFor(model => model.ItemID_Pack)
+                                        @Html.HiddenFor(model => model.ItemID_Exp)
+
+                                        @Html.HiddenFor(model => model.acctcode)
+                                        @Html.HiddenFor(model => model.ItemID)
+                                        @Html.HiddenFor(model => model.mstptcode)
+                                        @Html.HiddenFor(model => model.mstrefc)
+                                        @Html.HiddenFor(model => model.compcode)
+                                        @Html.HiddenFor(model => model.PU_Qty2)
+                                        @Html.HiddenFor(model => model.sItemDet)
+                                        @Html.HiddenFor(model => model.ItemRemark)
+                                        @Html.HiddenFor(model => model.sTrnDet)
+
+                                        @Html.ValidationMessageFor(a => a.mstptcode)
+
+                                        @Html.TextBoxFor(model => model.mstcode, new { @Value = ViewBag.MstCode, @readonly = true, style = "width:50px;" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Date</td>
+                                    <td>
+                                       @* @Html.TextBoxFor(m => m.mstdate, "{0:dd/MM/yyyy}", new { @class = "pickdate", placeholder = "Enter Date" })*@
+                                        @Html.TextBoxFor(m => m.mstdate, "{0:dd/MM/yyyy}", new { @class = "pickdate", placeholder = "Enter Date" })
+
+                                        @*   @Html.EditorFor(model => model.mstdate , new {  })*@
+
+                                    </td>
+                                    <td>Time
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(a => a.msttimes, new { @class = "form-control t1", @readonly = true })
+                                    </td>
+                                     <td>Ref</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.mstchnV)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.mstchno)
+                                    </td>
+                                </tr>
+                                <tr>                                   
+                                    <td>Party</td>
+                                    <td colspan="6">
+                                       <div id="dvParty" 
+
+style="height: 100px; overflow: auto;border:solid; width:400px;">
+                          
+                                    @for (var i = 0; i < Model.lstParty.Count; i++)
+                                    {
+                                        @Html.HiddenFor(m => m.lstParty[i].tpPartyID)
+                                      <table width="100%">  
+                                           <tr>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.EditorFor(m => m.lstParty[i].IsSelected)
+                                                        @Model.lstParty[i].partyname
+                                                    </label>
+                                                </div>
+                                            </td> 
+                                        </tr> 
+
+                                      </table>
+                                    }
+ </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </div>
+             <div class="row" style="margin-top:5px;">
+            <div class="col-lg-12" style="background-color:#fff; padding-bottom:10px; padding-top:10px;">  
+            
+            
+              <table style="border:1px solid #ccc; margin-top:10px;">
+                    <tr>
+                          @Html.HiddenFor(model => model.CateID)
+                          @Html.HiddenFor(model => model.GrouID)
+
+                        <td>Category <br /> @Html.TextBoxFor(model => model.CateNm) </td>
+                        <td>Group <br /> @Html.TextBoxFor(model => model.GrouNm) </td>
+                        <td>Item <br /> @Html.TextBoxFor(model => model.ItemNm) </td>
+                        
+                        <td style="width: 10%;">UOM <br />
+                             @Html.DropDownList("UnitID", Model.lstUnitMst, "--Select--") </td>
+                        
+                        <td>Thickness <br /> 
+                            @Html.TextBoxFor(model => model.Cases, new { @type = "number", @style = "width:60px;" })
+                        </td>
+                                                                 
+                        <td style="width: 10%;">Length
+                                        <br />
+                            @Html.TextBoxFor(model => model.Tax_S)
+                        </td>
+                        <td style="width: 10%;">Width
+                                        <br />
+                            @Html.TextBoxFor(model => model.Tax_C)
+                        </td>
+
+                        <td style="width: 10%;">Weight<br />
+                            @Html.TextBoxFor(model => model.Tax_I )
+                        </td>
+                        <td style="width: 10%;"> <br /> @Html.TextBoxFor(model => model.Qty) </td>
+                        <td style="width: 10%;"> Qty <br /> @Html.TextBoxFor(model => model.Rate) </td>
+
+                        <td style="width: 10%;">Total Weight<br />
+                            @Html.TextBoxFor(model => model.Amt, new { disabled = true, @readonly = true })
+                        </td> 
+                        <td style="width: 15%;">
+                            <br />
+                            <input class="add" id="addRaw" type="button" />                             
+                            
+                            <input class="next" id="" type="button" />
+
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                            <div id="tblRaw" class="tablecontainer" style="height: 200px; overflow-y: auto; display: block; background-color: #FFF;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="width: 25%;"></td>
+                        <td></td>                        
+                        <td>@Html.TextBoxFor(model => model.TotQtyRaw)  </td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.TotalRaw)  </td>
+                        <td></td>
+                    </tr>
+
+                </table>
+      
+            </div>
+        </div>
+      </div>     
+        <div class="row" style="margin-top:5px; padding-left:15px; padding-right:15px;">
+            <div class="col-lg-12 col-md-12 col-sm-12" style=" padding-bottom:10px; background-color:#fff;">
+                <div class="col-lg-7 col-md-7 col-sm-12"  >           
+                    <fieldset style="border:none;">
+                        <legend id="Lege2" align="left"></legend>
+                        @Html.ValidationMessageFor(model => model.acctname, "", new { style = "color:red;" })
+                    @Html.ValidationMessageFor(model => model.Amt, "", new { style = "color:red;" })
+                    @Html.ValidationMessageFor(model => model.Amt, "", new { style = "color:red;" })
+                        <table>
+                            <tr>
+                                <td>Executive</td>
+                                <td style="width: 20%;">
+                                    @Html.TextBoxFor(model => model.acctname)
+                                </td>                           
+                                <td>Attended By</td>
+                                <td>@Html.TextBoxFor(model => model.acctname)</td>
+
+                            </tr>
+                              <tr>
+                            @*<td style="width: 5%;">@Html.Label("Day", new { id = "Day" })</td>*@
+                          @*  <td style="width: 20%;">@Html.TextBoxFor(model => model.DueDay) </td>*@
+                            <td style="width: 5%;">Remark</td>
+
+                            <td colspan="5">@Html.TextBoxFor(model => model.mstrema) </td>
+                            <td>
+                                <input type="submit" value="Save"/>
+                            </td>
+                        </tr>                             
+                        </table>   
+                          </fieldset>
+                </div> 
+               
+                </div>
+            </div> 
+
+                            @* <tr>
+                            <td>Net Amount</td>
+                            <td>@Html.TextBoxFor(model => model.mstneta, new { disabled = true, @readonly = true, style = "width:110px;" })</td>
+                        </tr>
+                        <tr>
+                            <td>Paid</td>
+                            <td>@Html.TextBoxFor(model => model.mstpaid, new { style = "width:110px;" })</td>
+                        </tr>
+                        <tr>
+                            <td>Balance</td>
+                            <td>@Html.TextBoxFor(model => model.mstbala, new { disabled = true, @readonly = true, style = "width:110px;" })</td>
+                        </tr>*@                             
+
+    }
+
+
+
+</body>
+
+
+</html>

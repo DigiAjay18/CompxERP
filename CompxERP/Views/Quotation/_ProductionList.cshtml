@@ -1,0 +1,101 @@
+﻿ 
+@model List<CompxERP.Models.Jourmaster> 
+     <div class="modal-header">
+        <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+        <h4 class="modal-title">Production List</h4>
+      </div>
+      <div class="modal-body Personal_form">
+    <table id="example55" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr><th style="width:5%;">Sr No</th> 
+            <th style="width:10%;">Date</th>
+            <th style="width:10%;">Order NO</th>      
+          <th style="width:30%;">Lead/Dealer</th>    
+            <th style="width:30%;">ItemName</th>    
+           <th style="width:15%;">QTY</th>    
+        </tr>
+    </thead>
+    <tbody style="height:460px;">
+        @{
+               var iIndex = 0;
+       if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                iIndex = iIndex + 1;
+                <tr>  
+<td  style="width:5%;">@iIndex</td>   
+<td  style="width:10%;">@item.mstdate.ToString("dd-MM-yyyy")</td>   @*@item.Statename*@
+<td  style="width:10%;">@item.mstchno</td>  
+<td  style="width:30%;">@item.mstrefno</td>  
+<td  style="width:30%;">@item.ItemNm</td>   
+<td  style="width:15%;">@item.Qty</td>     
+                    @*  <td  style="width:5%;"> 
+                     <span id="@item.mstcode + iIndex +" style="cursor: pointer;text-decoration:underline" onclick="Print('@item.mstcode');"  >
+                        <img src="../../Images/View.png" /></span> 
+                    </td> *@
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+          </div>
+ 
+  <div class="modal fade" id="QuotationDet" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+           <div id="divQuotationDet"></div>
+        </div>
+    </div>
+
+<script type ="text/javascript">
+    function FillQuotDet(Mstcode)
+    {
+        debugger;
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("Quotation", "Quotation")",
+            data: { MstCode: Mstcode ,MstType: 1163 ,comp:62 },
+         success: function (data) {
+             //$("#divDispatchEntries_Lead").html(data); 
+             $("#divQuotationDet").html(data);
+         },
+         error: function () {
+             alert('Error');
+         }
+         });
+    }
+    function  Print(Mstcode)
+    {
+         window.open('../Pages/Reports.aspx?Code=' + Mstcode + '&PType=QuotPrint', '_blank');
+        //  window.open('../Pages/ReportR.aspx?Code=' + Mstcode + '&mencode=107', '_blank');
+       
+        
+         //window.open('../../Quotation/Print?comp=62&mstCode=' + Mstcode + '&msttype=1163&mencode=107', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50');
+
+       //  window.open('../../Quotation/Print?comp=62&mstCode=' + Mstcode + '&msttype=1163&mencode=107', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50');
+
+    };
+
+    function Email(Mstcode) {
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SendMailQT", "Master")",
+            data: { To: "ajay@digiclayinfotech.com", Msg: "Hello", Subject: "Sub" },
+            success: function (data) { 
+                alert(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+    };
+</script>
+
+             

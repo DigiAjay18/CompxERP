@@ -1,0 +1,159 @@
+﻿@model IEnumerable<CompxERP.Models.clsOrderFollowUp> 
+ 
+
+<script >
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#F_Date').val(today);
+            $('#From_Date').val(today);
+            $('#To_Date').val(today);
+            $('#O_From_Date').val(today);
+            $('#O_To_Date').val(today);
+
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+    </script>
+         
+
+ <div class="col-sm-12">
+     
+    <table id="DispatchList" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr>
+            <th style="width:2%;">No</th> 
+           <th style="width:15%;">  Dealer Name</th>
+           <th style="width:10%;">  Mobile</th>
+          <th style="width:20%;">Last Follow Up Details</th>
+          <th style="width:10%;">Next Date</th>
+          <th style="width:20%;">Current Talk Status</th> 
+          <th style="width:8%;">Next Date</th> 
+            <th style="width:3%;">Save</th>       
+            <th style="width:3%;">Take Order</th>       
+            <th style="width:3%;">Abort</th>       
+        </tr>
+    </thead>
+    <tbody style="height:430px;">
+           @{
+                 var iIndex = 0;
+         
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1; 
+               <tr>  
+                     <td  style="width:2%;">@iIndex </td>   
+                    <td style="width:15%;">@item.acctname</td>
+                    <td style="width:10%;">@item.acctphon</td> 
+                   <td  style="width:20%;"> @item.Remark</td>   
+                   @if(@item.NextDt.ToString("dd/MM/yyyy") != "01/01/0001"){
+                   <td  style="width:10%;"> @item.NextDt.ToString("dd/MM/yyyy") </td>}
+                   else 
+                   {<td  style="width:10%;">  </td>}
+
+                    <td  style="width:20%;">  <textarea rows="1" id ="txtOrderRema_@iIndex" class="form-control">  </textarea>
+                        <input type="hidden" id="hdnDealerID" value="@item.acctcode" />
+                    </td>  
+                  <td  style="width:7%;">   <input type="text" class="form-control" id="F_From_@iIndex"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />  </td>
+                   <td> <input type="button" id="btnInsOrdFollowUp" value="Save"  onclick="InsOrdFollowUp(@item.acctcode ,@iIndex ,0 )"  class="btn btn-search" /></td>
+  
+                   <td> <input type="button" id="btnTakeOrder" value="Order" data-toggle="modal" data-target="#DV_TakeOrder"  onclick="TakeOrder(@item.acctcode ,@iIndex ,1 )" class="btn btn-search" /></td>  
+  <td> <input type="button" id="btnAbort" value="Abort"  onclick="InsOrdFollowUp(@item.acctcode ,@iIndex ,2 )"  class="btn btn-search" /></td>
+                                         
+                </tr>
+            }
+        
+}
+    </tbody>
+</table>
+</div>
+     <div class="modal fade" id="DV_TakeOrder" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <div class="modal-content">
+                <div id="divTakeOrder"></div>
+            </div>
+        </div>
+    </div>    
+
+<script type ="text/javascript">
+  
+    function InsOrdFollowUp(acctcode, iIndex ,Status) {
+        debugger;
+        var sOrderID = "";
+         
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("OrdFollowUp", "Quotation")",
+            data: { DealerID: acctcode, NextDt: $("#F_From_" + iIndex).val(), Remark: $("#txtOrderRema_" + iIndex).val(), Status: Status },
+            success: function (data) {
+                //if (data.Success == true) {
+                //    if (data.Message != "Saved"){ alert(data.Message); }
+                //}
+                //else {
+                if (data != "Saved"){ alert(data); }
+                //alert(data);
+                $("#divFollowUp").html("");
+                $('#btnGetOrdFollowUp').click();
+                //ClearDvData();
+               // }
+            },
+            error: function () {
+                alert(error);
+            }
+        });
+    }
+    function TakeOrder(acctcode, iIndex ,Status) {
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("OrdFollowUp", "Quotation")",
+            data: { DealerID: acctcode, NextDt: $("#F_From_" + iIndex).val(), Remark: $("#txtOrderRema_" + iIndex).val(), Status: Status },
+            success: function (data) { 
+                if (data != "Saved"){ alert(data);  
+                }
+                else {
+                    $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("Order", "Quotation")",
+                        dataOrd: { comp: "62", mstCode: "0", MstType: "174", mstcode_Print: 0 },
+                        success: function (dataOrd) {
+                            $("#divTakeOrder").html(dataOrd);//divQuotation
+
+                        },
+                        error: function () {
+                            alert('Error');
+                        }
+
+                }); 
+                }
+                //$("#divFollowUp").html("");
+                //$('#btnGetOrdFollowUp').click();
+               
+            },
+            error: function () {
+                alert(error);
+            }
+           });
+
+    
+    }
+</script>

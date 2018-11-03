@@ -1,0 +1,255 @@
+﻿@model CompxERP.Models.clsEmpAllotMst
+@{
+    Layout = null;
+}
+
+
+
+
+      <!-- Modal content-->
+     <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Allocate Employee</h4>
+        </div>
+        <div class="modal-body input_popup">
+             <div class="form-group">
+                  <div class="col-sm-3 padd_l padd_5">Employee Name </div>
+                  <div class="col-sm-4 padd_l padd_5">
+                      @Html.DropDownList("EmpID", (SelectList)ViewBag.vbEmployee, "--Select--", new { @class = "form-control", required = "required"  ,@onchange ="FillDealerList();"})
+                  </div>
+             </div>
+              <div class="form-group">
+                  <div class="col-sm-3 padd_l padd_5">Dealer Name </div>
+                  <div class="col-sm-4 padd_l padd_5">
+                      @Html.DropDownList("DealID", (SelectList)ViewBag.vbDealer, "--Select--", new { @class = "form-control", required = "required"  })
+                  </div>
+                  <div class="col-sm-4 padd_l padd_5">
+                       <input type="button" id="add" value="add" class="btn btn-default" style="margin-top:0px;"/>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-top:0px;">Close</button>
+                  </div>
+             </div>
+            <div class="form-group">
+                 <div id="ShowTable_Dealer" class="item_styl clearfix tablecontainer"></div>
+            </div>
+
+                 <button type="button" class="btn btn-default" onclick="delEmpAllot();" style="margin-top:0px;">Delete</button>
+           @* <div class="form-group">
+                 <input type="button" id="InsLead" value="Save" class="btn btn-default" style="margin-top:0px;">
+               
+            </div>*@
+        </div>
+     </div>
+
+  
+
+<script type ="text/javascript">
+
+
+    //$(document).ready(function () {
+    //    $("#chkSelectAllEmpDeal").change(function () {
+    //        debugger;
+
+    //        $("#tblEmpDeal .chkSelectEmpDeal").prop('checked', $(this).prop("checked"));
+    //    });
+
+    //    $("#tblEmpDeal .chkSelectEmpDeal").change(function () {
+    //        if ($("#tblEmpDeal .chkSelectEmpDeal").length == $("#tblEmpDeal .chkSelectEmpDeal:checked").length) {
+    //            $("#chkSelectAllEmpDeal").prop('checked', true);
+    //        }
+    //        else {
+    //            $("#chkSelectAllEmpDeal").prop('checked', false);
+    //        }
+    //    });
+
+    //});
+
+
+    var ArrDealer = [];
+
+    //$('#add').click(function () {
+    //    debugger;
+
+    //    ArrDealer.push({
+    //        SrNo: ArrDealer.length + 1,
+
+    //        EmpID: $('#EmpID').val(),
+    //        DealerID: $('#DealerID').val(), 
+    //        DealerNm: $('#DealerID :selected').text(),
+    //        EmpNm: $('#EmpID :selected').text()
+    //    });
+
+    //    $('#DealerID').val('').focus(); $('#DealerID').val(''); 
+
+    //    ShowtblDealer(ArrDealer);
+    //});
+
+    $('#add').click(function () {
+        debugger;
+
+        if ($('#EmpID').val() == "") {
+            $('#EmpID').focus();
+            alert('Please Select Employee Name ...');
+            return
+        }
+
+        if ($('#DealID').val() == "0" || $('#DealID').val() == "") {
+            $('#DealID').focus();
+            alert('Please Select Dealer Name ...');
+            return
+        }
+
+        debugger;
+
+        var data = new FormData();
+        data.append("EmpID", $("#EmpID").val());
+        data.append("DealerID", $("#DealID").val());
+
+        console.log(typeof data);
+
+        $.ajax
+        ({
+            url: "/Master/InsEmpAllotMst",
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    $("#DealID").val(''); $("#DealID").focus();
+                    //ShowtblDealer(response);
+                    FillDealerList();
+                }
+                else {
+                    alert('Not Saved Successfully ...');
+                }
+            }
+        });
+
+
+    });
+
+
+    function ShowtblDealer(ArrDealer) {
+        if (ArrDealer.length > 0) {
+            var $table = $('<table id="tblEmpDeal" class="table table-bordered table-striped"/>');
+            $table.append('<thead><tr><th style="width: 10%">S.No. </th><th style="width: 50%">Dealer</th> <th style="width: 20%">Mobile</th><th style="width: 10%">Del</th></tr></thead>');
+            var $tbody = $('<tbody style="height:420px;"/>');
+
+            debugger;
+            $.each(ArrDealer, function (i, val) {
+                var $row = $('<tr/>');
+                $row.append($('<td  style="width: 10%"/>').html(i + 1));
+              
+                $row.append($('<td style="width: 50%"/>').html(val.DisName));
+                //$row.append($('<td style="width: 25%"/>').html(val.ContactPerson));
+                $row.append($('<td style="width: 20%"/>').html(val.Mob1));
+
+                //$row.append('<button type="button" id="btnDelete" class="delEmpAllot btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Img/remove11.gif" /></button> <input type="hidden" value ="' + val.DealerID + '" id="DealerID_' + i + '" /> <input type="hidden" value ="' + val.EmpID + '" id="EmpID_' + i + '" /> ');
+               // $row.append('<button type="button" id="btnDelete" onclick="delEmpAllot(' + val.EmpID + ', ' + val.DealerID + ');" class="btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Img/remove11.gif" /></button> <input type="hidden" value ="' + val.DealerID + '" id="DealerID_' + i + '" /> <input type="hidden" value ="' + val.EmpID + '" id="EmpID_' + i + '" /> ');
+
+                $row.append($('<input type="checkbox" data-id-EmpDeal="' + val.mstcode + '" class="chkSelectEmpDeal" /><input type="hidden" id="hdnMstCode" value="' + val.MstCode + '"  />').html(i + 1));
+
+                $tbody.append($row);
+                
+            });
+            $table.append($tbody);
+            $('#ShowTable_Dealer').html($table);
+
+            $('#sDealerList').val('{"LstItem":' + JSON.stringify(ArrDealer) + '}');
+        }
+    }
+
+    function delEmpAllot() {
+        debugger;
+       
+        var ID = "";
+
+        $('#tblEmpDeal').find('tr').each(function () {
+            var row = $(this);
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                ID += row.find(hdnMstCode).val() + '|';
+            }
+        });
+
+       // alert(ID);
+       
+        $.post("../Master/delEmpAllotMulti", { sMstCode: ID }, function (data) {
+            if (data != null) {
+                if (data.length > 0)
+                    if (data == "Delete Successfully !") {
+                         FillDealerList();
+                    }
+                    else { alert(data); }
+            }
+        });
+
+    }
+
+//    $(document).on("click", ".delEmpAllot", function () { 
+
+// debugger;
+// var index = $(this).closest("tr").index();
+         
+// var MapEmpID = 0; var MapDealID = 0;
+
+// MapEmpID = $('#EmpID_' + index).val();
+// MapDealID = $('#DealerID_' + index).val();
+// $(this).closest("tr").remove();
+
+// $.post("../Master/delEmpAllot", { iEmp: MapEmpID, iDealer: MapDealID, }, function (data) {
+//                if (data != null) {
+//                    if (data.length > 0)
+//                        if (data == "Delete Successfully !")
+//                        {                          
+//                           // FillDealerList();
+//                        }
+//                        else { alert(data); }
+//                }
+//            });
+            
+////        if (ArrDealer.length > 0) {
+////            debugger;
+////            var index = $(this).closest("tr").index();
+
+////            var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+////$tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+////            $('#DealserID').val(itm[index].ItemID);
+
+////            $('#ItemNm').val($row.find("td:nth-child(2)").text());
+
+////            $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+////            itm.splice(index, 1);
+
+////            $.post("../Master/delEmpAllot", { iEmp: 1, iDealer: 2 }, function (data) {
+////                if (data != null) {
+////                    if (data.length > 0)
+////                        if (data == "Delete Successfully !")
+////                        { FillDealerList(); }
+////                        else { alert(data); }
+////                }
+////            });
+            
+////        }
+
+//    });
+ 
+    
+
+    function FillDealerList() {
+        debugger;
+        var EmpAllotID = 0;
+        EmpAllotID = $("#EmpID").val();
+
+        $.get("../Master/getDealerList", { empID: EmpAllotID }, function (data) {
+            if (data != null) {
+                if (data.length > 0)
+                    ShowtblDealer(data);
+                else { $('#ShowTable_Dealer').html(''); }
+            }
+
+        });
+    }
+
+</script>

@@ -1,0 +1,327 @@
+﻿@model CompxERP.Models.clsLedger  
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+ 
+    <link href="~/Content/css/tableexport.min.css" rel="stylesheet" /> 
+     <script src="~/Scripts/FileSaver.min.js"></script>
+ <script src="~/Scripts/tableexport.min.js"></script>
+@*<script src="~/js/yasArabic.js"></script>*@
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Ledger</title>    
+ 
+    
+    <script src="~/Scripts/jquery-1.7.1.js"></script>
+  <link href="~/Content/css/menu.css" rel="stylesheet" />
+    <link href="~/Content/css/my-style.css" rel="stylesheet" />
+          <!----jcss-font---->
+   <link rel="stylesheet" href="~/css/font-awesome.min.css">
+  <link rel="stylesheet" href="~/css/custom.css">
+   
+  <link rel="stylesheet" href="~/css/responsive.css">
+
+     <link href="~/Content/css/tableexport.min.css" rel="stylesheet" /> 
+     <script src="~/Scripts/FileSaver.min.js"></script>
+ <script src="~/Scripts/tableexport.min.js"></script>
+ 
+ 
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        function getUrl() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        $('#Print').click(function () {
+        });
+
+        debugger;
+
+       
+        var sTo = ""; var sFrom = ""; var sParty = ""; var WithItem = "";var Compcode = "";
+        sTo = getUrl()["sFrom"];
+        sFrom = getUrl()["sTO"];
+        sParty = getUrl()["sParty"];
+        WithItem = getUrl()["WithItem"];
+        Compcode = getUrl()["Compcode"];
+ //ShowHideLoader('hide');
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("LedgerReport", "Report")',
+            data: { "sFrom": sTo, "sTO": sFrom, "sParty": sParty, "WithItem": WithItem, "Compcode": Compcode },
+            success: function (data) {
+                ShowHideLoader('show');
+                GenratedItemTable(data);
+                ShowHideLoader('hide');
+            }
+        });
+         
+
+  //ShowHideLoader('hide');
+        //$('#Filter').click(function () {
+        //    window.open('../../Report/Print?FromDt=' + $("#FromDt").val() + '&ToDt=' + $("#ToDt").val() + '&PartyID=' + $("#PartyID").val() + '&mencode=106', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=500, top=50, left=50');
+        //});
+
+
+
+        function GenratedItemTable(data) {
+            debugger;
+            //ShowHideLoader('show');
+            var itm = [];
+            itm = data.oList;
+            if (itm.length > 0) {
+                var $table = $('<table id="Ledger" />');
+                $table.append('<thead><tr style="ba"><th style="width: 2%">No</th><th style="width: 14%">Name</th><th style="width: 3%">Type</th><th style="width: 5%">Date</th> <th style="width: 6%">VcNo</th><th style="width: 31%">Particular</th><th style="width: 7%">OpBal</th><th style="width: 7%">Dr</th><th style="width: 7%">CR</th><th style="width: 7%">ClBal</th><th style="width: 3%">CrDr</th><th style="width: 6%"> <button type="button" onclick="SendMail()" class="btn" style="background: transparent !important;"><img  src="../../img/Mail.png" style="width:30px;height:30px" /> </button> <button type="button" onclick="PrintAllLedger()" class="btn" style="background: transparent !important;"><img src="../../img/print1.png" style="width:30px;height:30px" /> </button></th></tr></thead>');
+                //var $tbody = $('<tbody style="height:626px;"/>');
+                var $tbody = $('<tbody/>');
+                var iTotal = 0;
+                var iTax = 0;
+                var sName = "";
+
+                var d = "";
+
+                $.each(itm, function (i, val) {
+
+                    var $row = "";
+
+                    if (val.Particular == "Op. Bal.") $row = $('<tr  class ="Opening" />');
+                    else if (val.Particular == "Total / Cl. Bal.") $row = $('<tr  class ="Closing" />'); 
+                    else $row = $('<tr ondblclick =OpenPuSL(' + val.msttype + ',' + val.acctcode + ',' + val.Compcode + ') />');
+                    //else $row = $('<tr />');
+
+                    d = new Date(val.mstdate.replace(/(\d\d)(\d\d)(\d\d\d\d)/, '$3-$1-$2'));
+
+                    $row.append($('<td width=2%"/>').html(i + 1));
+
+                    if (sName != val.acctname) $row.append($('<td width="14%"/>').html(val.acctname)); else $row.append($('<td width="14%"/>').html('&nbsp;'));
+                    if (val.sType.toString() != "") $row.append($('<td width="3%"/>').html(val.sType)); else $row.append($('<td width="3%"/>').html('&nbsp;'));
+                    if (val.mstrema.toString() != "") $row.append($('<td width="5%"/>').html(val.mstrema)); else $row.append($('<td width="5%"/>').html('&nbsp;'));
+                    if (val.VcNO.toString() != "") $row.append($('<td width="6%"/>').html(val.VcNO)); else $row.append($('<td width="6%"/>').html('&nbsp;'));
+                    if (val.Particular.toString() != "") $row.append($('<td width="31%"/>').html(val.Particular)); else $row.append($('<td width="31%"/>').html('&nbsp;'));
+
+                    if (val.opbl != null) $row.append($('<td style="width:7%;text-align:right;"/>').html(formatNumber(val.opbl))); else $row.append($('<td style="width:7%;text-align:right;" />').html('0'));
+                    if (val.dr.toString() != "") $row.append($('<td style="width:7%;text-align:right;" />').html(formatNumber(val.dr))); else $row.append($('<td style="width:7%;text-align:right;"/>').html('0'));
+                    if (val.cr.toString() != "") $row.append($('<td style="width:7%;text-align:right;" />').html(formatNumber(val.cr))); else $row.append($('<td style="width:7%;text-align:right;"/>').html('0'));
+                    if (val.crdrbl.toString() != "") $row.append($('<td style="width:7%;text-align:right;" />').html(formatNumber(val.crdrbl))); else $row.append($('<td style="width:7%;text-align:right;">').html('0'));
+
+                    $row.append($('<td width="3%"/>').html(val.trnrema));
+
+                    $row.append($('<td width="6%"/>').html('<button type="button" onclick="PrintPuSL(' + val.msttype + ',' + val.acctcode + ',' + val.Compcode + ')" class="btn" style="background: transparent !important;"><img src="../../img/print1.png" /> </button>'));
+
+                    //$row.append($('<td width="3%"/>').html('<button type="button" id="btnLedPrint" onclick="PrintPuSL(' + val.msttype + ',' + val.acctcode +',' + val.Compcode + ') +" class="btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Images/remove11.gif" /></button>'));
+
+                    sName = val.acctname;
+
+                    $tbody.append($row);
+
+                });
+                $table.append($tbody);
+                //alert($table);
+                $('#ShowTable').html($table);
+
+                //if ($("#ShowTable tbody tr").length > 1) {
+
+                //    //$("#ShowTable").tableExport({
+                //    //    bootstrap: true
+                //    //});
+                //}
+
+            }
+            //ShowHideLoader('hide');
+        }
+
+       
+    });
+
+
+    </script>
+
+      <style>
+
+          thead th {   padding: 3px 8px !important; background: #868181;color:white;}
+          td{   padding: 3px 8px !important;}
+          td.myclass{text-align:center; vertical-align:middle;background-color:aliceblue; }
+         .Opening{  vertical-align:middle; background-color:#fff;   }
+         .Closing{  vertical-align:middle;background-color:#ECD3D3;  }
+          .Op_St{ vertical-align:middle;background-color:Yellow ;  }
+          #Ledger {width: 100%;}
+          #Ledger .btn { display: inline-block; padding: 0px 3px; }
+          .arabic{font-family:Traditional Arabic;}
+          tbody { height: 530px;}
+      </style>
+    
+  
+</head>
+
+<body>
+   @*  <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/ddaccordion.js"></script> 
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <link href="~/Content/css/menu.css" rel="stylesheet" />
+
+     
+    
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="~/js/bootstrap.min.js"></script>*@
+
+  
+     
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+       
+     <div class="compex_head">
+            <div class="container">
+                 <h2 id ="lgOrder">Ledger@*<sapn class="pull-right"><a href="/Home/menuNew"><i class="fa fa-home" aria-hidden="true"></i></a>
+                </sapn>*@</h2></div>
+        </div>
+            
+         
+         <div class="compex_form">
+       <div class="container-fluid">
+            <div class="Personal_form">
+         
+                <div id="ShowTable" class="item_styl clearfix tablecontainer" ></div>
+                  
+        </div>
+    </div>
+</div>
+          
+           
+        }
+</body>
+       
+</html>
+ 
+
+<script type="text/javascript" >
+    function OpenPuSL(msttype, mstcode, Compcode) {
+        debugger;
+        if (msttype == "42" || msttype == "43")
+            window.open('../../PuSL/Create?MstCode=' + mstcode + '&MstType=' + msttype + '&MenCode=771&comp=' + Compcode + '&mstcode_Print=0', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=1050px, height=600px, top=10px, left=60px');
+        else 
+            window.open('../../Voucher/Create?comp=' + Compcode + '&MstCode=' + mstcode + '&MstType=' + msttype + '&mstcode_Print=0&MenCode=771', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=1050px, height=600px, top=10px, left=60px');
+
+    }
+
+    function PrintPuSL(msttype, mstcode, Compcode) {
+        debugger; 
+        window.open('../Pages/Reports.aspx?Code=' + mstcode + '&PType=' + msttype + '&comp=' + Compcode + '&msttype=' + msttype + '', '_blank');
+
+    }
+
+    function PrintAllLedger() {
+        debugger;
+        var sTo = ""; var sFrom = ""; var sParty = ""; var WithItem = ""; var Compcode = "";
+        sFrom = getUrl()["sFrom"];
+        sTo = getUrl()["sTO"];
+        sParty = getUrl()["sParty"];
+        WithItem = getUrl()["WithItem"];
+        Compcode = getUrl()["Compcode"];
+
+        window.open('../Pages/Reports.aspx?Code=1&PType=Ledger&compcode=' + Compcode + '&sFrom=' + sFrom + '&sTO=' + sTo + '&sParty=' + sParty + '', '_blank');
+
+    }
+    function getUrl() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function SendMail() {
+        ShowHideLoader('show');
+        debugger;
+
+        var SMS_Discription = "";
+       
+        //});587,465,80,3535,25,995,2525 --mi3-wtr1.supercp.com
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SendMail", "Report")",   
+            data: { PartyIDs: getUrl()["sParty"], CompCode: getUrl()["Compcode"], From: getUrl()["sFrom"], To: getUrl()["sTO"], Port: 2525, Srv: "Www.Tanishkelectronics.Com" },
+            success: function (data) {
+                if (data.Success == true) {
+                    alert(data.Message);
+                    ShowHideLoader('hide');
+                }
+                else {
+                    alert(data.Message);
+                    $("#divErrorMessages").html(data.Message);
+                    ShowHideLoader('hide');
+                }
+            },
+            error: function () {
+                ShowHideLoader('hide');
+            }
+        });
+    }
+    function formatNumber(number) {
+        if (number != "") {
+            number = number.toFixed(2) + '';
+            x = number.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+
+            return x1 + x2;
+        }
+        return "0";
+    }
+</script>
+ 
+          
+<script>
+    $(document).ready(function () {
+        $("#Ledger").tableExport({
+            bootstrap: true, //ignoreCols: ([9, 10, 11])
+            //headers: true,   
+            // footers: true, 
+            // formats: ["xls", "csv", "txt"], 
+            // fileName: "id",     
+            // bootstrap: false, 
+            // exportButtons: true,   
+            // position: "bottom",   
+            // ignoreRows: null,  
+            // ignoreCols: ([9,10,11]),  
+            // trimWhitespace: true    
+        });
+
+    });
+</script>

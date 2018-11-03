@@ -1,0 +1,725 @@
+﻿@model CompxERP.Models.EmployeeSetup
+@{
+    ViewBag.Title = "EmployeeSetup";
+   @* var sPath = @Model.sPath;*@
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+       
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+  
+
+    <meta name="viewport" content="width=device-width" />
+    <title>Employee Setup</title>
+ <script type="text/javascript">
+         $(function () {
+             $("[data-mask]").inputmask();
+
+             var today = new Date();
+             var dd = today.getDate();
+             var mm = today.getMonth() + 1; //January is 0!
+
+             var yyyy = today.getFullYear();
+             if (dd < 10) {
+                 dd = '0' + dd;
+             }
+             if (mm < 10) {
+                 mm = '0' + mm;
+             }
+             var today = dd + '/' + mm + '/' + yyyy;
+            // $('#CreateDates').val(today);
+
+         });
+    </script>
+<script>
+
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+
+            $('.pickdate').each(function () {
+                if ($(this).val() == '') {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    // $(this).val(today);
+                    var today = dd + '/' + mm + '/' + yyyy;
+                  //  $('#CreateDates').val(today);
+                }
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+
+    <!----compex_heading---->
+    <div class="compex_head">
+        <div class="container-fluid">
+            
+            <div class="col-sm-12">
+                <h2>Employee Setup  <button type="button" class="close" data-dismiss="modal">&times;</button></h2>
+            </div> 
+        </div>
+    </div>
+    <!----compex_heading end---->
+  
+    <div class="compex_form">
+        <div class="container-fluid">
+            <div class="Personal_form">
+         
+
+
+                    <div style="width: 100%; float: left; margin-bottom: 5px;">
+                        <div class="col-sm-12 padd_l padd_5">
+               @*  @using (Html.BeginForm("EmployeeSetup", "Customer", FormMethod.Post, new { enctype = "multipart/form-data" })) *@
+                 @using (Html.BeginForm())
+                 {
+                      @*  @Html.AntiForgeryToken()*@
+                        @Html.ValidationSummary(true)
+                                <fieldset>
+                                    <legend>Personal Information</legend>
+                                     
+                                     <div class="col-sm-10 padd_l padd_5">
+                                     <div class="form-group">
+                                          <div class="col-sm-1 padd_l padd_5"><label>Code</label></div>
+                                          <div class="col-sm-1 padd_5">
+                                               @Html.HiddenFor(model => model.isEdit )
+                                             @Html.TextBoxFor(model => model.iEmp_empcode, new { @class = "form-control", @readonly = true })
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Name</label></div>
+                                          <div class="col-sm-4  padd_5">
+                                             @Html.TextBoxFor(model => model.sEmp_empname, new { @class = "form-control" ,onblur="SetUserNM();" ,autocomplete="off" })
+                                          </div>
+                                         
+                                       
+                                   
+                                          <div class="col-sm-1 padd_l padd_5"> <label>Father&nbsp;Name</label></div>
+                                          <div class="col-sm-4  padd_5">
+                                             @Html.TextBoxFor(model => model.Father, new { @class = "form-control" })
+                                          </div>
+                                     </div>
+                                     
+                                     <div class="form-group">
+                                            <div class="col-sm-1 padd_l padd_5"><label>Gender</label></div>
+                                           <div class="col-sm-2  padd_5">
+                                              @Html.DropDownList("iEmp_Gender", new List<SelectListItem> { 
+           new SelectListItem { Text="Male", Value="1"},
+           new SelectListItem { Text="Female", Value="2"},
+            }, new { @class = "form-control" })
+                                           </div>
+                                              
+                                               <div class="col-sm-1 padd_l padd_5"><label>State</label></div>
+                                                 <div class="col-sm-3 padd_5"> 
+                                                      @Html.DropDownList("sEmp_empstat", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control" ,@onchange="FillCity();" }) 
+                                         @*@Html.DropDownList("sEmp_empstat", new List<SelectListItem> {  
+           new SelectListItem { Text="M.P.", Value="1"},   
+           }, new { @class = "form-control" })*@
+                        </div>
+
+
+
+                                          <div class="col-sm-1 padd_l padd_5"> <label>City</label> </div>
+                                                <div class="col-sm-4  padd_5">                 
+                                                     @Html.DropDownList("iEmp_empcity", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control"  })  
+                            @*@Html.DropDownList("iEmp_empcity", new List<SelectListItem> {  
+            new SelectListItem { Text="Indore", Value="1834"},
+           new SelectListItem { Text="Bhopal", Value="1831"}, 
+           new SelectListItem { Text="Ujjain", Value="1904"}, 
+           new SelectListItem { Text="Khandwa", Value="4493"}, 
+           new SelectListItem { Text="Khargone", Value="4494"}, 
+           new SelectListItem { Text="Ratlam", Value="1876"},    
+           }, new { @class = "form-control" })*@
+                              </div>
+                                         
+                                      </div>
+                                  
+                                     <div class="form-group">
+                                            <div class="col-sm-1 padd_l padd_5"><label>Local&nbsp;Address</label></div>
+                                          <div class="col-sm-5 padd_5">
+                                             @Html.TextAreaFor(model => model.sTemporaryAdd, new { @class = "form-control", @rows="2" })
+                                          </div>
+                                          <div class="col-sm-2 padd_l padd_5"><label>Permanent&nbsp;Address </label></div>
+                                          <div class="col-sm-4  padd_5">
+                                              @Html.TextAreaFor(model => model.sPermanentAdd, new { @class = "form-control", @rows="2" })
+                                          </div>
+                                         
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2 ProfilePicNew">
+                                        <div class="circle">
+                                            <img class="profile-pic" id ="EmpImg" src="@Url.Content(@ViewBag.vbImgPath)">
+                                            @*<img class="profile-pic" id ="EmpImg" src="../../img/avatar.png">src="@ViewBag.vbImgPath">*@
+                                        </div>
+		                                <div class="p-image">
+                                           @* <input  value="Remove" class="btn removeButon" type="button">*@
+			                                <i class="fa fa-camera upload-button"></i>
+			                                <input type="file" class="file-upload"  id="IMG_Path" accept="image/*"/> 
+                              
+                                             @Html.HiddenFor(model => model.sPath)
+                                           @*  @Html.Hidden("IMG_");*@
+		                                </div>
+                                    </div>
+
+                                  @*  <div class="col-sm-2 ProfilePicNew"  > 
+                                           <div class="circle">
+                                            <img class="profile-pic" src="@Url.Content(@ViewBag.vbImgPath)" alt ="@ViewBag.vbImgPath"> 
+                                        </div>
+
+                                    </div>*@
+
+                                     <div class="form-group">
+                                          @*<div class="col-sm-1 padd_l padd_5"><label>Mobile No</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(model => model.sPhone, new { @maxlength = 10, @NumberOnly = true, @autocomplete = "off", @class = "form-control" })
+                                              @Html.ValidationMessageFor(model => model.sPhone)
+                                          </div>*@
+                                          <div class="col-sm-1 padd_l padd_5"><label>Residential No.</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                              @Html.TextBoxFor(model => model.sResidential_No, new { @maxlength = 10, @NumberOnly = true, @autocomplete = "off", @class = "form-control" })
+                                                                                     @Html.ValidationMessageFor(model => model.sResidential_No)
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Father Mob No.</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(model => model.sFatherNo, new { @class = "form-control" })
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Official No.</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.sOfficial_No, new { @maxlength = 10, @NumberOnly = true, @autocomplete = "off", @class = "form-control" })
+                                                                                     @Html.ValidationMessageFor(model => model.sOfficial_No)
+                                          </div>
+                                      </div>
+                                     <div class="form-group">
+                                          <div class="col-sm-1 padd_l padd_5"><label>Email-id</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.sEmailID, new { @class = "form-control", @autocomplete = "off" })
+                                                    @Html.ValidationMessageFor(model => model.sEmailID)
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Birth Date</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(m => m.dEAcc_BirthDts, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" }) 
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Blood Group</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                               @Html.DropDownList("sBloodGroup", new List<SelectListItem> {  
+           new SelectListItem { Text="--Select--", Value="0"},
+           new SelectListItem { Text="A +", Value="1"},
+           new SelectListItem { Text="A -", Value="2"}, 
+           new SelectListItem { Text="B +", Value="3"},  
+           new SelectListItem { Text="B -", Value="4"},  
+           new SelectListItem { Text="AB +", Value="5"},  
+           new SelectListItem { Text="AB -", Value="6"},  
+           new SelectListItem { Text="O +", Value="7"},  
+           new SelectListItem { Text="O -", Value="8"},   
+           }, new { @class = "form-control" }) 
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>PAN No</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                              @Html.TextBoxFor(model => model.sEmp_PAN, new { @class = "form-control" })
+                                              <span id="status"></span>
+                                          </div>
+                                          
+                                      </div>
+                                      <div class="form-group">
+                                          <div class="col-sm-1 padd_l padd_5"><label>Reference Name</label></div>
+                                          <div class="col-sm-5 padd_l padd_5">
+                                              @Html.TextBoxFor(model => model.sReferenceNm, new { @class = "form-control" })
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Reference No</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.sReferenceNo, new { @maxlength = 10, @NumberOnly = true, @autocomplete = "off", @class = "form-control" })
+                                                                                    @Html.ValidationMessageFor(model => model.sReferenceNo)
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Aadhar No</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(model => model.Aadhar, new { @maxlength = 18,   @autocomplete = "off", @class = "form-control" })
+                                          </div>
+                                       </div>
+                                 </fieldset>
+                      
+                                 <div class="">
+                                     <div class="col-sm-6 padd_l padd_5">
+                                       <fieldset>
+                                    <legend>Bank Information</legend>
+                                     <div class="form-group">
+                                         <div class="col-sm-2 padd_l padd_5"><label>A/C No</label></div>
+                                          <div class="col-sm-4 padd_l padd_5">
+                                              @Html.TextBoxFor(model => model.sEmp_AcNo, new { @class = "form-control" })
+                                          </div>
+                                          <div class="col-sm-2 padd_l padd_5"><label>Bank Name</label></div>
+                                          <div class="col-sm-4 padd_l padd_5">
+                                                @Html.DropDownList("BankID", (SelectList)ViewBag.vwBank, "--Select--", new { @class = "form-control" }) 
+                                             
+                                              @* @Html.DropDownList("BankID", new List<SelectListItem> {  
+           new SelectListItem { Text="--Select--", Value="0"},   
+           new SelectListItem { Text="SBI", Value="1"},    
+           }, new { @class = "form-control"  }) *@
+                                          </div> 
+                                     </div>
+                                              
+                                      <div class="form-group">
+                                      @*   <div class="col-sm-2 padd_l padd_5"><label>Branch</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             <input class="form-control" type="text"> 
+                                          </div>*@
+                                         <div class="col-sm-2 padd_l padd_5"><label>P.F A/c No</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                          @Html.TextBoxFor(model => model.PfAcNo, new { @class = "form-control" })   
+                                          </div>
+                                        
+                                          <div class="col-sm-2 padd_l padd_5"><label>Ifsc Code</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(model => model.IFSC, new { @class = "form-control" }) 
+                                          </div> 
+                                     </div>
+                                </fieldset>
+                              </div>
+  
+                               <div class="col-sm-6 padd_l padd_5">
+                                    <fieldset>
+                                       <legend>Professional Information</legend>
+                                        <div class="form-group">
+                                            <div class="col-sm-3 padd_l padd_5"><label>Highest Degree</label></div>
+                                            <div class="col-sm-3 padd_l padd_5">
+                                                                            @Html.DropDownList("DegreeID", new List<SelectListItem> {  
+           new SelectListItem { Text="Graduation", Value="1"},
+           new SelectListItem { Text="Post Graduation", Value="2"}, 
+           new SelectListItem { Text="Diploma", Value="3"},  new SelectListItem { Text="10", Value="4"},    new SelectListItem { Text="10 + 2", Value="5"},  
+           }, new { @class = "form-control" }) 
+                                            </div>
+                                            <div class="col-sm-2 padd_l padd_5"><label>Degree&nbsp;Name</label></div>
+                                            <div class="col-sm-4 padd_l padd_5">
+                                               @Html.TextBoxFor(model => model.DegreeNM, new { @class = "form-control" })     
+                                            </div>
+                                        </div>
+                                         <div class="form-group">
+                                            <div class="col-sm-2 padd_l padd_5"><label>Department</label></div>
+                                            <div class="col-sm-4 padd_l padd_5">
+                                                 @Html.DropDownList("mstDept", (SelectList)ViewBag.mstDept, "--Select--", new { @class = "form-control" , @onchange = "FillDesignation();"})  
+                                            </div>
+                                            <div class="col-sm-2 padd_l padd_5"><label>Designation</label></div>
+                                            <div class="col-sm-4 padd_l padd_5">  
+                                                  @Html.DropDownList("iEAcc_empodesg", (SelectList)ViewBag.iEAcc_empodesg, "--Select--", new { @class = "form-control"  }) 
+
+
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                 </div>
+                     
+                     
+                                     <div class="col-sm-12 padd_l padd_5">
+                                       <fieldset>
+                                     <div class="form-group">
+                                         <div class="col-sm-1 padd_l padd_5"><label>User Name</label></div>
+                                          <div class="col-sm-3 padd_l padd_5">
+                                              @Html.TextBoxFor(model => model.sEmpUser, new { @class = "form-control" , disabled = true, @readonly = true  })
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Password</label></div>
+                                          <div class="col-sm-3 padd_l padd_5">
+                                              @Html.TextBoxFor(model => model.sEmpPass  , new { @maxlength = 8, @class = "form-control" })
+                                          </div>
+                                          <div class="col-sm-1 padd_l padd_5"><label>Retype</label></div>
+                                          <div class="col-sm-3 padd_l padd_5">
+                                              @Html.TextBoxFor(model => model.sEmpRetype , new { @maxlength = 8, @class = "form-control" ,onblur="ChkEmpPassword();" ,autocomplete="off" })
+                                          </div> 
+                                         <div class="col-sm-1 padd_l padd_5"><label>User Type</label></div>
+                                          <div class="col-sm-3 padd_l padd_5">
+                                               @Html.DropDownList("empUserType", new List<SelectListItem> { 
+           new SelectListItem { Text="Employee - Admin", Value="8"},
+           new SelectListItem { Text="Tele Caller", Value="5"},
+           new SelectListItem { Text="Service Mgr", Value="6"},
+           new SelectListItem { Text="Service Eng", Value="7"}, 
+           new SelectListItem { Text="Employee ,Sale", Value="10"},
+           new SelectListItem { Text="Employee ,Tech Supp", Value="11"},
+            }, new { @class = "form-control" })
+                                          </div> 
+                                     </div>
+                                              
+                                 </fieldset>
+              
+                              </div>@* 
+                                <fieldset>
+                                    <legend>Attachments</legend>
+                                     <div class="form-group attachments" style="font-size:14px;">
+                                        <label class="radio-inline"> @Html.CheckBoxFor(m => m.AadharCard  , new { @class = "options" }) Aadhar Card</label>
+                                        <label class="radio-inline"> @Html.CheckBoxFor(m => m.VoterId  , new { @class = "options" }) Voter Id</label>
+                                        <label class="radio-inline"> @Html.CheckBoxFor(m => m.Licence  , new { @class = "options" }) Licence</label>
+                                        <label class="radio-inline"> @Html.CheckBoxFor(m => m.Passport  , new { @class = "options" }) Passport</label>
+                                        <label class="radio-inline"> @Html.CheckBoxFor(m => m.Statement  , new { @class = "options" }) 6 Months Bank Statement Of Active Account *</label>
+                                        <label class="radio-inline"> @Html.CheckBoxFor(m => m.Degree  , new { @class = "options" }) Degree/Marksheet *</label>
+                                         
+                                     </div>
+                                     <div class="form-group">
+                                        
+                                          <div class="col-sm-1 padd_l padd_5"><label>Upload File</label></div>
+                                          <div class="col-sm-5 padd_l padd_5">
+                                           <input type="file" id="file" class="uploadFile" multiple>
+                                          </div>
+                                     </div>
+                                </fieldset>*@
+                                
+                      <div class="form-group">
+                           
+                    <input type="button" id="InsEmployee" value="Save" class="btn btn-default" /> 
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <input type="button" id="NewEmployee" value="New" class="btn btn-default" /> 
+
+                      </div>
+                   @*   @Html.Partial("_EmpList")      *@
+                     
+                 }
+                        </div>
+                    </div>
+
+                
+
+            </div>
+         
+
+        </div>
+    </div>
+    <div id ="PartialEmployee">   
+     
+        @* @Html.Partial("~/Views/Master/_EmpList.cshtml", Model.lstEmployeeSetup)*@
+</div>  
+    <div>
+       @* @Html.Action("_EmpList", "Master");*@
+    </div>
+<div>  
+  @*  @Html.Partial("~/Views/Master/_EmpList.cshtml");
+  *@   
+</div>  
+    <script  type="text/javascript">
+ 
+        $('#iEmp_empcity').empty();
+        //SetImg();
+        //  function SetImg() {
+        //     // alert('a')   ;
+        //     debugger; 
+        //    $("#UplImg").append('<img class="profile-pic" src="'+ $("#sPath").val() +'>'     );
+        //};
+
+        function FillDesignation()
+        { 
+            debugger;
+            $.get("FillDegignationList", {iDept: $("#mstDept").val() }, function (data) {
+                if (data != null)
+                {
+                    $('#iEAcc_empodesg').empty();
+
+                    var opt = new Option('--Select--', 0);
+                    $("#iEAcc_empodesg").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].StudName, data[i].studCode);
+                        $("#iEAcc_empodesg").append(opt);
+                    }
+                }
+            });
+        }
+
+        FillEmpList();
+
+        function FillEmpList() {
+            var url = "@(Html.Raw(Url.Action("_EmpList", "Master")))";
+            $("#PartialEmployee").load(url);
+        }
+
+        $('#InsEmployee').click(function () {
+            debugger;
+           
+            if ($('#sEmp_empname').val() == "") {
+                $('#sEmp_empname').focus();
+                alert('Please Enter Employee Name ...');
+                return
+            }
+            if ($('#sEmpPass').val() == "" && $('#isEdit').val() == "False") {
+                $('#sEmpPass').focus();
+                alert('Please Enter Password ...');
+                return
+ }
+         
+
+            var iDept = 0; var iDesi = 0; var iCity = 0; var iGender = 0; var UseCode = 0;
+            if ($('#mstDept').val() != "") iDept = $('#mstDept').val();
+            if ($('#iEAcc_empodesg').val() != "") iDesi = $('#iEAcc_empodesg').val();
+            if ($('#iEmp_Gender').val() != "") iGender = $('#iEmp_Gender').val();
+            if ($('#iEmp_empcity').val() != "") iCity = $('#iEmp_empcity').val();
+            if ($('#hdnUseCode').val() != "") UseCode = $('#hdnUseCode').val();
+
+            var data = new FormData();
+            data.append("sEmp_empname", $("#sEmp_empname").val());
+            
+            var IMG_Path = $('#IMG_Path').get(0).files[0];
+             
+            data.append("ImageFile", IMG_Path);
+
+            data.append("sPath", $("#sPath").val());
+            data.append("Father", $("#Father").val());
+            data.append("sEmp_PAN", $("#sEmp_PAN").val()); 
+            data.append("sEmp_IDProof", $("#sEmp_IDProof").val()); 
+            data.append("sPhone", $("#sPhone").val()); 
+            data.append("sEmp_empstat", $("#sEmp_empstat").val()); 
+            
+            data.append("UseCode", UseCode);
+            data.append("isEdit", $("#isEdit").val());
+
+            data.append("sEmp_AcNo", $("#sEmp_AcNo").val());  
+            data.append("sEmailID", $("#sEmailID").val());  
+            data.append("sOfficial_No", $("#sOfficial_No").val());  
+            data.append("sResidential_No", $("#sResidential_No").val());  
+            data.append("sFatherNo", $("#sFatherNo").val());  
+            data.append("sEAcc_empocpno", $("#sEAcc_empocpno").val());  
+            data.append("sReferenceNm", $("#sReferenceNm").val());  
+            data.append("sReferenceNo", $("#sReferenceNo").val());  
+            data.append("sTemporaryAdd", $("#sTemporaryAdd").val());  
+            data.append("sPermanentAdd", $("#sPermanentAdd").val());  
+            data.append("mstDept", iDept); 
+            data.append("iEAcc_empodesg", iDesi);
+            data.append("iEmp_Gender", iGender);
+            data.append("iEmp_empcity", iCity);
+            data.append("dEAcc_empojodts", "");
+            data.append("dEAcc_BirthDts", $("#dEAcc_BirthDts").val());  
+            data.append("BloodGroup", $("#sBloodGroup ", "selected").text());
+            data.append("Aadhar", $("#Aadhar").val());  
+            data.append("BankID", $("#BankID").val());  
+            data.append("PfAcNo", $("#PfAcNo").val());  
+            data.append("IFSC", $("#IFSC").val());  
+            data.append("DegreeNM", $("#DegreeNM").val());  
+            data.append("DegreeID", $("#DegreeID").val());  
+            data.append("IMG_Path", $("#IMG_Path").val());   
+
+            data.append("sEmpUser", $("#sEmpUser").val());
+            data.append("sEmpPass", $("#sEmpPass").val());
+            data.append("iEmp_empcode", $("#iEmp_empcode").val());
+            data.append("empUserType", $("#empUserType").val());
+            data.append("AadharCard", $("#AadharCard").prop('checked')); 
+            data.append("VoterId", $("#VoterId").prop('checked')); 
+            data.append("Licence", $("#Licence").prop('checked')); 
+            data.append("Passport", $("#Passport").prop('checked')  ); 
+            data.append("Statement", $("#Statement").prop('checked')); 
+            data.append("Degree", $("#Degree").prop('checked'));
+              
+            $.ajax
+            ({
+                url: "/Master/InsEmployee",
+                type: "POST",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response != null) {
+                        alert('Saved Successfully ...');
+                    
+                        $('#iEmp_empcode').val(response);
+                        $('#sEmp_empname').val('');
+                        $('#isEdit').val(false);
+                        $('#Father').val(''); $('#sEmp_PAN').val(''); $('#sEmp_IDProof').val('');
+                        $('#sPhone').val(''); $('#sEmp_empstat').val(''); $('#sEmp_AcNo').val('');
+                        $('#sEmailID').val(''); $('#sOfficial_No').val(''); $('#sResidential_No').val('');
+                        $('#sFatherNo').val(''); $('#sEAcc_empocpno').val(''); $('#sReferenceNm').val('');
+                        $('#sReferenceNo').val(''); $('#sTemporaryAdd').val(''); $('#sPermanentAdd').val('');
+                        $('#mstDept').val(''); $('#iEAcc_empodesg').val(''); $('#iEmp_Gender').val('');
+                        $('#iEmp_empcity').val(''); $('#dEAcc_BirthDts').val('');
+                        $('#sBloodGroup').val(''); $('#Aadhar').val(''); $('#BankID').val(''); $('#PfAcNo').val('');
+                        $('#IFSC').val(''); $('#DegreeNM').val(''); $('#DegreeID').val('');
+                          
+                        $('#Statement').prop('checked', false); 
+                        $('#AadharCard').prop('checked', false);  
+                        $('#VoterId').prop('checked', false);  
+                        $('#Licence').prop('checked', false);  
+                        $('#Passport').prop('checked', false);  
+                        $('#Degree').prop('checked', false);  
+                     
+                        FillEmpList();
+                        
+                    }
+                }
+            });
+             
+             
+        });
+
+        $('#NewEmployee').click(function () {
+            debugger;
+            //$('#iEmp_empcode').val(response);
+            $('#sEmp_empname').val('');
+            $('#isEdit').val(false);
+            $('#Father').val(''); $('#sEmp_PAN').val(''); $('#sEmp_IDProof').val('');
+            $('#sPhone').val(''); $('#sEmp_empstat').val(''); $('#sEmp_AcNo').val('');
+            $('#sEmailID').val(''); $('#sOfficial_No').val(''); $('#sResidential_No').val('');
+            $('#sFatherNo').val(''); $('#sEAcc_empocpno').val(''); $('#sReferenceNm').val('');
+            $('#sReferenceNo').val(''); $('#sTemporaryAdd').val(''); $('#sPermanentAdd').val('');
+            $('#mstDept').val(''); $('#iEAcc_empodesg').val(''); $('#iEmp_Gender').val('');
+            $('#iEmp_empcity').val(''); $('#dEAcc_BirthDts').val('');
+            $('#sBloodGroup').val(''); $('#Aadhar').val(''); $('#BankID').val(''); $('#PfAcNo').val('');
+            $('#IFSC').val(''); $('#DegreeNM').val(''); $('#DegreeID').val('');
+                          
+            //$('#Statement').prop('checked', false); $('#AadharCard').prop('checked', false);  $('#VoterId').prop('checked', false);  
+           // $('#Licence').prop('checked', false);  $('#Passport').prop('checked', false);  $('#Degree').prop('checked', false);   
+        });
+        
+        function SetUserNM() { 
+            debugger;
+           
+         if ($('#sEmp_empname').val() != '') {
+             $('#sEmpUser').val(getFirstWord($('#sEmp_empname').val()) + $('#iEmp_empcode').val() );
+         }
+     };
+
+        function ChkEmpPassword() {
+         debugger;
+         if ($('#sEmpRetype').val() != '') {
+             if ($('#sEmpPass').val() != "" && $('#sEmpPass').val() != $('#sEmpRetype').val()) {
+                 alert('Password Not Match .');
+                 $('#sEmpRetype').val('');
+             }
+         }
+     }
+        
+      
+        
+        function Register() {
+
+            debugger;
+            var account =
+            { 
+                sEmp_empname: $("#sEmp_empname").val(),
+                Father: $("#Father").val() 
+            }
+
+            var IMG_Path = $('#IMG_Path').get(0).files[0];
+
+
+            var data = new FormData();
+            data.append("image", IMG_Path);
+            data.append("sEmp_empname", $("#sEmp_empname").val());
+             data.append("Father", $("#Father").val());
+           
+            console.log(typeof data);
+
+            $.ajax
+            ({
+                url: "/Master/Register",
+                type: "POST",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $("#message").hide();
+                    $("#message").empty();
+                     
+                }
+            });
+        }
+
+        function FillCity() {
+            debugger;
+            $('#iEmp_empcity').empty();
+
+            $.get("../Master/GetCityList", { iState: $("#sEmp_empstat").val() }, function (data) {
+                if (data != null) {
+                    var opt = new Option('--Select--', 0);
+                    $("#iEmp_empcity").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].cityname, data[i].citycode);
+                        $("#iEmp_empcity").append(opt);
+                    }
+                }
+            });
+        }
+
+  $("#sPhone").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+  $("#sReferenceNo").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+  $("#sOfficial_No").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#sResidential_No").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#sFatherNo").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#udf_getTraAmount").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#sPhone").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+
+            var readURL = function (input) {
+                debugger;  
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('.profile-pic').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+
+            $(".file-upload").on('change', function () {
+                readURL(this);
+            });
+
+            $(".upload-button").on('click', function () {
+                $(".file-upload").click();
+            });
+        });
+</script>
+
+</body>
+
+</html>
+
+
+
+

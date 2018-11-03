@@ -1,0 +1,548 @@
+﻿   
+@model List<CompxERP.Models.DueList> 
+
+  <link href="~/Content/css/tableexport.min.css" rel="stylesheet" />
+<script src="~/Scripts/FileSaver.min.js"></script>
+<script src="~/Scripts/tableexport.min.js"></script>
+
+
+<script >
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#F_Date').val(today);
+            $('#From_Date').val(today);
+            $('#To_Date').val(today);
+            $('#O_From_Date').val(today);
+            $('#O_To_Date').val(today);
+
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+    </script>
+         
+
+
+ <div class="col-sm-12">
+     
+    <table id="tblPendingOrder_PayFollo" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+  
+      <tr>
+            <th style="width:3%;">No@*<input type="checkbox" class="btn btn-default" name="chkSelectAll" id="chkSelectAll" />*@</th> 
+           <th style="width:7%;">  Company</th>  
+           <th style="width:15%;">  Dealer Name</th>   
+          <th style="width:5%;">Cl.Bal</th>     
+          <th style="width:5%;">Dues</th>    
+          <th style="width:5%;">Order Value</th>    
+          <th style="width:5%;">OverDue Days</th>    
+          <th style="width:5%;">OverDue Value</th>    
+          <th style="width:5%;">Demanding Pay </th>    
+           <th style="width:5%;">Commited Pay</th>
+          <th style="width:7%;">Commited Date</th>   
+          <th style="width:14%;">Remark</th>    
+          <th style="width:12%;">Action</th>  
+          @*<th style="width:5%;">Receipt</th>*@  
+        </tr>
+    </thead>
+    <tbody style="height:500px;">
+           @{
+                 var iIndex = 0;
+        if (Model != null && Model.Count > 0)
+        { 
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1; 
+               <tr>  
+                     <td  style="width:3%;">  @iIndex <input type="checkbox" data-id="@item.acctcode" value ="@item.acctcode" id="hdnPFP_DealerID" class="chkPaySelect" /> </td>   
+                    <td style="width:7%;">@item.CompName</td> 
+                    <td style="width:15%;">@item.acctdesc</td> 
+                    
+                    <td  style="width:5%;color:black">@string.Format("{0:N}",@item.sumbala)</td>     
+                    <td  style="width:5%;color:black">@string.Format("{0:N}",@item.Dues)</td>   
+                    <td  style="width:5%;color:black">@string.Format("{0:N}", @item.OrdValue)   </td>  
+                    <td  style="width:5%;color:black">  @item.DueDays   </td>  
+                    <td  style="width:5%;color:black">@string.Format("{0:N}",  @item.MaxDues ) </td>  
+                    <td  style="width:5%;color:black">@string.Format("{0:N}",  @item.Commited)  </td>  
+                       
+                   <td  style="width:5%;">  <input type="hidden"  value ="@item.acctdesc" id="Hdn_PF_PrtyID_@iIndex"   />  <input type="text" class="form-control" id="txtCommitedPay_@iIndex"    />  </td> 
+                   <td  style="width:7%;">   <input type="text" class="form-control" id="PF_From_@iIndex"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />  </td> 
+                    
+                    <td  style="width:14%;"> <textarea rows="1" id ="txtPF_Rema_@iIndex"  class="form-control"></textarea>  </td>   
+                  
+                     <td> <input type="button" id="btnSetPayFollowUp" value="Save"  onclick="SetPayFollowUp(1 ,1, 1,@iIndex ,@item.compcode ,@item.acctcode )" class="btn btn-search" />   
+    <input type="button" id="btnShowPayFollowUp" value="H" data-toggle="modal" data-target="#DV_PayFollowUp" onclick="ShowPayFollowUp(@item.acctcode , @item.compcode , @item.sumbala.ToString("0.00"), @item.Commited.ToString("0.00")   ,@iIndex    )" class="btn btn-search" /> 
+                    <input type="button" id="btnPFReceipt" value="R" data-toggle="modal" data-target="#DV_PFReceipt" onclick="PFReceipt( @iIndex, @item.compcode ,@item.Commited.ToString("0.00") ,@item.acctcode )" class="btn btn-search" />
+                           <input type="button" id="btnInvDue" value=@item.InvDue data-toggle="modal" data-target="#DV_PayFollowUp" onclick="PFDueList(@item.acctcode , @item.compcode , @iIndex )" class="btn btn-search" />
+                          <input type="button" id="btnPayLedger" value="L" onclick="fnPayLedger(@item.compcode ,@item.acctcode);" class="btn btn-search" />
+                     </td> 
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody> 
+</table> 
+</div>
+          <div class="modal fade" id="DV_PayFollowUp" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+               @*  <button type="button" class="close" data-dismiss="modal">&times;</button>*@
+ <button type="button" class="close" id="btnClose_I" onclick="ClosePopUp()" >&times;</button>
+                 <div id="divPayFollowUp">   </div>  
+                 <div id ="divOrdAndDue" class="tab">
+                <ul class="nav nav-tabs" id="myTab">
+                    
+                        <li class="active"><a  data-toggle="tab"  href="#tabs-Due">Over Dues</a></li>
+                        <li><a  data-toggle="tab" id="UserList"   href="#tabs-Ord">Order History</a></li> 
+                </ul>
+                <div class="clerfix"></div>
+                <div class="tab-content ">
+                    <div id="tabs-Due" class="tab-pane fade in active"> 
+                <div id="divOverDue"></div>    
+                          </div>
+                    <div id="tabs-Ord" class="tab-pane fade ">
+                         
+                <div id="divOrderHis"></div>
+
+                    </div>
+                <button type="button"  id="btnClose_II"  value="Close"  onclick="ClosePopUp()" >&times;</button>
+            </div>
+        </div>
+     </div> 
+   </div> 
+          </div>
+  
+<div class="modal fade" id="DV_PFReceipt" role="dialog" tabindex="-1"> 
+       <div class="modal-dialog modal-lg">
+             <div class="modal-content"> 
+                <div id="DivPFReceipt" class="modal-content">
+                     <div class="modal-header">  
+                         <button type="button" class="close"  onclick="ClosePopUpRec()" >&times;</button>
+                         <h4   class="modal-title"> Confirmation Receipt </h4>
+                     </div>
+                    <div class="modal-body input_popup"> 
+                    <div class="form-group">
+                  <div class="control-label col-sm-1 padd_l padd_5">Name <input type="hidden"   id="hdnPF_DealerID" /><input type="hidden"   id="hdnPF_CompCode" /></div>
+                  <div class="col-sm-5 padd_l padd_5"><input type="text" disabled id="txtPF_PrtyNm"   class = "form-control" /></div>                   
+                    </div>  
+                        
+                        <div class="form-group">
+                       <div class="control-label col-sm-1 padd_l padd_5">Demanding Pay </div>
+                       <div class="col-sm-2 padd_l padd_5">  <input type="text" disabled id="txtPF_ClBal"   class = "form-control" /></div>
+                       <label class="control-label col-sm-1 padd_l padd_5">Payment Done</label>
+                       <div class="col-sm-2 padd_l padd_5"><input type="text" onblur="GetOutStanding()"   class = "form-control" id="txtPF_PaymentDone" /></div>
+                       <label class="control-label col-sm-1 padd_l padd_5">Access Amount</label>
+                       <div class="col-sm-2 padd_l padd_5 C42"><input type="text" disabled readonly="true"  class = "form-control" id="txtPF_AccessAmt" /> </div>
+                             <div class="control-label col-sm-1 padd_l padd_5">OutStanding</div>
+                        <div class="col-sm-2 padd_l padd_5"><input type="text" disabled id="txtPF_OutStanding"  class = "form-control" /></div>
+                            </div>
+                        
+                    
+   <div class="form-group"> 
+         <label class="control-label col-sm-1 padd_l padd_5">Mode</label>
+                                    <div class="col-sm-2 padd_l padd_5">  @Html.DropDownList("ddlPF_Mode", new List<SelectListItem> {  
+           new SelectListItem { Text="Cash", Value="1"},
+           new SelectListItem { Text="Bank", Value="2"},  
+           }, new { @class = "form-control", @onblur = "SetMode();"  }) </div>
+        
+        <label class="control-label col-sm-1 padd_l padd_5">Bank</label>
+                         <div class="col-sm-2 padd_l padd_5 C42">@Html.DropDownList("ddlPF_Bank", (SelectList)ViewBag.vwBank, "--Select--", new { @class = "form-control" }) </div>
+
+          <label class="control-label col-sm-1 padd_l padd_5">Type</label>
+                                    <div class="col-sm-2 padd_l padd_5">  @Html.DropDownList("ddlPF_Type", new List<SelectListItem> {  
+           new SelectListItem { Text="Cheque", Value="1"},
+           new SelectListItem { Text="RTGS", Value="2"},  
+           new SelectListItem { Text="NEFT", Value="3"},  
+           new SelectListItem { Text="Self", Value="4"},  
+           }, new { @class = "form-control" })  </div>
+            <label class="control-label col-sm-1 padd_l padd_5">Number</label>
+                         <div class="col-sm-2 padd_l padd_5 C42"> <input type="text"  class="form-control"  style ="width:180px" id="txtPF_ChequeNo" /></div>                
+       
+        </div>
+                          
+        <div class="form-group">
+             <label class="control-label col-sm-1 padd_l padd_5">Date</label>
+             <div class="col-sm-2 padd_l padd_5"><input type="text"  class="form-control" id="txtPF_ChequeDate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />  </div>
+             <label class="control-label col-sm-1 padd_l padd_5">Remark</label>
+              <div class="col-sm-5 padd_l padd_5"> <textarea  id="txtPF_Remark"  class = "form-control"  />   </div>
+        </div> 
+                        
+                        
+
+
+                          <div class="form-group">
+                        <div class="col-sm-12">  <input type="button" id="btnSetPFReceipt" value="Save"  onclick="SetPFReceipt()" class="btn btn-search" /> 
+                              <input type="button"  value="Close" id="btnClosePFRec_I" onclick="ClosePopUpRec()" class="btn btn-search" />
+                        </div> 
+                          </div>
+                      
+                </div> 
+                    <div id="dvPFReceiptList">
+
+                    </div>
+            </div>
+        </div>
+    </div>
+    </div>
+  
+<script type ="text/javascript">
+
+    $(document).ready(function () {
+        $("#chkSelectAll").change(function () {
+            $("#tblPendingOrder_PayFollo .chkSelect").prop('checked', $(this).prop("checked"));
+        });
+
+        $("#tblPendingOrder_PayFollo .chkSelect").change(function () {
+            if ($("#tblPendingOrder_PayFollo .chkSelect").length == $("#tblPendingOrder_PayFollo .chkSelect:checked").length) {
+                $("#chkSelectAll").prop('checked', true);
+            }
+            else {
+                $("#chkSelectAll").prop('checked', false);
+            }
+        });
+
+    });
+    
+    function SetPayFollowUp(vouctype , vouccode, voucrefn, iIndex ,CompCode ,acctcode) {
+        debugger;
+         
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SetPayFollowUp", "Quotation")",  
+            data: { vouctype: vouctype , vouccode: vouccode, voucrefn: voucrefn ,CommitedPay: $('#txtCommitedPay_'+ iIndex).val() ,PF_From: $('#PF_From_'+ iIndex).val() ,PF_Rema: $('#txtPF_Rema_'+ iIndex).val() ,CompCode:CompCode ,acctcode :acctcode},
+            success: function (data) { 
+                alert(data);
+                $("#divFollowUp").html("");
+                $('#btnPayFollowUpEnt').click();  
+            },
+            error: function () {
+                alert(error);
+            }
+        }); 
+    }
+
+    function ShowPayFollowUp(trnledg ,    compcode , ClBal  , Commited , iIndex) {
+         
+ debugger;
+ var Header="<table class='table table-bordered table-striped' style='margin-top:10px;margin-bottom:10px;'>  <tr> <td  colspan='4' align='center'><b>Payment Followup History </b></td></tr> <tr> <td>Dealer Name </td> <td colspan='3'>"+ $('#Hdn_PF_PrtyID_'+ iIndex).val() + "</td></tr><tr> <td>Cl. Bal. </td> <td>"+ ClBal + "</td> <td>Commited Amt. </td> <td>"+ Commited + "</td> </tr> </table>";  
+       
+ $("#divOrdAndDue").hide();
+ $("#divPayFollowUp").show();
+
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("PayFollowUpHis", "Quotation")",
+            data: { trnledg: trnledg, compcode: compcode },
+            success: function (data) { 
+                $("#divPayFollowUp").html( Header+  data); 
+                ListPF_Receipt(trnledg); 
+            },
+            error: function () {
+                alert(error);
+            }
+        });
+
+    
+    }
+    function PFDueList(trnledg ,    compcode ,   iIndex) {
+         
+ debugger;
+  
+ $("#divOrdAndDue").show();
+ $("#divPayFollowUp").hide();
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("PFDueList", "Quotation")", 
+            data: { CompCode: compcode , AcctList: trnledg},
+            success: function (dataOrd) { 
+                $("#divOverDue").html(dataOrd);  //  $("#divPayFollowUp").html(    data);  
+            },
+            error: function () {
+                alert(error);
+            }
+        });
+        var DlrID =0;var CmpID =0;
+        DlrID =trnledg;var CmpID =compcode;
+        $('#divOrderHis').html('');   
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("getOrderValue", "Quotation")", 
+            data: {   DealerID: DlrID,  CompCode: CmpID },
+            success: function (data) {
+                if (data.length > 0) {
+                    var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+                    var $thead = $('<thead><tr><th width="8%"> NO </th><th width="12%"> Date </th><th width="20%"> Order No </th><th width="20%">Order Value </th> </tr></thead>'); 
+                    var $tbody = $('<tbody style="height:510px;"/>'); 
+                            
+                    var iTotal = 0;
+                    var iTax = 0;
+                              
+                    $.each(data, function (i, val) {
+                        var $row = $('<tr/>');
+                        $row.append($('<td width=8%"/>').html(i + 1)); 
+                        $row.append($('<td width="12%"/>').html(val.mstdate)); 
+                        $row.append($('<td width="20%"/>').html(val.mstchno)); 
+                        $row.append($('<td align=right width="20%"/>').html(formatNumber(val.OrdValue)));  
+                        iTotal += val.OrdValue; 
+                        $tbody.append($row); 
+                    }); 
+
+                    var $row1 = $('<tr/>');
+                    $row1.append($('<td style="color:red" align=center colspan ="3"  width=40%"/>').html('Total')); 
+                    $row1.append($('<td style="color:red" align=right width="20%"/>').html(formatNumber(iTotal)));  
+                    $tbody.append($row1);
+                    
+                    $table.append($thead); 
+                    $table.append($tbody); 
+                    $('#divOrderHis').html($table);   
+                }
+                 
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+    
+    }
+    function PFReceipt(iIndex  ,compcode , ClBal ,trnledg ) {
+        $('#dvPFReceiptList').html("");
+        //$('#DV_PFReceipt').modal("show")
+
+        $('#txtPF_PrtyNm').val(''); $('#txtPF_ClBal').val('0'); $('#txtPF_PaymentDone').val('0'); $('#txtPF_OutStanding').val('0');$('#txtPF_AccessAmt').val(0);
+        $('#ddlPF_Mode').val('0'); $('#ddlPF_Bank').val('0'); $('#ddlPF_Type').val('0'); $('#txtPF_ChequeNo').val(''); $('#txtPF_ChequeDate').val('');
+        $('#txtPF_Remark').val('');
+
+        debugger; 
+        $('#txtPF_PrtyNm').val($('#Hdn_PF_PrtyID_'+ iIndex).val());
+        $('#txtPF_ClBal').val(ClBal); $('#txtPF_OutStanding').val(ClBal);
+       
+
+        ListPF_Receipt(trnledg); 
+        $('#hdnPF_DealerID').val(trnledg);  
+        $('#hdnPF_CompCode').val(compcode); 
+    }
+
+    function GetOutStanding(){
+      
+        debugger; 
+        var Payment =0; var ClBal  =0;
+        if ($('#txtPF_PaymentDone').val() != '' )  Payment = parseFloat( $('#txtPF_PaymentDone').val()) ;
+        if  ($('#txtPF_ClBal').val() !='' )   ClBal  = parseFloat( $('#txtPF_ClBal').val()) ;
+        $('#txtPF_AccessAmt').val(0);
+
+        if(Payment>ClBal){ 
+            $('#txtPF_AccessAmt').val((Payment -ClBal).toFixed(0.00)); 
+           // alert("Please Enter Proper Amount !"); $('#txtPF_PaymentDone').val('0');return;   
+        } 
+
+        $('#txtPF_OutStanding').val((ClBal - Payment).toFixed(0.00)); 
+    }
+
+    function SetPFReceipt(){
+        debugger;
+        var DealerID =0 ; var Amount =0.0 ; var ModeID =0 ; var BankID =0 ; var Remark ="" ;
+        var ChqDate ="" ; var TypeID =0 ; var ChqNo ="" ;var CompCode =0 ;var AccessAmt =0 ; var DemandAmt =0 ; 
+        if ($('#txtPF_PaymentDone').val() != '')  Amount = $('#txtPF_PaymentDone').val();
+        if ($('#txtPF_AccessAmt').val() != '')  AccessAmt = $('#txtPF_AccessAmt').val();
+        if ($('#txtPF_ClBal').val() != '')  DemandAmt = $('#txtPF_ClBal').val();
+        
+        if ($('#hdnPF_DealerID').val() != '') DealerID = $('#hdnPF_DealerID').val();
+        if ($('#hdnPF_CompCode').val() != '') CompCode = $('#hdnPF_CompCode').val();
+        if ($('#ddlPF_Mode').val() != null && $('#ddlPF_Mode').val() != '')  ModeID= $('#ddlPF_Mode').val();
+        if ($('#ddlPF_Bank').val() != null && $('#ddlPF_Bank').val() != ''  ) BankID = $('#ddlPF_Bank').val();
+        if ($('#txtPF_Remark').val() != '' ) Remark = $('#txtPF_Remark').val();
+        if ($('#txtPF_ChequeDate').val() != null && $('#txtPF_ChequeDate').val() != '') ChqDate = $('#txtPF_ChequeDate').val();
+        if ( $('#ddlPF_Type').val() != null && $('#ddlPF_Type').val() != '' ) TypeID = $('#ddlPF_Type').val();
+        if ( $('#txtPF_ChequeNo').val() != null && $('#txtPF_ChequeNo').val() != '' ) ChqNo = $('#txtPF_ChequeNo').val();
+ 
+        if (DealerID ==0){ alert("Please ReOpen Window Somting Error in Dealer !") ; return;   }
+        if (Amount ==0){ alert("Please Enter Amount !") ; $('#txtPF_PaymentDone').focus();  return;   }
+        if (ModeID ==0){ alert("Please Select Mode of Receipt !") ; $('#ddlPF_Mode').focus();  return;   }
+        if ($('#txtPF_ChequeDate').val() == null || $('#txtPF_ChequeDate').val() == "") { alert("Please Enter Date !") ; $('#txtPF_ChequeDate').focus(); return;   }
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SetPFReceipt", "Quotation")",  
+            data: { DealerID: DealerID, Amount:  Amount, ModeID:  ModeID, BankID:  BankID, Remark:  Remark, ChqDate : ChqDate, TypeID:  TypeID,  ChqNo:  ChqNo ,CompCode: CompCode ,AccessAmt :AccessAmt ,DemandAmt :DemandAmt },
+            success: function (data) { 
+                alert(data); 
+                $('#txtPF_PaymentDone').val(0) ;  $('#ddlPF_Mode').val(0) ; $('#ddlPF_Bank').val(0); $('#txtPF_Remark').val('');
+                $('#txtPF_ChequeDate').val('') ; $('#ddlPF_Type').val(0) ; $('#txtPF_ChequeNo').val('') ;  $('#txtPF_AccessAmt').val(0) ;
+                ListPF_Receipt(DealerID); 
+            },
+            error: function () {
+                alert(error);
+            }
+        });  
+    }
+    
+    function ListPF_Receipt(DealerID) {
+        debugger; 
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetPF_Receipt", "Quotation")',
+            data: { "DealerID":DealerID  },
+            success: function (data) {  
+                debugger;
+                if (data.length > 0) {
+                    var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+                    var $thead = $('<thead><tr><th width="3%"> NO </th><th width="9%"> Rec.Dt. </th><th width="5%"> Mode </th><th width="9%">Amount</th><th width="5%">Access</th><th width="14%">Bank</th><th width="6%">Type</th><th width="10%">ChqNo</th><th width="10%">ChqDate</th><th width="16%">Remark</th> <th width="8%">Status</th> <th width="5%"></th> </tr></thead>'); 
+                    var $tbody = $('<tbody style="height:190px;"/>');
+                            
+                    var iTotal = 0;
+                    var iTax = 0;
+                              
+                    $.each(data, function (i, val) {
+                        var $row = $('<tr/>');
+                        $row.append($('<td width=3%"/>').html(i + 1)); 
+                        $row.append($('<td width="9%"/>').html(val.sMstDate)); 
+                        $row.append($('<td width="5%"/>').html(val.sMode)); 
+                        $row.append($('<td width="9%"/>').html(formatNumber(val.Amount))); 
+                        $row.append($('<td width="5%"/>').html(formatNumber(val.AccessAmt)));
+                        $row.append($('<td width="14%"/>').html(val.Bank)); 
+                        $row.append($('<td width="6%"/>').html(val.sType)); 
+                        $row.append($('<td width="10%"/>').html(val.ChqNo)); 
+                        $row.append($('<td width="10%"/>').html(val.sChqDate)); 
+                        $row.append($('<td width="16%"/>').html(val.Remark)); 
+                        $row.append($('<td width="8%"/>').html(val.sStatus)); 
+                        // $row.append($('<td width="7%"/>').html(val.MstDate).toString("dd/MM/yyyy"));
+                        if(val.sStatus == "Under Process"){
+                            $row.append($('<td width="5%"/>').html('<button type="button" id="btnDelete_RC" onClick="Delete_RC('+ val.ID +','+ DealerID +')"  class="btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Img/remove11.gif" /></button>'));}
+
+                        $tbody.append($row); 
+                    }); 
+                    $table.append($thead); 
+                    $table.append($tbody); 
+                    $('#dvPFReceiptList').html($table);   
+                }
+            }
+        });
+
+        
+    }
+     
+    
+    function fnPayLedger( CompCode ,PartyID ){
+        debugger;
+        var DealerNm = "";
+         
+        window.open('../../Report/Ledger?sFrom='+'&sTO='+'&Compcode=' + CompCode + '&sParty=' + PartyID + '&WithItem=1' , '_blank');
+     
+    };
+
+    function Delete_RC(ID ,DealerID){  
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Delete_RC", "Quotation")",
+            data: { ID: ID },
+            success: function (data) { 
+                alert(data);
+                $('#dvPFReceiptList').html(""); 
+                ListPF_Receipt(DealerID);
+             
+            },
+            error: function () {
+                alert(error);
+            }
+          }); 
+
+    }
+
+    function ClosePopUp(){
+        $("#divPayFollowUp").html(''); 
+        $('#DV_PayFollowUp').modal('hide');
+         
+    }
+
+  
+    function ClosePopUpRec(){ 
+       // $("#DivPFReceipt").html('');  
+        $('#DV_PFReceipt').modal('hide');
+
+    }
+
+    function SetMode(){
+        
+        debugger; 
+        if ($('#ddlPF_Mode').val() == "1")
+        {
+            document.getElementById("ddlPF_Bank").disabled=true;
+            document.getElementById("ddlPF_Type").disabled=true;
+            document.getElementById("txtPF_ChequeNo").disabled=true; 
+            //document.getElementById("txtPF_ChequeDate").disabled=true;  
+            $('#ddlPF_Bank').val(0); $('#ddlPF_Type').val(0); $('#txtPF_ChequeNo').val("");
+            $('#txtPF_Remark').val("");$('#txtPF_ChequeDate').val("");
+        }
+        else
+        { 
+            document.getElementById("ddlPF_Bank").disabled=false;  
+            document.getElementById("ddlPF_Type").disabled=false;  
+            document.getElementById("txtPF_ChequeNo").disabled=false;   
+            //document.getElementById("txtPF_ChequeDate").disabled=false; 
+        }
+
+    }
+     
+
+</script>
+
+ 
+
+<script type ="text/javascript">
+
+    function SetPayPlanning() {
+        debugger;
+        var sPlanning = "";
+        $('#tblPendingOrder_PayFollo').find('tr').each(function () {
+            var row = $(this);
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                sPlanning += row.find(hdnPFP_DealerID).val() + ',';
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("PayFollowUpPlaning", "Service")",
+            data: { sDealer: sPlanning, PlanningDt: $("#txtPlanningDate").val() },
+            success: function (data) { 
+                alert(data.Message);
+                //ClearDvData();  
+                $('#tblPendingOrder_PayFollo').find('tr').each(function () {
+                    $("#tblPendingOrder_PayFollo .chkPaySelect").prop('checked', false);
+                });
+
+            },
+            error: function () {
+                alert(error);
+            }
+        });
+    }
+</script>

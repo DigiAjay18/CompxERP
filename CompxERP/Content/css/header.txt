@@ -1,0 +1,35 @@
+<!--page header start-->
+    <div id="page-header" class="row" style="padding-right: 0; background-color: #fff; margin-left: 0px; box-shadow: 2px 2px 2px #ccc;">
+        <div class="box-padd col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="logo col-sm-2 col-md-2 col-lg-2 " style="padding: 10px 10px 0px 0; border:none; ">
+                <div style="width:130px;border-right:1px solid bisque; height:50px; overflow:auto;">
+                <a href="#" style="font-family: 'Agency FB'; font-size: 30px; color: #951818; font-weight: 600; padding-left: 0; ">
+                    <img src="~/Images/compx_logo.png" width="40" height="40" class="img-responsive" style="float: left; margin-right: 5px;" /><span style="float: left;">C<span style="color: #FF8C00;">o</span><span>m</span><span style="color: #FF8C00;">p</span>x</a>
+                    </div>
+            </div>
+
+            <div class="main-nav col-sm-6 col-md-6 col-lg-6" style="text-align:center;">
+                <h3 style="margin-top: 3px; margin-bottom: 0;">Account Master</h3>
+                </div>
+             <div class="main-nav col-sm-1 col-md-1 col-lg-1" style="text-align:right;">
+                <h3 style="color: brown; font-size: 30px; font-family: 'Agency FB'; font-weight: 600;margin-top: -2px; margin-bottom: 0;">ACCIL</h3>
+
+            </div>
+
+            <div class="right-nav col-sm-3 col-md-3 col-lg-3 " style="padding-right: 0; float: right; padding-left: 0;">
+                <div class=" user-stat" style="padding: 10px 10px 10px 0; border-left: 1px solid bisque; padding-right: 0; border-right: none; float:left;">
+                    <div id='cssmenu' style="padding-right: 0;">
+                        <ul class="menu-ul" style="padding-right: 0; padding-top: 5px;">
+                            <li><a href="/Home/Allmenu">
+                                <img src="~/Images/home.svg" width="25" height="25" style="margin-top: -7px;" />Home</a></li>
+                            <li><a href='#'>
+                                <img src="~/Images/back _arrow.svg" width="25" height="30" style="margin-top: -7px;" />Back</a></li>
+                            <li><a href='#' style="border: none;">
+                                <img src="~/Images/logout.svg" width="20" height="20" style="margin-top: -3px;" />Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--page header end-->

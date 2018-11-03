@@ -1,0 +1,340 @@
+﻿<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+ <script >
+     $(document).ready(function () {
+         try {
+
+             var today = new Date();
+             var dd = today.getDate();
+             var mm = today.getMonth() + 1; //January is 0!
+
+             var yyyy = today.getFullYear();
+             if (dd < 10) {
+                 dd = '0' + dd;
+             }
+             if (mm < 10) {
+                 mm = '0' + mm;
+             }
+             var today = dd + '/' + mm + '/' + yyyy;
+             $('#txtSch_Date').val(today);
+
+             $(function () { 
+                 $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" }); 
+                 $("[data-mask]").inputmask();
+             });
+
+         } catch (e) { }
+     });
+    </script>
+
+  
+     <div class="modal-dialog modal-lg">
+             <div class="modal-content"> 
+                <div id="DivPFReceipt" class="modal-content">
+                     <div class="modal-header">  
+                         <button type="button" class="close"  onclick="ClosePopUpRec()" >&times;</button>
+                         <h4   class="modal-title"> Scheme Master </h4>
+                     </div>
+                    <div class="modal-body input_popup"> 
+                    <div class="form-group">
+                   
+              <fieldset> 
+                 <legend> </legend>  
+                  
+                   
+                  <div class="form-group marg-top">
+                    
+                         <div class="col-sm-8 padd_l padd_5">
+                       <div class="control-label col-sm-2 padd_l padd_5">Scheme No 
+ </div>
+                       <div class="col-sm-4 padd_l padd_5"> <input type="hidden" id="hdnItemDet" /> <input type="text" disabled id="txtSch_NO" value =@ViewBag.MaxSchm  class = "form-control" /></div>
+                       <label class="control-label col-sm-2 padd_l padd_5"> Date
+</label>
+                       <div class="col-sm-4 padd_l padd_5"><input type="text" class="form-control" id="txtSch_Date"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />  </div>
+                       
+           </div>  
+
+ <div class="col-sm-8 padd_l padd_5">
+                       <div class="control-label col-sm-2 padd_l padd_5">Scheme Name 
+ </div>
+                       <div class="col-sm-4 padd_l padd_5">  <input type="text"   id="txtSch_Name"   class = "form-control" /></div>
+                       <label class="control-label col-sm-2 padd_l padd_5">Product Category
+</label>
+                       <div class="col-sm-4 padd_l padd_5">   @Html.DropDownList("ddlSch_SubCate", ViewBag.SubCategory as SelectList, "--Select--" , new { @class = "form-control" ,@onchange="getSchItems()" } )  </div>
+                       
+           </div>
+                      <div class="col-sm-8 padd_l padd_5">
+                       <label class="control-label col-sm-2 padd_l padd_5">Scheme From </label>
+                       <div class="col-sm-4 padd_l">   
+                            <input type="text" class="form-control" id="txtSch_SchFrom"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> 
+                       </div>
+                       <label class="control-label col-sm-2 padd_l padd_5">Scheme To</label>
+                       <div class="col-sm-4 padd_l">
+                          <input type="text" class="form-control" id="txtSch_SchTo"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> 
+                       </div>
+                           </div> 
+                       
+                      <div class="col-sm-8 padd_l padd_5">
+                       <label class="control-label col-sm-2 padd_l padd_5">Claim From </label>
+                       <div class="col-sm-4 padd_l">   
+                            <input type="text" class="form-control" id="txtSch_ClaimFrom"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> 
+                       </div>
+                       <label class="control-label col-sm-2 padd_l padd_5">Claim To</label>
+                       <div class="col-sm-4 padd_l">
+                          <input type="text" class="form-control" id="txtSch_ClaimTo"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> 
+                       </div>
+                           </div>
+           </div>     
+             <div class="form-group marg-top"> 
+                    <fieldset class="mrg_bottom"> 
+                        <table class="table table-fixed table-bordered j_table_new" id="example" width="100%" cellspacing="0">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th width="10%">Brand</th>
+                                        <th width="20%">Item  </th>
+                                        <th width="10%">Qty</th>
+                                        <th width="10%">From </th>
+                                        <th width="10%">To</th>
+                                        <th width="40%">Offer</th> 
+                                    </tr>
+                                    <tr> 
+                                        <th width="10%">   
+                                        @Html.DropDownList("ddlSchBrand", ViewBag.Brand as SelectList, "--Select--" , new { @class = "form-control" } )  
+                                        <th width="20%"> 
+                                        @Html.DropDownList("ddlSchItem", ViewBag.ItemNm as SelectList, "--Select--" , new { @class = "form-control"  } ) 
+                                        </th>
+                                        <th width="10%"> 
+                                            <input type="number" id="txtSch_QTY"  class="form-control text-right no-spinners">
+                                        </th> 
+                                         <th width="10%"><input type="text" class="form-control" id="txtSch_From"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> </th>   
+                                        <th width="10%"><input type="text" class="form-control" id="txtSch_To"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> </th>  
+                                         <th width="35%"><input type="text" class="form-control" id="txtSch_Offer"  /> </th>
+                                       
+                                        <th width="5%">
+                                            <input type="button" id="btnAddScheme" value="add" class="btn btn-default" /></th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        <div id="dv_SchItem" class="item_styl clearfix tablecontainer" style="height: 200px;"></div>
+                         
+                    </fieldset>
+                    
+             </div>
+        </fieldset>      
+                         
+                          <div class="form-group">
+                        <div class="col-sm-12 btn-div-c">  <input type="button" id="btnSaveSchemeMaster" value="Save"   class="btn btn-search" /> 
+                              <button type="button" class="btn btn-default" onclick="ClearDvData();">Close</button> 
+                        </div> 
+                          </div>
+                      
+                </div> 
+                    <div id="dvComplaintDet"></div>
+            </div>
+        </div>
+    </div>
+
+         </div>
+
+
+         <script type ="text/javascript">
+
+             var SchemeItm = [];
+             $('#ddlC_Item').empty();
+             $('#ddlC_City').empty(); 
+
+            
+             $('#btnAddScheme').click(function () {
+                 var i = 0;
+                 debugger;
+ 
+                 if ($('#ddlSchItem').val() == 0) { alert('Please Select Item !'); $('#ddlSchItem').focus(); return; }
+                 if ($('#ddlSchBrand').val() == 0) { alert('Please Select Brand !'); $('#ddlSchBrand').focus(); return; }
+                 if (parseInt($('#txtSch_From').val()) == "") { alert('Please Enter Rate !'); $('#txtSch_From').focus(); return; }
+                 if (parseInt($('#txtSch_To').val()) == "") { alert('Please Enter Rate !'); $('#txtSch_To').focus(); return; }
+                 if (parseInt($('#txtSch_QTY').val()) <= 0) { alert('Please Enter Qty !'); $('#txtSch_QTY').focus(); return; }
+                 if (parseInt($('#txtSch_Offer').val()) == "") { alert('Please Enter Offer !'); $('#txtSch_Offer').focus(); return; }
+                   
+                 SchemeItm.push({
+                    SrNo: SchemeItm.length + 1,
+                    itdmill: $('#ddlSchBrand').val(),
+                    ItemID: $('#ddlSchItem').val(),
+                    BrandNm: $('#ddlSchBrand :selected').text(),
+                    ItemNM: $('#ddlSchItem :selected').text(),
+                    sFrom: $('#txtSch_From').val(),
+                    sTo: $('#txtSch_To').val(),
+                    Qty: $('#txtSch_QTY').val(),
+                    Remark: $('#txtSch_Offer').val()
+                 }); 
+                 $('#ddlSchBrand').val('0').focus(); $('#txtSch_From').val(''); $('#ddlSchItem').val('0'); $('#txtSch_To').val(''); $('#txtSch_Offer').val('');
+                 tblScheme(SchemeItm); 
+             });
+
+
+             $('#btnSaveSchemeMaster').click(function () {
+                 debugger;
+
+                 if ($("#txtSch_Name").val() == "") {
+                     $('#txtSch_Name').focus();
+                     alert('Please Enter Scheme Name ...');
+                     return
+                 }
+
+                 if ($("#txtSch_Date").val() == "") {
+                     $('#txtSch_Date').focus();
+                     alert('Please Enter Dealer / Customer Name ...');
+                     return
+                 }
+                 if ($("#hdnItemDet").val() == "") {
+                     $('#hdnItemDet').focus();
+                     alert('Please Enter at Least One Item ...');
+                     return
+                 }
+
+                 debugger;
+                 var data = new FormData();
+
+                 data.append("SchName", $("#txtSch_Name").val());
+                 data.append("SchNo", $("#txtSch_NO").val());
+                 data.append("SchemeItm", $("#hdnItemDet").val());
+                 data.append("sMstDate", $("#txtSch_Date").val());
+                 data.append("sClaimFrom", $("#txtSch_ClaimFrom").val());
+                 data.append("sClaimTo", $("#txtSch_ClaimTo").val());
+                 data.append("SchFrom", $("#txtSch_SchFrom").val());
+                 data.append("SchTo", $("#txtSch_SchTo").val());
+                 ShowHideLoader('show');
+
+                 console.log(typeof data);
+                 $.ajax
+                 ({
+                     url: "/Service/SchemeMaster",
+                     type: "POST",
+                     data: data,
+                     contentType: false,
+                     processData: false,
+                     success: function (response) {
+                         if (response != null) {
+                             ShowHideLoader('hide');
+                             if (response.MsgID == "1") {
+                                 alert(response.Message);
+                                 $("#txtSch_NO").val(response.SchemeNo); $("#txtSch_Name").val('');
+                                 $("#hdnItemDet").val(''); $("#txtSch_Date").val('0'); $("#txtSch_ClaimFrom").val('0'); $("#txtSch_ClaimTo").val('');
+                             }
+                             else {
+                                 alert('Not Saved Successfully ...');
+                                 alert(response.Message);
+                                 ShowHideLoader('hide');
+                             }
+                         }
+                         ShowHideLoader('hide');
+                     }
+                 });
+             });
+
+
+             function tblScheme(SchemeItm) {
+
+                 if (SchemeItm.length > 0) {
+                     var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>'); 
+                     var $tbody = $('<tbody style="height:190px;"/>');
+                     
+                     $.each(SchemeItm, function (i, val) {
+                         var $row = $('<tr/>');
+                         $row.append($('<td width=2%"/>').html(i + 1));
+                         $row.append($('<td width="8%"/>').html(val.BrandNm));
+                         $row.append($('<td width="20%"/>').html(val.ItemNM)); 
+                         $row.append($('<td width="10%"/>').html(val.Qty));
+                         $row.append($('<td width="10%"/>').html(val.sFrom));
+                         $row.append($('<td width="10%"/>').html(val.sTo));
+                         $row.append($('<td width="35%"/>').html(val.Remark));
+
+                         $row.append($('<td width="5%"/>').html('<button type="button" id="btnDelSchItem" class="DelSchItem btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Img/remove11.gif" /></button>'));
+                         $tbody.append($row);  
+                     });
+                     $table.append($tbody);
+                    
+                     $('#dv_SchItem').html($table);
+                     $('#hdnItemDet').val('{"LstItem":' + JSON.stringify(SchemeItm) + '}');
+                 }
+             }
+
+
+             function FillCity() {
+                 debugger;
+                 $('#ddlC_City').empty(); 
+                 $.get("../Master/GetCityList", { iState: $("#ddlC_State").val() }, function (data) {
+                     if (data != null) {
+                         var opt = new Option('--Select--', 0);
+                         $("#ddlC_City").append(opt);
+
+                         for (var i = 0; i < data.length; i++) {
+                             opt = new Option(data[i].cityname, data[i].citycode);
+                             $("#ddlC_City").append(opt);
+                         }
+                     }
+                 });
+             }
+
+             $("#ddlSch_SubCate").change(function () { getSchItems() });
+
+             function getSchItems() {
+                 try {
+                     debugger;
+                     var SubCate = 0; var Brand = 0;
+                     if ($("#ddlSch_SubCate").val() > 0) SubCate = $("#ddlSch_SubCate").val();
+                      
+                     $('#ddlSchItem').empty();
+                     if ($("#ddlSch_SubCate").val() != null) {
+                         $.ajax({
+                             cache: false,
+                             async: false,
+                             type: "POST",
+                             url: "@Url.Action("GetItem", "Quotation")",
+                    data: { "subcat": SubCate, "Brand": Brand },
+                    success: function (data) {
+                        var opt = new Option('--Select--', 0);
+                        $("#ddlSchItem").append(opt);
+
+                        for (var i = 0; i < data.length; i++) {
+                            opt = new Option(data[i]["itemname"], data[i]["itemcode"]);
+                            $("#ddlSchItem").append(opt);
+                        } 
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to Retrieve Status.');
+                    }
+                });
+            }
+        }
+        catch (err) {
+            alert(err.message);
+        }
+             }
+
+
+             function SetDealer() {
+                 debugger;  
+                 $("#txtC_CustName").val("");
+
+                 if (C_rbDealer.checked)
+                     $("#hdnIsDealer").val(true);
+                 else
+                      $("#hdnIsDealer").val(false);
+             }
+             
+             function SetCustomer() {
+                 debugger;  
+               
+                 if (C_rbNew.checked)
+                    $("#dvCustomer").show();
+                 else
+                     $("#dvCustomer").hide(); 
+             }
+
+         </script> 

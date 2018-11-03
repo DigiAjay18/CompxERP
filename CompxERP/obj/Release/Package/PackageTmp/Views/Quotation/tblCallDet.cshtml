@@ -1,0 +1,386 @@
+﻿@model CompxERP.Models.tblCallDet
+ 
+
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        try {
+ 
+            $(function () { 
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" }); 
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+</script>
+
+
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+           <div class="modal-header">
+               <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+                <h4 class="modal-title">Daily Calling</h4>
+           </div>
+     
+    if (CompxERP.Models.SessionMaster.UserType == 0 && CompxERP.Models.SessionMaster.UserType == 1 ){ 
+       <div class="modal-body input_popup">
+            <div class="form-group">
+                    <div class="col-sm-2 padd_l padd_5">  City </div>
+                    <div class="col-sm-4 padd_l padd_5">@Html.DropDownList("ddlCity", (SelectList)ViewBag.vwCity, "--Select--", new { @class = "form-control" ,@onchange ="GetInqMobile();" })   
+                  </div>
+                    
+                          <div class="col-sm-2 padd_l padd_5"> Executive </div>
+                        <div class="col-sm-4 padd_l padd_5">   @Html.DropDownList("ddlExecutive", (SelectList)ViewBag.vwExeNM, "--Select--", new { @class = "form-control" ,@onchange ="GetInqMobile();"})
+                              </div>  
+                 </div>
+       </div>
+}
+
+           <div class="modal-body input_popup">
+                <div class="form-group">
+                      <div class="col-sm-2 padd_l padd_5">  @Html.LabelFor(model => model.Mobile)</div>
+                      <div class="col-sm-6 padd_l padd_5"> @Html.DropDownList("C_Mobile", (SelectList)ViewBag.vwMobile, "--Select--", new { @class = "form-control" , @onchange="setCallName();"})   </div>
+
+                    </div>
+                <div class="form-group">
+                     <div class="col-sm-2 padd_l padd_5"> Name</div>
+                      <div class="col-sm-10 padd_l padd_5"> <textarea id="txtName"  rows="2" cols="50" disabled class="form-control" style="background:#ece7e7"/></div>
+                      
+                             @* @Html.EditorFor(model => model.Mobile)
+                              @Html.ValidationMessageFor(model => model.Mobile)*@
+                     
+                </div>
+               
+                <div class="form-group">
+                    <div class="col-sm-2 padd_l padd_5">@* @Html.LabelFor(model => model.Remark)*@ Remark</div>
+                    <div class="col-sm-10 padd_l padd_5"><textarea  id="txtCallingRemark" rows="3" cols="50" class="form-control" />
+                         @*@Html.TextAreaFor(model => model.Remark, new { @class = "form-control" })  @Html.EditorFor(model => model.Remark ,new { cols = 35, @rows = 3 })
+            @Html.ValidationMessageFor(model => model.Remark)*@ </div>
+
+                 </div>
+
+<div class="form-group">
+     <div class="col-sm-2 padd_l padd_5"> Product  </div>
+                        <div class="col-sm-4 padd_l padd_5">   @Html.DropDownList("ddlProduct", (SelectList)ViewBag.vwProduct, "--Select--", new { @class = "form-control" , @onchange="FillSubCategory()"})
+                              </div>
+
+                    <div class="col-sm-2 padd_l padd_5">  Category </div>
+                        <div class="col-sm-4 padd_l padd_5"> @Html.DropDownList("subCategory", (SelectList)ViewBag.vwProduct ,  "--Select--" ,new { @class = "form-control",  required = "required", @onchange="getItems()" }) 
+                              </div>
+</div>
+
+                <div class="form-group">
+                     <div class="col-sm-2 padd_l padd_5"> Item</div>
+                      <div class="col-sm-10 padd_l padd_5">  @Html.DropDownList("C_ItemNm", ViewBag.vwProduct as SelectList, "--Select--" , new { @class = "form-control"} )</div> 
+                </div>
+
+                 <div class="form-group">
+                    <div class="col-sm-2 padd_l padd_5">  @Html.LabelFor(model => model.Status) </div>
+                    <div class="col-sm-4 padd_l padd_5">
+                        @*@Html.DropDownList("Status", (SelectList)ViewBag.vwStatus, "--Select--", new { @class = "form-control" })  *@
+@Html.DropDownList("Status", new List<SelectListItem> {   
+          new SelectListItem { Text="Done / Lead", Value="2"},   
+           new SelectListItem { Text="Fake / Reject /Not Useful ", Value="3"},   
+           new SelectListItem { Text="Followup / Call Again", Value="4"} 
+           }, new { @class = "form-control" ,   })
+            
+                  </div>
+                     <div id="dvFDate_I" class="col-sm-2 padd_l padd_5">   </div>
+                        <div class="col-sm-4 padd_l padd_5"> 
+                            @*<input type="text" class="form-control" id="txtFollowUpDt" style="visibility:hidden;" placeholder ="FollowUp Date"  data-inputmask="'alias': 'dd/mm/yyyy'"  data-mask />*@
+                              @Html.TextBoxFor(m => m.FollowUpDt, "{0:dd/MM/yyyy}", new { @class = "form-control pull-right pickdate", placeholder = "Enter Invoice Date"  })
+
+                          @*    <input id ="txtFollowUpDt" type ="text" />*@
+                              </div>
+                            
+                 </div>
+                <div class="form-group"> 
+                     <div class="col-sm-2 padd_l padd_5">  @Html.LabelFor(model => model.Ratio) </div>
+                        <div class="col-sm-4 padd_l padd_5"> @Html.DropDownList("Ratio", new List<SelectListItem> {  
+          new SelectListItem { Text="-- Select --", Value="0"},      
+          new SelectListItem { Text="25%", Value="25"},   
+           new SelectListItem { Text="50%", Value="50"},   
+           new SelectListItem { Text="75%", Value="75"},   
+           new SelectListItem { Text="100%", Value="100"},   
+           }, new { @class = "form-control"})
+                              </div>
+                            
+                 </div>
+       
+       <div class="form-group text-center">
+           <input type="button" id ="btnSaveCalling" value="Save" class="btn btn-default"/>
+           @* <input type="button" id ="btnPushToLead" value="Push To Lead" class="btn btn-default"/>*@
+                            <button type="button" class="btn btn-default" onclick="ClearDvData();">Close</button>
+       </div>
+       
+       
+   
+           </div>
+    
+
+        
+
+@*        <div class="editor-label">
+            @Html.LabelFor(model => model.CallID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CallID)
+            @Html.ValidationMessageFor(model => model.CallID)
+        </div>*@
+
+       
+}
+ 
+<script type="text/javascript">
+    GetInqMobile();
+
+    function GetInqMobile() {
+        debugger;
+        //data: { City: $('#ddlCity :selected').text(), Product: $('#ddlProduct :selected').text(), Executive: $('#ddlExecutive :selected').text() },
+        $('#C_Mobile').empty();
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetInqMobile", "Quotation")", // $('#ddlProduct').val()
+            data: { City: $('#ddlCity').val(), Product: "" , Executive: $('#ddlExecutive').val() },
+                success: function (data) {
+                    if (data != null) { 
+                        for (var i = 0; i < data.length; i++) {
+                            opt = new Option(data[i].NameNM, data[i].NameDesc);
+                            $("#C_Mobile").append(opt);
+                        }
+                        // $("#txtName").val($("#Mobile").val());
+                        setCallName();
+                    }
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+    };
+
+    function setCallName()
+    {
+        debugger;
+        var str = $("#C_Mobile").val().split("~");
+        
+        //$("#txtName").val($("#Mobile").val());
+        $("#txtName").val(str[0]);
+        $("#ddlProduct").val(str[1]);
+        FillSubCategory();
+    }
+    
+    $("#Status").change(function () {
+        
+        if ($("#Status").val() == 4) {
+            document.getElementById("txtFollowUpDt").style.visibility = "visible";
+            $("#txtFollowUpDt").val("");
+        }
+        else
+            document.getElementById("txtFollowUpDt").style.visibility = "hidden";
+            
+    });
+
+    function SetDate(sDate) {
+        debugger;
+        //var from = $(selector).val().split("-")
+        var from = sDate.split("/");
+        return new Date( from[1] - 1, from[0],from[2])
+    }
+
+    $('#btnSaveCalling').click(function () {
+        try
+        {
+        if ($('#txtCallingRemark').val() == "") {
+            $('#txtCallingRemark').focus();
+            alert('Please Enter Remark ...');
+            return
+        }
+
+        
+        var iLead = 0;
+        iLead = $("#Status").val();
+
+        debugger;
+
+        var data = new FormData();
+        data.append("CallID", $("#C_Mobile").val());
+        data.append("Mobile", $('#C_Mobile :selected').text());
+        data.append("Remark", $("#txtCallingRemark").val());
+        data.append("Status", $("#Status").val());              
+        data.append("Ratio", $("#Ratio").val());
+
+        //var datestr = (new Date($("#txtFollowUpDt").val())).toUTCString();
+        data.append("FollowUpDt", $("#FollowUpDt").val());
+             
+        //if ($("#Status").val() == 4) { 
+        //    data.append("FollowUpDt", $("#txtFollowUpDt").val());
+        //}
+        
+        data.append("ProductID", $("#ddlProduct").val());
+        if (iLead == 2)
+            data.append("isLead", false);
+        else
+            data.append("isLead", true);
+
+        data.append("SubCateID", $("#subCategory").val());
+        data.append("ItemID", $("#C_ItemNm").val());
+
+
+        //console.log(typeof data);
+
+        $.ajax
+        ({
+            url: "/Quotation/tblCallDet",
+            type: "POST",
+            data: data ,  
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    if (response == "Saved Successfully !") {
+                        $("#C_Mobile").val(''); $("#txtCallingRemark").val(''); $("#Status").val('');
+                        $("#Ratio").val(''); $("#isLead").val(''); $("#txtCallingRemark").focus(); $("#ddlProduct").val('');
+                        $("#subCategory").empty(); $("#C_ItemNm").empty();
+                        GetInqMobile();
+                    }
+                    else {
+                        //alert(response);
+                        //GetInqMobile();
+                        alert('Not Saved Successfully ! Please Login ...');
+                    }
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Error On Save ...');
+            }
+        });
+    }
+        catch (err) {
+            alert(err.message);
+    }
+    });
+
+   
+
+    //$('#btnPushToLead').click(function () {
+    //    debugger;
+    //    try{
+    //    if ($('#txtCallingRemark').val() == "") {
+    //        $('#txtCallingRemark').focus();
+    //        alert('Please Enter Remark ...');
+    //        return
+    //    }
+
+    //    //if ($('#ItemNm').val() == "0" || $('#ItemNm').val() == "") {
+    //    //    $('#ItemNm').focus();
+    //    //    alert('Please Enter Item Name ...');
+    //    //    return
+    //    //}
+
+    //    debugger;
+
+    //    var data = new FormData();
+    //    data.append("CallID", $("#C_Mobile").val());
+    //    data.append("Mobile", $('#C_Mobile :selected').text());
+    //    data.append("Remark", $("#txtCallingRemark").val());
+    //    data.append("Status", $("#Status").val());              
+    //    data.append("Ratio", $("#Ratio").val());
+    //    data.append("ProductID", $("#ddlProduct").val());
+    //    data.append("isLead", true);
+    //    data.append("SubCateID", $("#subCategory").val());
+    //    data.append("ItemID", $("#C_ItemNm").val());
+
+    //    console.log(typeof data);
+
+    //    $.ajax
+    //    ({
+    //        url: "/Quotation/tblCallDet",
+    //        type: "POST",
+    //        data: data,
+    //        contentType: false,
+    //        processData: false,
+    //        success: function (response) {
+    //            if (response != null) {
+    //                if (response == "Saved Successfully !") {
+    //                    $("#C_Mobile").val(''); $("#txtCallingRemark").val(''); $("#Status").val('');
+    //                    $("#Ratio").val(''); $("#isLead").val(''); $("#txtCallingRemark").focus(); $("#ddlProduct").val('');
+    //                    $("#subCategory").empty(); $("#C_ItemNm").empty();
+    //                    GetInqMobile();
+    //                }
+    //                else {
+    //                    alert('Not Saved Successfully ...');
+    //                }
+    //            }
+    //        },
+    //        error: function (xhr, ajaxOptions, thrownError) {
+    //            alert('Error On Save ...');
+    //        }
+    //    });
+    //    }
+    //    catch (err) {
+    //        alert(err.message);
+    //    }
+    //});
+
+    function FillSubCategory() {
+        try {
+            debugger;
+            $('#subCategory').empty();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetSubCategoryInfo", "ItemSetup")',
+                data: { "query": "", 'catcode': $('#ddlProduct').val() },
+            success: function (data) {
+                var opt = new Option('--Select--', 0);
+                $("#subCategory").append(opt);
+
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].Value, data[i].Key);
+                    $("#subCategory").append(opt);
+                }
+            }
+        });
+    }
+    catch (err) {
+        alert(err.message);
+    }
+}
+
+    function getItems() {
+        try {
+            debugger;
+            $('#C_ItemNm').empty();
+            if ($("#subCategory").val() != null) {
+                $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: "@Url.Action("GetItemInfo", "ItemSetup")",
+                    data: { "comp": 66, "subcat": $("#subCategory").val() },
+                    success: function (data) {
+                        var opt = new Option('--Select--', 0);
+                        $("#C_ItemNm").append(opt);
+
+                        for (var i = 0; i < data.length; i++) {
+                            opt = new Option(data[i]["Desc"], data[i]["itemcode"]);
+                            $("#C_ItemNm").append(opt);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to Retrieve Status.');
+                    }
+                });
+            }
+        }
+        catch (err) {
+            alert(err.message);
+        }
+    }
+</script>

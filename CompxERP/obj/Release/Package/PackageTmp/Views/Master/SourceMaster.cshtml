@@ -1,0 +1,136 @@
+﻿@model CompxERP.Models.studdet 
+ <style>
+     .trasparent_btn {
+    background: transparent !important;
+    border: none;
+}
+ </style>
+   <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    @Html.HiddenFor(model => model.studType) 
+                    <h4   class="modal-title"> <div id="HeadNm"></div>  </h4>
+                </div>
+                <div class="modal-body input_popup"> 
+                    <div class="form-group">
+                        <div class="col-sm-12">Name</div>
+                        <div class="col-sm-12">
+                            @*<input class="form-control" id="SourceName" maxlength="8" autocomplete="off" type="text">*@
+                            @Html.TextBoxFor(model => model.studName, new { @class = "form-control" })
+                            <input type ="hidden" id="studCode" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">Description</div>
+                        <div class="col-sm-12">
+                            @*<textarea class="form-control" id="Description"></textarea>  *@ 
+                            @Html.TextBoxFor(model => model.studadd1, new { @class = "form-control" })</div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="InsSource" value="Save" class="btn btn-default" />  
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              <div class="col-sm-12"> <div id ="dvSourceDet"></div></div>
+            </div>
+
+ 
+
+<script type ="text/javascript" >
+
+    FillSourceList();
+    $('#InsSource').click(function () {
+        debugger;
+
+        if ($('#studName').val() == "") {
+            $('#studName').focus();
+            alert('Please Enter Source Name ...');
+            return
+        }
+
+        debugger;
+          
+        var data = new FormData(); 
+        data.append("studName", $("#studName").val());
+        data.append("studadd1", $("#studadd1").val());
+        data.append("studType", $("#studType").val());
+        data.append("studCode", $("#studCode").val());
+        
+        console.log(typeof data);
+
+        $.ajax
+        ({
+            url: "/Master/InsSource",
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    alert('Saved Successfully ...');
+                    FillSourceList();
+                    $("#studName").val('');
+                    $("#studadd1").val('');
+                    $("#studCode").val(0)
+                }
+            }
+        });
+    });
+    function DelSource(iSource) {
+        debugger;
+        if (confirm("Do You Want To Delete It ?") == true){
+        $.post("/Master/DelSource", { iType: $("#studType").val(), iCode: iSource }, function (data) {
+            if (data != null) {
+                FillSourceList();
+            }
+        });
+        }
+    }
+
+    function EditSource(iSource, studName, studadd1) {
+        debugger; 
+        $("#studName").val(studName);
+        $("#studCode").val(iSource);
+        $("#studadd1").val(studadd1);
+ 
+    }
+    function FillSourceList() {
+        debugger;
+
+        if ($("#studType").val() == "50") { $("#HeadNm").html("Source Master"); }
+        else if ($("#studType").val() == "55") { $("#HeadNm").html("Financial Terms"); }
+        else if ($("#studType").val() == "44") { $("#HeadNm").html("Other Terms"); }
+        else if ($("#studType").val() == "870") { $("#HeadNm").html("Notification Master"); }
+        else if ($("#studType").val() == "871") { $("#HeadNm").html("Calling Status Master"); }
+        else if ($("#studType").val() == "872") { $("#HeadNm").html("Region Master"); }
+        else if ($("#studType").val() == "61") { $("#HeadNm").html("Brand Master"); }
+        else if ($("#studType").val() == "11") { $("#HeadNm").html("Department Master"); }
+        else if ($("#studType").val() == "163") { $("#HeadNm").html("Bank Master"); }
+        else if ($("#studType").val() == "873") { $("#HeadNm").html("Service Master"); }
+
+        $.get("/Master/GetSourceList", { iType: $("#studType").val() }, function (data) {
+            if (data != null) {
+                var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"> <thead> <tr style="ba"> <th width="10%">S.No</th> <th width="45%">Source Name</th><th width="30%">Description</th> <th width="15%">Delete Edit</th>  </tr> </thead>');
+                 
+                var $tbody = $('<tbody style="height:330px;"/>');
+                   
+                $.each(data, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td width=10%"/>').html(i + 1));
+                    $row.append($('<td width="45%"/>').html(val.studName ));
+                    $row.append($('<td width="30%"/>').html(val.studadd1));//j
+                     
+                    $row.append($('<td width="15%" />').html('<button type="button"  class="trasparent_btn" data-toggle="modal" onclick="EditSource(' + val.studCode + ",\'" + val.studName + "',\'" + val.studadd1 + '\')" ><img src="../../Img/edit1.png" style="width:18px;"/></button>  <button type="button"  class="trasparent_btn" data-toggle="modal" onclick="DelSource(' + val.studCode + ')" ><img src="../../Img/remove11.gif" style="width:18px;"/></button> '));
+                    //$row.append($('<td width="10%"/>').html('<button type="button"   class="deleteContactNew"><img src="../Images/deleteNEw.png" style="width:20px;"/></button>'));
+                    $tbody.append($row);
+                });
+                $table.append($tbody);
+                $('#dvSourceDet').html($table);
+            }
+        });
+    }
+     
+
+</script>

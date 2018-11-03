@@ -1,0 +1,113 @@
+﻿ 
+@model List<CompxERP.Models.Jourmaster> 
+     <div class="modal-header">
+        <button type="button" class="close" onclick="ClearDvData();" >&times;</button>
+        <h4 class="modal-title">Order Approve List</h4>
+      </div>
+      <div class="modal-body Personal_form">
+    <table id="tblOrder" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr><th style="width:5%;">SrNo<input type="checkbox" class="btn btn-default" name="chkSelectAll" id="chkSelectAll" /></th> 
+            <th style="width:10%;">Date</th>
+            <th style="width:10%;">Order NO</th>      
+          <th style="width:20%;">Lead/Dealer</th>    
+            <th style="width:20%;">Contact Person</th>    
+           <th style="width:10%;">Party Name</th>   
+            <th style="width:10%;">Ord Value</th>   
+          <th style="width:10%;">Op Bal</th>  
+           
+        </tr>
+    </thead>
+    <tbody style="height:460px;">
+        @{
+               var iIndex = 0;
+       if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                iIndex = iIndex + 1;
+                <tr>  
+<td  style="width:5%;">@iIndex<input type="checkbox" data-id="@item.mstcode" class="chkSelect" />
+        <input type="hidden" id="hdnMstCode" value="@item.mstcode" class="chkSelect" />
+        <input type="hidden" id="hdnMsttype" value="@item.msttype" class="chkSelect" /></td>   
+<td  style="width:10%;">@item.mstdate.ToString("dd-MM-yyyy")</td>   @*@item.Statename*@
+<td  style="width:10%;"><input type="text" id="mstchno" value ="@item.mstchno" style ="width:90px;"  disabled /> </td>  
+<td  style="width:20%;">@item.mstrefno</td>  
+<td  style="width:20%;">@item.mstContactPerson</td>   
+<td  style="width:10%;">@item.mstDrawNo</td>    
+<td  style="width:10%;text-align:right">@item.msttota.ToString("0.00")</td>    
+<td  style="width:10%;text-align:right">@item.msttopay</td>  
+                     
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+          </div>
+ <div class="modal-body input_popup"> 
+    <button type="button" id="btnApprov" name="Approve" class="btn btn-default" onclick="SetApprov();">Approve </button> 
+</div>
+
+
+  <div class="modal fade" id="QuotationDet" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+           <div id="divQuotationDet"></div>
+        </div>
+    </div>
+
+<script type ="text/javascript">
+
+    $(document).ready(function () {
+        $("#chkSelectAll").change(function () {
+            $("#tblOrder .chkSelect").prop('checked', $(this).prop("checked"));
+        });
+
+        $("#tblOrder .chkSelect").change(function () {
+            if ($("#tblOrder .chkSelect").length == $("#tblOrder .chkSelect:checked").length) {
+                $("#chkSelectAll").prop('checked', true);
+            }
+            else {
+                $("#chkSelectAll").prop('checked', false);
+            }
+        });
+
+    });
+     
+    function SetApprov() {
+        debugger;
+        var sOrderID = "";
+        $('#tblOrder').find('tr').each(function () {
+            var row = $(this);
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                sOrderID += row.find(hdnMsttype).val() + ',' + row.find(hdnMstCode).val() + ',' + row.find(mstchno).val() + '|';
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("OrderApprove", "Quotation")",
+            data: { OrderList: sOrderID },
+            success: function (data) {
+                //if (data.Success == true) {
+                //    alert(data.Message); 
+                //}
+                //else {
+                alert(data); 
+                ClearDvData();
+                //}
+            },
+            error: function () {
+                alert(error);
+            }
+        }); 
+    }
+
+</script>
+
+             

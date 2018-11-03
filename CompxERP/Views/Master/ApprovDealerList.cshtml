@@ -1,0 +1,136 @@
+﻿@model List<CompxERP.Models.tblDistributor>
+
+
+<style>
+    .table-bordered.listTable > tbody > tr > td, .table-bordered.listTable > tfoot > tr > td, .table-bordered.listTable > thead > tr > td {
+        border: 1px solid #ccc !important;
+    }
+
+    #DealerApprove table tbody tr td input.chkSelect_Deal {
+        height: auto !important;
+        padding: 5px !important;
+        vertical-align: sub;
+        margin-left: 10px;
+    }
+</style>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">Dealer Approve List</h4>
+</div>
+
+
+
+<div class="modal-body input_popup">
+    <table id="tblDealerApp" class="table table-fixed table-bordered j_table_new table-striped">
+        <thead>
+            <tr>
+                <th style="width: 10%;">ALL
+                    <input type="checkbox" class="btn btn-default" name="chkSelectAll_App" id="chkSelectAll_App" /></th>
+                <th style="width: 40%;">Dealer </th>
+                <th style="width: 30%;">Contact Person </th>
+                <th style="width: 20%;">Mobile </th>
+                @* <th style="width:20%;">Email </th>  *@
+            </tr>
+        </thead>
+        <tbody style="height: 430px;">
+            @{
+                var iIndex = 0;
+                foreach (var item in Model)
+                {
+                    iIndex = iIndex + 1;     
+                <tr>
+                    <td style="width: 10%;">@iIndex<input type="checkbox" data-id="@item.MstCode" class="chkSelect_Deal" />
+                        <input type="hidden" id="hdnMstCode" value="@item.MstCode" /></td>
+                    <td style="width: 40%;">@item.DisName</td>
+                    <td style="width: 30%;">@item.ContactPerson</td>
+                    <td style="width: 20%;">
+                        <input type="text" value ="@item.Mob2" id ="Mobile" disabled /></td>
+                    @*<td  style="width:20%;"> <input type="text" value ="@item.Email" id ="Email" disabled /></td>     *@
+                </tr>
+                } }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal-body input_popup">
+
+   @* <input type="text" id="txtHost" />
+    <input type="text" id="txtPort" />*@
+    <button type="button" id="btnApprov" name="Approve" class="btn btn-default" onclick="SetApprov();">Approve </button>
+   @* <button type="button" id="btnSendMail" name="Approve" class="btn btn-default" onclick="SendMail();">Approve </button>*@
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#chkSelectAll_App").change(function () {
+            $("#tblDealerApp .chkSelect_Deal").prop('checked', $(this).prop("checked"));
+        });
+
+        $("#tblDealerApp .chkSelect_Deal").change(function () {
+            if ($("#tblDealerApp .chkSelect_Deal").length == $("#tblDealerApp .chkSelect_Deal:checked").length) {
+                $("#chkSelectAll_App").prop('checked', true);
+            }
+            else {
+                $("#chkSelectAll_App").prop('checked', false);
+            }
+        });
+
+    });
+
+    function SetApprov() {
+        debugger;
+        var sDealerID = "";
+        $('#tblDealerApp').find('tr').each(function () {
+            var row = $(this);
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                if (row.find(hdnMstCode).val() != undefined) {
+                sDealerID += row.find(hdnMstCode).val() + ',' + row.find(Mobile).val() + '|';
+                }
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ApprovDealerList", "Master")",
+                 data: { DealerList: sDealerID  },
+                 success: function (data) {
+                     //if (data.Success == true) {
+                     //    alert(data.Message); 
+                     //}
+                     //else {
+                     alert(data);
+
+                     //}
+                 },
+                 error: function () {
+                     alert(error);
+                 }
+             });
+
+         }
+
+
+        @* function SendMail() {
+             debugger;
+
+             $.ajax({
+                 type: "POST",
+                 url: "@Url.Action("SendMail", "Master")",
+                 data: { Port: $('#txtPort').val(), Host: $('#txtHost').val() },
+                 success: function (data) {
+                     //if (data.Success == true) {
+                     //    alert(data.Message); 
+                     //}
+                     //else {
+                     alert(data);
+
+                     //}
+                 },
+                 error: function () {
+                     alert(error);
+                 }
+             });
+
+         }*@
+</script>

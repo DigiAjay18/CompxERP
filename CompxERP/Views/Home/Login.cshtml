@@ -1,0 +1,97 @@
+﻿@model CompxERP.Models.LoginModel
+@{
+    ViewBag.Title = "Login";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/css/facein.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+  
+    <link href="~/css/home.css" rel="stylesheet" />
+    <script src="~/Scripts/js/jquery.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <link href="~/css/responsive.css" rel="stylesheet" />
+
+     <script type="text/javascript"> 
+         $(function () { 
+             $('#usename').val('');
+             $('#usename').focus();
+             $('#usepass').val('');
+         });
+
+    </script>
+    <style>
+        .padd_l.padd_5 {
+    padding: 0;
+    font-family: fira;
+    font-weight: normal;
+}</style>
+</head>
+<body class="login_page">
+    <div class="top_dvlogin">
+        <div class="col-md-6 col-sm-6 col-xs-6 logo_login">
+             <img src="~/img/splash/compx_login.jpg" class="img-responsive" />
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6 gst_login">
+             <img src="~/img/splash/GST.jpg"  class="img-responsive"/>
+        </div>
+    </div>
+<div class="top_dvlogin">
+<div class="container_login">
+<fieldset> 
+    <legend><span>Admin</span> Login </legend>
+    @using (Html.BeginForm())
+    {
+    
+        @Html.ValidationSummary(false, "")
+          
+         <label class="control-label col-sm-12 padd_l padd_5">User Name</label>
+                <div class="width_100">@Html.TextBoxFor(model => model.use_name, new {@class="single-line",@Value = " " , @onblur = "SetDistributorCode();"  })
+                    
+                </div>
+         
+         <label class="control-label col-sm-12 padd_l padd_5">Password</label>
+              
+                <div class="width_100">@Html.TextBoxFor(model => model.use_pass, new {@class="single-line2",   type="password"})</div>@*
+        
+       
+                <div class="width_100" style="font-size:12px;"><a href="#" class="fogpass" style="color:#920302; font-weight:bold; text-decoration:none;">Forgot Password?</a></div>
+                <div class="width_100" style="font-size:12px; color:#666; font-weight:bold;">
+                    <input name="Keep me signed" type="checkbox" value="Keep me signed in" /> &nbsp; &nbsp;Keep me signed in...</div>*@
+         
+   
+                <div class="width_100">
+               <input type="submit" class="btn" value="Sign in" data-toggle="modal" data-target="#myModal" id="user_login" title="Sign In" style="width:100%; color:#fff; box-shadow:none; border-radius:0; margin-left:0; background-color:#E31E25;"/>
+                    <br> <br> <br> <br>
+        <span style="float:left;font-size:14px;margin-top:10px;">Compx Version : 6.99</span>
+         <span style="float:right;font-size:14px;margin-top:10px;">(C) Digiclay</span>   
+                  
+                </div>
+       
+        
+
+    }
+</fieldset>
+    </div>
+</div>
+</body>
+    </html>
+
+
+<script type="text/javascript" >
+    function SetDistributorCode() {
+        debugger;
+
+        $.get("/Home/ChkUser", { sUserName: $('#use_name').val() }, function (data) {
+            if (data == 0) {
+                $('#use_name').focus();
+            }
+            });
+         
+    }
+</script>  

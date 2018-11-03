@@ -1,0 +1,283 @@
+﻿   
+@model List<CompxERP.Models.Jourmaster> 
+
+  <link href="~/Content/css/tableexport.min.css" rel="stylesheet" />
+<script src="~/Scripts/FileSaver.min.js"></script>
+<script src="~/Scripts/tableexport.min.js"></script>
+
+
+@*<script >
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#F_Date').val(today);
+            $('#From_Date').val(today);
+            $('#To_Date').val(today);
+            $('#O_From_Date').val(today);
+            $('#O_To_Date').val(today);
+
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+    </script>*@
+         
+
+
+ <div class="col-sm-12">
+     
+    <table id="tblPendingOrder" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr>
+            <th style="width:3%;"><input type="checkbox" class="btn btn-default" name="chkSelectAll" id="chkSelectAll" /></th> 
+           <th style="width:12%;">  Dealer Name</th>
+          <th style="width:5%;">Order No</th>
+          <th style="width:5%;">Date</th>
+          <th style="width:7%;">City</th>   
+            <th style="width:7%;">State </th>   
+            <th style="width:20%;">Item</th>     
+          <th style="width:5%;">Brand</th>  
+          <th style="width:4%;">ItemRate</th>     
+          <th style="width:3%;">DisPer</th> 
+          <th style="width:4%;">Order Qty</th>   
+          <th style="width:5%;">Itm Value</th> 
+          @if (@CompxERP.Models.SessionMaster.isHide ==false){    <th style="width:4%;">Bill Qty</th>    }
+          <th style="width:3%;">Bal. </th>   
+         @if (@CompxERP.Models.SessionMaster.isHide ==false){     <th style="width:12%;">Remark</th> }  
+           <th></th>
+        </tr>
+    </thead>
+    <tbody style="height:430px;">
+          @{
+                 var iIndex = 0; var sOrderNo = "";var isFirst = true ;var iQty = 0;var sRemark = "";var iOrdValue = 0.0;
+        if (Model != null && Model.Count > 0)
+        {
+            @*<tr class="diffBg"> <td width="100%">Lead List</td></tr>*@
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1;
+                 if (@item.mstchno != sOrderNo && isFirst == false)
+                {
+                    <tr > 
+<td style="width:3%;"> </td> 
+<td style="width:12%;"> </td>
+<td style="width:5%;"> </td>
+<td style="width:5%;"></td>
+<td style="width:7%;"></td>   
+<td style="width:7%;"> </td>   
+                       @* <td colspan="8"  style="width:39%;color:red"><b> @sRemark</b></td>  *@
+<td style="width:20%;color:red"><b> @sRemark</b></td>     
+<td style="width:5%;color:red" ><b> Total</b> </td>  
+<td style="width:4%;"></td>   
+<td style="width:3%;"></td>  
+<td style="width:4%;color:red;text-align:right;"><b>@iQty </b></td>   
+<td style="width:5%;"> </td>    
+<td style="width:4%;"> </td>    
+<td style="width:3%;"> </td>   
+<td style="width:12%;"></td>   
+   <td></td>
+ 
+                    </tr>
+                    iQty = 0; 
+                    //isFirst = true;
+                    //sOrderNo = @item.mstchno;
+                }
+
+                sRemark = @item.mstrema;
+                 sOrderNo = @item.mstchno;
+                    isFirst = false;
+                    iQty += (int)@item.Qty;
+                    iOrdValue +=(double) @item.msttota;
+              <tr>  
+                  @if (@CompxERP.Models.SessionMaster.isHide ==false){                      <td  style="width:3%;">@iIndex<input type="checkbox" data-id="@item.mstcode" class="chkSelect" /></td>   }
+                  else{
+                     <td  style="width:3%;">@iIndex</td>   }
+
+                    <td style="width:12%;">@item.acctname</td>
+                    <td  style="width:5%;"> @item.mstchno</td>  
+                    <td  style="width:5%;"> @item.mstdate.ToString("dd-MM-yyyy")</td>  
+                   <td style="width:7%;">@item.Cityname</td>   
+                   <td style="width:7%;">@item.Statename</td>  
+                    <td style="width:20%;">@item.ddlItem.ToString()</td>
+                    <td  style="width:5%;">@item.trnrema</td>   
+                   <td style="width:4%;text-align:right;">@item.Rate</td>   
+                   <td style="width:3%;text-align:right;">  @item.DisPer</td>  
+                   <td  style="width:4%;text-align:right;">@item.Qty </td>     
+                  <td  style="width:5%;text-align:right;">@item.msttota.ToString("0.00") </td>     
+
+                   @if (@CompxERP.Models.SessionMaster.isHide ==false){  
+                    <td  style="width:4%;"><input type="number" id ="txtO_Qty"   value ="@item.itdquan.ToString("0.00")" class="form-control no-spinners" /> </td> 
+                   } 
+                 
+                        <td  style="width:3%;">@item.itdquan.ToString("0.00") </td> 
+                       @if (@CompxERP.Models.SessionMaster.isHide ==false){  
+                    <td  style="width:12%;">   <textarea rows="1" id ="txtO_Rema" class="form-control"> @item.Remark</textarea>  
+                    </td> }  
+                 <td>
+<input type="hidden" id="hdnCompCode" value="@item.compcode" class="chkSelect" />
+ <input type="hidden" id="hdnMstchno" value="@item.mstchno" class="chkSelect" />
+<input type="hidden" id="hdnItditem" value="@item.itditem" class="chkSelect" />
+                    </td>   
+                </tr>
+           
+            }
+                 <tr > 
+<td style="width:3%;"> </td> 
+<td style="width:12%;"> </td>
+<td style="width:5%;"> </td>
+<td style="width:5%;"></td>
+<td style="width:7%;"></td>   
+<td style="width:7%;"> </td>   
+                    @* <td colspan="8" style="width:39%;color:red"><b> @sRemark</b></td> *@
+<td style="width:20%;color:red" ><b>@sRemark</b></td>     
+<td style="width:5%;color:red" ><b>Total</b></td>  
+<td style="width:4%;"></td>   
+<td style="width:3%;"></td>   
+<td style="width:4%;color:red;text-align:right;"><b>@iQty </b></td>   
+<td style="width:5%;"> </td>    
+<td style="width:4%;"> </td>   
+<td style="width:3%;"> </td>   
+<td style="width:12%;"></td>
+                     <td></td>     
+                    </tr> 
+              
+                <tr > 
+<td style="width:3%;"> </td> 
+<td style="width:12%;"> </td>
+<td style="width:5%;"> </td>
+<td style="width:5%;"></td>
+<td style="width:7%;"></td>   
+<td style="width:7%;"> </td>   
+                    @* <td colspan="8" style="width:39%;color:red"><b> @sRemark</b></td> *@
+<td style="width:20%;color:red" ><b>Grand Total </b></td>     
+<td style="width:5%;color:red" ><b></b></td>  
+<td style="width:4%;"></td>   
+<td style="width:3%;"></td>   
+<td style="width:4%;"> </td>    
+<td style="width:5%;color:red;text-align:right;"><b>@iOrdValue </b></td>   
+<td style="width:4%;"> </td>   
+<td style="width:3%;"> </td>   
+<td style="width:12%;"></td>
+                     <td></td>     
+                    </tr> 
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+</div>
+          
+<div class="modal-body input_popup"> 
+  @if (@CompxERP.Models.SessionMaster.UserType == 0 && @CompxERP.Models.SessionMaster.isHide ==false)
+  {
+    <button type="button" id="btnApprov" name="Approve" class="btn btn-default" onclick="SetOrder();">Approve </button> 
+    }
+</div> 
+
+<script type ="text/javascript">
+
+    $(document).ready(function () {
+        $("#chkSelectAll").change(function () {
+            $("#tblPendingOrder .chkSelect").prop('checked', $(this).prop("checked"));
+        });
+
+        $("#tblPendingOrder .chkSelect").change(function () {
+            if ($("#tblPendingOrder .chkSelect").length == $("#tblPendingOrder .chkSelect:checked").length) {
+                $("#chkSelectAll").prop('checked', true);
+            }
+            else {
+                $("#chkSelectAll").prop('checked', false);
+            }
+        });
+
+    });
+    function chkQty(itdquan, iIndex) {
+        debugger;
+        var i = $(this).closest("tr").index();
+        alert(i); alert(iIndex);
+        alert(itdquan); alert($("#txtEQty_"+iIndex).val());
+    }
+    function SetOrder() {
+        debugger;
+        ShowHideLoader('show');
+          
+        var sOrderID = "";
+        $('#tblPendingOrder').find('tr').each(function () {
+            var row = $(this);
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                if (row.find(hdnMstchno).val() != undefined) {
+                    sOrderID += row.find(hdnMstchno).val() + '^' + row.find(hdnItditem).val() + '^' + row.find(txtO_Qty).val() + '^' + row.find(txtO_Rema).val() + '^' + row.find(hdnCompCode).val() + '|';
+                }
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SetOrderApprove", "Quotation")",
+            data: { OrderList: sOrderID },
+            success: function (data) {
+                //if (data.Success == true) {
+                //    alert(data.Message); 
+                //}
+                //else {
+                alert(data);
+                $("#divFollowUp").html("");
+                $('#btnOrderReport').click();
+                ShowHideLoader('hide');
+                //ClearDvData();
+                //}
+            },
+            error: function () {
+                alert(error);
+                ShowHideLoader('hide');
+            }
+        });
+       // ShowHideLoader('hide');
+    }
+
+</script>
+
+             
+<script>
+   
+    //$(document).ready(function () {  
+
+    //        $("#tblPendingOrder").tableExport({
+    //            bootstrap: true, ignoreCols: ([15,16]),
+    //        });
+        
+    //    });
+         
+    //$(function () { 
+    //    $('#tblDispatchEntries').DataTable({
+    //        "paging": true,
+    //        "lengthChange": true,
+    //        "searching": true,
+    //        "ordering": true,
+    //        "info": true,
+    //        "autoWidth": false
+    //    });
+    //});
+</script>

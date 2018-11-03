@@ -1,0 +1,230 @@
+﻿@model List<CompxERP.Models.clsUser> 
+   
+      <!-- Modal content-->
+     
+   <style>
+       .userlistnew {font-weight:700;color: #E31E25;text-align: left;}
+   </style>    
+         
+          <h4 class="modal-title userlistnew">User List</h4>
+    
+        <div class="">
+           @* <div class="col-sm-12">
+                <div class="row"> 
+                    <table class="table table-bordered listTable" style="margin-bottom:5px;font-size:15px;">
+                      
+                  <tr>
+                    <td  style="width:15%;height: 44px;"><b>Total User</b></td>
+                    <td  style="width:10%;height: 44px;">@Model.Count</td>
+                    <td  style="width:15%;height: 44px;"><b>Distributor</b></td>
+                    <td  style="width:10%;height: 44px;"><input class="form-control" id="Tot_Dist" value="" disabled type="text"> </td>
+                    <td  style="width:15%;height: 44px;"><b>Delaer</b></td>
+                    <td  style="width:10%;height: 44px;"> <input class="form-control" id="Tot_Deal" value="" disabled type="text"> </td>
+                    <td  style="width:15%;height: 44px;"><b>Employee</b></td>
+                    <td  style="width:10%;height: 44px;"> <input class="form-control" id="Tot_Emp" value="" disabled type="text"> </td>
+                  </tr> 
+              </table>
+                    
+                </div>
+            </div>*@
+           <table id="example1" class="table table-bordered table-striped" >
+    <thead>    
+      <tr>  
+            <th style="width:5%;">S No</th>
+            <th style="width:25%;">User Name</th>
+            <th style="width:15%;">Type</th>
+            <th style="width:15%;">Password</th>    
+            <th style="width:15%;">CreatedDate</th>    
+            <th style="width:15%;">Name</th>    
+            <th style="width:10%;text-align:center;">Update</th>    
+        </tr>
+    </thead>
+    <tbody style="height:430px;"> 
+        @{
+            var iIndex =0;
+        if (Model != null && Model.Count > 0)
+        {   
+            foreach (var item in Model)  
+            {
+                iIndex = iIndex + 1;
+             <tr>  
+                 <td  style="width:5%;">@iIndex</td>
+                 <td  style="width:25%;">  <input type="text" id="txtUsename_@item.usecode"  value ="@item.usename" maxlength="40" class="form-control unset_text" /></td>
+                 <td  style="width:15%;">@item.UserType</td>   
+                 <td  style="width:15%;"> <input type="password" id="txtPassWord_@item.usecode" value ="@item.PassWord" maxlength="8" class="form-control" /> </td>   
+                 <td  style="width:15%;">@item.usecrdt.ToString("dd/MM/yyyy hh:mm tt")</td>   
+                 <td  style="width:15%;">@item.UserNM</td>   
+                   
+                 <td  style="width:10%;text-align:center;" ><a class="fa fa-fw" id="btnUpdUserDet_@item.usecode" onclick="UpdUserDet('@item.usecode' ,'@item.PassWord' ,'@item.usename');" style="cursor: pointer;"><img src="~/img/Update.png" /></a></td> 
+             </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+  
+        </div>
+      
+  
+
+   
+    <script type="text/javascript">
+
+        GetUserCount();
+
+        function UpdUserDet(usecode)
+        {
+            debugger;
+           
+            Chk_User($('#txtUsename_' + usecode).val());
+
+            if ($('#txtUsename_' + usecode).val() != '') {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("UpdUserDet", "Home")",
+                    data: { usecode: usecode, PassWord: $('#txtPassWord_' + usecode).val(), Usename: $('#txtUsename_' + usecode).val() },
+                    success: function (data) {
+                        if (data == "1")
+                            alert('Update Successfully ...');
+                    },
+                    error: function () {
+                        alert('Error');
+                    }
+                });
+            }
+        }
+           
+        function Chk_User(usecode) {
+            debugger;
+            if ($('#txtUsename_' + usecode).val() != '') {
+                $.get("/Home/Chk_User", { sUser: $('#txtUsename_' + usecode).val() }, function (data) {
+                    if (data != null && data != 0) {
+                        alert('User (' + $('#txtUsename_' + usecode).val() + ') Already Exists ...');
+                        $('#txtUsename_' + usecode).val(''); 
+                    }
+                });
+            }
+        }
+
+        function GetUserCount() {
+            debugger; 
+            $.get("/Home/GetUserCount", {}, function (data) {
+                    if (data != null && data != 0) { 
+                        $('#Tot_Dist').val(data.Tot_Dist); 
+                        $('#Tot_Deal').val(data.Tot_Deal); 
+                        $('#Tot_Emp').val(data.Tot_Emp);
+                    }
+                });
+            
+        }
+    </script>  
+
+
+@*@model List<Compx.Models.clsUser> 
+    <style>
+       .table-bordered.listTable > tbody > tr > td, .table-bordered.listTable > tfoot > tr > td, .table-bordered.listTable > thead > tr > td {  border: 1px solid #ccc !important;}
+      
+    </style>
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">User List</h4>
+        </div>
+        <div class="modal-body">
+            <div class="col-sm-12">
+                <div class="row">
+                    <table class="table table-bordered listTable" style="margin-bottom:5px;font-size:15px;">
+             
+          
+                
+             
+                  <tr>
+                    <td  style="width:15%;"><b>Total User</b></td>
+                    <td  style="width:10%;">45</td>
+                    <td  style="width:15%;"><b>Distributor</b></td>
+                    <td  style="width:10%;">(01)</td>
+                    <td  style="width:15%;"><b>Delaer</b></td>
+                    <td  style="width:10%;">(36)</td>
+                    <td  style="width:15%;"><b>Employee</b></td>
+                    <td  style="width:10%;">(08)</td>
+                  </tr>
+     
+             
+              </table>
+                </div>
+            </div>
+           <table id="example1" class="table table-bordered table-striped" >
+    <thead>    
+      <tr>  
+            <th style="width:10%;">S No</th>
+            <th style="width:35%;">User Name</th>
+            <th style="width:20%;">Type</th>
+            <th style="width:20%;">Password</th>    
+            <th style="width:15%;">Update</th>    
+        </tr>
+    </thead>
+    <tbody style="height:430px;"> 
+        @if (Model != null && Model.Count > 0)
+        {  
+            foreach (var item in Model)  
+            {  
+             <tr>  
+                 <td  style="width:10%;">1</td>
+                 <td  style="width:35%;">  <input type="text" id="txtUsename_@item.usecode" onblur="Chk_User(@item.usecode);" value ="@item.usename" maxlength="40" class="form-control" /></td>
+                 <td  style="width:20%;">@item.UserType</td>   
+                 <td  style="width:20%;"> <input type="text" id="txtPassWord_@item.usecode" value ="@item.PassWord" maxlength="8" class="form-control" /> </td>   
+                 <td  style="width:15%;"><a class="fa fa-fw fa-list" id="btnUpdUserDet_@item.usecode" onclick="UpdUserDet('@item.usecode' ,'@item.PassWord' ,'@item.usename');" style="cursor: pointer;"><img src="~/img/Update.png" /></a></td> 
+             </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }
+    </tbody>
+</table>
+  
+        </div>
+      
+      </div> 
+
+   
+    <script type="text/javascript">
+        function UpdUserDet(usecode)
+        {
+            debugger;
+           
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("UpdUserDet", "Home")", 
+                data: { usecode: usecode , PassWord: $('#txtPassWord_' + usecode).val(), Usename: $('#txtUsename_' + usecode).val() },
+                success: function (data) {
+                    if (data == "1")
+                        alert('Update Successfully ...'); 
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+           
+        function Chk_User(usecode) {
+            debugger;
+            if ($('#txtUsename_' + usecode).val() != '') {
+                $.get("/Home/Chk_User", { sUser: $('#txtUsename_' + usecode).val() }, function (data) {
+                    if (data != null && data != 0) {
+                        alert('User (' + $('#txtUsename_' + usecode).val() + ') Already Exists ...');
+                        $('#txtUsename_' + usecode).val(''); 
+                    }
+                });
+            }
+        }
+    </script>  *@

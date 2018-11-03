@@ -1,0 +1,84 @@
+﻿<html lang="en">
+<head>
+    <title>CRM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!----bootstrap css---->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <!-----favicon.ico---->
+
+    <!------custom css---->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/css/responsive.css" />    
+    <link href="~/css/jquery.smartmenus.bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/ddaccordion.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+
+    
+
+    <script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+       
+</head>
+<body class="compx">
+
+<div>
+    <table>
+        <tr >
+            <td> Server:- <input type="text" class="form-control" id="txtServer" style ="width:500px"  /></td> </tr>
+           <tr >  <td> Port:- <input type="text" class="form-control" id="txtPort" style ="width:500px" /></td> </tr>
+             <tr ><td> Email From:- <input type="text" class="form-control" id="EmailFrom" style ="width:500px" /></td> </tr>
+             <tr ><td> Email To:- <input type="text" class="form-control" id="EmailTo" style ="width:500px" /></td> </tr>
+            <tr > <td> User:- <input type="text" class="form-control" id="txtUser" style ="width:500px" /></td> </tr>
+           <tr >  <td> Pass:- <input type="text" class="form-control" id="txtPass" style ="width:500px" /></td> </tr>
+           <tr >  <td> MSG:- <input type="text" class="form-control" id="txtMSG" style ="width:500px" /></td> </tr>
+            <tr > <td>   <button type="button" onclick="SendMail()" class="btn"  ><img  src="../../img/Mail.png" style="width:30px;height:30px" /> </button></td>
+        </tr>
+
+    </table>
+
+</div>
+
+</body>
+    </html>
+
+<script type ="text/javascript">
+
+    function SendMail() { 
+        debugger;
+ 
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SendMail", "Home")",  
+            data: { EmailFrom: $("#EmailFrom").val(), EmailTo: $("#EmailTo").val(), Pass: $("#txtPass").val(), User: $("#txtUser").val(), Msg: $("#txtMSG").val(), Port: $("#txtPort").val(), Srv: $("#txtServer").val() },
+            success: function (data) {
+                if (data.Success == true) {
+                    alert(data.Message); 
+                }
+                else {
+                    alert(data.Message);
+                    $("#divErrorMessages").html(data.Message);
+                    ShowHideLoader('hide');
+                }
+            },
+            error: function () {
+                ShowHideLoader('hide');
+            }
+        });
+    }
+
+</script>

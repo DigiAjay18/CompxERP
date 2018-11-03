@@ -1,0 +1,75 @@
+﻿  
+     <div class="modal-header">
+        <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+        <h4 class="modal-title">Pending Order List</h4>
+      </div>
+     <div class="modal-body Personal_form">
+        <div id="dvPending"></div>
+     </div>
+  <div class="modal fade" id="QuotationDet" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+           
+        </div>
+    </div>
+
+<script type ="text/javascript">
+
+    PendingOrder();
+    function PendingOrder()
+    {
+        debugger;
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("PendingOrderList", "Quotation")", 
+         success: function (data) { 
+             PendingOrderList(data);
+         },
+         error: function () {
+             alert('Error');
+         }
+         });
+    }
+  
+    function PendingOrderList(itm)  {
+
+        if (itm.length > 0) {
+            var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+            var $thead = $('<thead><tr><th style="width:5%;">S.No</th><th style="width:10%;"> Date</th><th style="width:10%;">Order No</th> <th style="width:20%;">Party Name</th><th style="width:25%;">ItemName</th><th style="width:10%;">Order Qty</th>   <th style="width:10%;">Dispatch Qty</th>     <th style="width:10%;">Pending</th>   </tr></thead>');
+            $table.append($thead);
+
+            var $tbody = $('<tbody style="height:500px;"/>');
+            var iTotal = 0;
+            var iTax = 0;
+            var OrderNo = "";
+            $.each(itm, function (i, val) {
+                var $row = $('<tr/>'); 
+                $row.append($('<td width=5%"/>').html(i + 1));
+                $row.append($('<td width="10%"/>').html(val.mstdate));
+                if (OrderNo != val.mstchno) {
+                    $row.append($('<td width="10%"/>').html(val.mstchno));
+                    $row.append($('<td width="20%"/>').html(val.PartyName));
+                    OrderNo = val.mstchno;
+                }
+                else {
+                    $row.append($('<td width="10%"/>').html(""));
+                    $row.append($('<td width="20%"/>').html("")); 
+                }
+                
+                $row.append($('<td width="25%"/>').html(val.itemname));
+                $row.append($('<td width="10%"/>').html(val.itdquan));
+                $row.append($('<td width="10%"/>').html(val.msttobil));
+                $row.append($('<td width="10%"/>').html(val.mstneta));
+                  
+                $tbody.append($row);
+                iTotal = iTotal + parseFloat(val.ItemNetAmt);
+                iTax = iTax + parseFloat(val.Tax_Amt);
+            });
+            $table.append($tbody);
+            //alert($table);
+            $('#dvPending').html($table); 
+        }
+    }
+
+</script>
+
+             

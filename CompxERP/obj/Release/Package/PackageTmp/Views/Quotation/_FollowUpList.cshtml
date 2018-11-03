@@ -1,0 +1,53 @@
+﻿   
+@model List<CompxERP.Models.clsFollow> 
+ <div class="col-sm-12">
+    <table id="example1" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr>
+            <th style="width:5%;">S.No</th>
+            
+            <th style="width:10%;"> Lead No</th> 
+           <th style="width:20%;">Company / Dealer Name</th>
+          <th style="width:12%;">Last FollowUp Date</th>
+            <th style="width:10%;">Status</th>   
+            <th style="width:8%;">Count</th>     
+          <th style="width:35%;">Remark</th>   
+        </tr>
+    </thead>
+    <tbody style="height:430px;">
+           @{
+               var isFirst = true; var iIndex = 0;
+        if (Model != null && Model.Count > 0)
+        {
+            <tr class="diffBg"> <td width="100%">Lead List</td></tr>
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1;
+               @* if (@item.isLead == 1 && isFirst == true)
+                {
+                    <tr class="diffBg"> <td width="100%">Dealer List</td></tr>
+                    isFirst = false;
+                    iIndex = 1;
+                } *@
+               <tr>  
+                     <td  style="width:5%;">@iIndex</td>  
+    <td style="width:10%;">@item.L_No</td>   
+                    <td style="width:20%;">@item.Company</td>
+                    <td  style="width:12%;">@item.F_Date.ToString("dd/MM/yyyy")</td>  
+                    <td style="width:10%;">@item.Status</td>  
+                    <td style="width:8%;">@item.F_Time</td>
+                    <td  style="width:35%;">@item.Remark</td>   
+                  
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+</div>
+             

@@ -1,0 +1,397 @@
+﻿  <script src="~/Scripts/jquery.inputmask.js"></script>
+   <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+<script >
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy; 
+            $('#F_Date').val(today);
+
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+            //$(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+
+            //$('.pickdate').each(function () {
+            //    debugger;
+            //    if ($(this).val() == '') {
+            //        var today = new Date();
+            //        var dd = today.getDate();
+            //        var mm = today.getMonth() + 1; //January is 0!
+
+            //        var yyyy = today.getFullYear();
+            //        if (dd < 10) {
+            //            dd = '0' + dd;
+            //        }
+            //        if (mm < 10) {
+            //            mm = '0' + mm;
+            //        }
+            //        var today = dd + '/' + mm + '/' + yyyy;
+            //        $(this).val(today);
+            //        $('#F_Date').val(today);
+            //    }
+            //});
+        } catch (e) { }
+    });
+    </script>
+         
+  <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+                    <h4 class="modal-title">Follow Up Entry</h4>
+                </div>
+                <div class="modal-body input_popup">
+                    <div class="form-group">
+                  
+                        <div class="col-sm-3 padd_l padd_5">Follow Up Date</div>
+                        <div class="col-sm-3 padd_l padd_5">
+
+                            <input type="text" class="form-control" id="F_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                            
+                        </div>
+                         
+
+                    </div>
+                     @if (ViewBag.UserType == 0 || ViewBag.UserType == 1)
+                     { 
+                    <div class="form-group">
+
+                        <div class="col-sm-3 padd_l padd_5">Follow By </div>
+                        <div class="col-sm-3 padd_l padd_5">@Html.DropDownList("F_FollowBy", (SelectList)ViewBag.FollowBy_S, "--Select--", new { @class = "form-control", required = "required", @onchange = "FillLeadNo()" })</div> 
+  </div>
+                     }
+                    <div class="form-group">
+
+                       <div class="col-sm-3 padd_l padd_5"> Lead No 
+                            </div>
+                        <div class="col-sm-3 padd_l padd_5">@Html.DropDownList("F_LeadNo", (SelectList)ViewBag.F_LeadNo, "--Select--", new { @class = "form-control", @onchange = "FillParkDet()", required = "required" }) 
+                        </div>
+                        <div class="col-sm-3 padd_l padd_5">Follow No</div>
+                        <div class="col-sm-3 padd_l padd_5">
+                            <input class="form-control" id="F_Time" value="" disabled type="text" style="width: 70px;"></div> 
+                    </div>
+                       <div class="form-group">
+                        
+                          <div class="col-sm-3 padd_l padd_5">Party / Inquiry Name </div>
+                            <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="InqName" value="" disabled type="text"></div>
+              
+
+                          <div class="col-sm-2 padd_l padd_5">Mobile No</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="MobileNo" value="" disabled type="text"></div> 
+                    </div>
+                    <div class="form-group">
+                        
+                          <div class="col-sm-3 padd_l padd_5">Contact Person </div>
+                            <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="F_ContactPerson" value="" disabled type="text"></div>
+              
+
+                          <div class="col-sm-2 padd_l padd_5">Lead/Dealer No</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="LeadDealer_No" value="" disabled type="text"></div> 
+                    </div>
+                     <div class="form-group">
+                        
+                          <div class="col-sm-3 padd_l padd_5">Product Detail </div>
+                            <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="F_Product" value="" disabled type="text"></div> 
+                    </div>
+                     <div class="form-group">
+                        <div class="col-sm-3 padd_l padd_5">Feedback </div>
+                        <div class="col-sm-9 padd_l padd_5">
+                            <textarea class="form-control" id ="F_Feedback" rows="2"></textarea>
+                         </div>
+                    </div>
+                     <div class="form-group">
+                        <div class="col-sm-3 padd_l padd_5">Last Follow Up Date</div>
+                        <div class="col-sm-3 padd_l padd_5">
+
+                            <input type="text" class="form-control" id="F_F_Date" disabled data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                           
+                        </div>
+                        <div class="col-sm-3 padd_l padd_5">Next Follow Up Date</div>
+                        <div class="col-sm-3 padd_l padd_5">
+
+                            <input type="text" class="form-control" id="NextF_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> 
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                      
+                        <div class="col-sm-3 padd_l padd_5">Status </div>
+                        <div class="col-sm-3 padd_l padd_5">
+                            @Html.DropDownList("F_Status", new List<SelectListItem> {  
+            new SelectListItem { Text="--Select--", Value="0"},
+            new SelectListItem { Text="Closed", Value="1"},
+           new SelectListItem { Text="Fake", Value="2"}, 
+           new SelectListItem { Text="Under Process", Value="3"}, 
+           new SelectListItem { Text="Converted", Value="4"}   
+           }, new { @class = "form-control" })
+                          
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">Remark</div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <textarea class="form-control" id ="F_Comment" rows="2"></textarea>
+                        </div>
+                    </div>
+                
+                    <div class="form-group text-center">
+                        <input id="InsFollow" value="Save" class="btn btn-default" type="button">
+                        <button type="button" class="btn btn-default" onclick="ClearDvData();">Cancel</button>
+                    </div>
+
+                </div>
+
+
+
+            </div>   
+
+
+<script type ="text/javascript">
+    
+    function FillLeadNo() {
+        debugger;
+        $('#F_LeadNo').empty();
+        var EmpID = 0;
+        if ($('#F_FollowBy').val() != '') EmpID = $('#F_FollowBy').val();
+
+        var opt = new Option('--Select--', 0);
+        $("#F_LeadNo").append(opt);
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FillLeadNo", "Home")',
+            data: { 'EmpCode': EmpID },
+                success: function (data) {
+                    
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].itgpName, data[i].itgpcode);
+                        $("#F_LeadNo").append(opt);
+                    }
+
+                }
+            });
+        }
+
+    $('#InsFollow').click(function () {
+        debugger;
+        var isLead = 0; var iLeadID = 0; var sLeadNo = 0; var iEmpCode = 0; var iBy = 0; var F_Time = 0;
+
+        //F_Status
+
+        //isLead = 1;
+        iLeadID = $('#F_LeadNo').val();
+        sLeadNo = $('#F_LeadNo :selected').text();
+
+        //sLeadNo = $('#mstJobNo :selected').text();
+
+        if ($('#F_Time').val() > 0) F_Time = $('#F_Time').val()
+
+        $.get("/Quotation/InsFollow", { F_by: iBy, L_ID: iLeadID, Status_I: $('#F_Status').val(), Status_II: 0, L_No: sLeadNo, Remark: $('#F_Comment').val(), MstDate: $('#F_Date').val(), F_Date: $('#F_F_Date').val(), hdnMstCode: 0, isLead: isLead, F_Time: F_Time, F_Next_Date: $('#NextF_Date').val(), Feedback: $('#F_Feedback').val() }, function (data) {
+            if (data != null) {
+                alert('Saved Successfully ...');
+                //FillDistributor();
+                //SetDealerCode();
+                FillLeadNo();
+                $('#F_ID').val(data.MstCode);
+
+                $('#F_Time').val('');
+                $('#NextF_Date').val('');
+                $('#F_Feedback').val(''); $('#InqName').val(''); $('#MobileNo').val(''); $('#LeadDealer_No').val(''); $('#F_Product').val('');
+
+                $('#F_LeadNo').val('');
+                $('#F_Status').val('');
+                $('#F_Comment').val('');
+                $('#F_Date').val('');
+                $('#F_CompanyName').val(''); $('#F_ContactPerson').val('');
+                $('#F_Date').val(today);
+                $('#F_FDate').val(today); $('#F_Time').val('');
+
+            }
+        });
+        // }
+    });
+
+    function FillParkDet() {
+        debugger;
+      
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetLeadNoDet", "Quotation")',
+                data: { "sLeadNO": +$('#F_LeadNo').val() },
+                success: function (data) {
+                    $('#F_CompanyName').val(data.Company); $('#F_ContactPerson').val(data.Person);
+                    $('#F_Time').val(data.F_Count); $('#F_F_Date').val(data.LDate); $('#LeadDealer_No').val(data.LeadNo);
+                    $('#MobileNo').val(data.Mobile); $('#InqName').val(data.InqName); $('#F_Product').val(data.ItemName);
+                }
+            });
+        }
+     
+
+</script>
+
+@*    <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Follow Up Entry</h4>
+                </div>
+                <div class="modal-body input_popup">
+                      
+                     <div class="form-group">
+                                      <label class="control-label col-sm-5 padd_l padd_5">From Calling </label> 
+                                    <div class="col-sm-1 padd_l padd_5">
+            @Html.DropDownList("mstJobNo",new List<SelectListItem> { } , new {style="width:200px;" ,@onchange="GetCallingDet();" }) 
+            
+                                </div>
+                                </div>
+
+                 
+                      
+                    <div class="form-group">
+                      
+                          <div class="col-sm-3 padd_l padd_5">Contact Person </div>
+                            <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="F_ContactPerson" value="" disabled type="text"></div>
+              
+
+                          <div class="col-sm-2 padd_l padd_5">Lead/Dealer No</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="LeadDealer_No" value="" disabled type="text"></div> 
+                    </div>
+                    
+                     <div class="form-group">
+                        <div class="col-sm-3 padd_l padd_5">Feedback </div>
+                        <div class="col-sm-9 padd_l padd_5">
+                            <textarea class="form-control" id ="F_Feedback" rows="2"></textarea>
+                         </div>
+                    </div>
+                     <div class="form-group">
+                        <div class="col-sm-3 padd_l padd_5">Follow Up Date</div>
+                        <div class="col-sm-3 padd_l padd_5">
+
+                            <input type="text" class="form-control" id="F_F_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                           
+                        </div>
+                        <div class="col-sm-3 padd_l padd_5">Next Follow Up Date</div>
+                        <div class="col-sm-3 padd_l padd_5">
+
+                            <input type="text" class="form-control" id="NextF_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask /> 
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                      
+                        <div class="col-sm-3 padd_l padd_5">Status </div>
+                        <div class="col-sm-3 padd_l padd_5">
+                            @Html.DropDownList("F_Status", new List<SelectListItem> {  
+            new SelectListItem { Text="Closed", Value="1"},
+           new SelectListItem { Text="Fake", Value="2"}, 
+           new SelectListItem { Text="Under Process", Value="3"}, 
+           new SelectListItem { Text="Converted", Value="4"}   
+           }, new { @class = "form-control" })
+                          
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">Remark</div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <textarea class="form-control" id ="F_Comment" rows="2"></textarea>
+                        </div>
+                    </div>
+                  
+                    <div class="form-group text-center">
+                        <input id="InsFollow" value="Save" class="btn btn-default" type="button">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+<script type ="text/javascript">
+    GetCalling();
+
+    $('#InsFollow').click(function () {
+        debugger;
+        var isLead = 0; var iLeadID = 0; var sLeadNo = 0; var iEmpCode = 0; var iBy = 0; var F_Time = 0;
+        
+            isLead = 1;
+        
+            sLeadNo = $('#mstJobNo :selected').text();
+        
+        if ($('#F_Time').val() > 0) F_Time = $('#F_Time').val()
+         
+        $.get("/Quotation/InsFollow", { F_by: iBy, L_ID: iLeadID, Status_I: $('#F_Status').val(), Status_II: 0, L_No: sLeadNo, Remark: $('#F_Comment').val(), MstDate: $('#F_Date').val(), F_Date: $('#F_F_Date').val(), hdnMstCode: 0, isLead: isLead, F_Time: F_Time, F_Next_Date: $('#NextF_Date').val(), Feedback: $('#F_Feedback').val() }, function (data) {
+            if (data != null) {
+                alert('Saved Successfully ...');
+                FillDistributor();
+                SetDealerCode();
+                $('#F_ID').val(data.MstCode);
+
+                $('#F_Time').val('');
+                $('#NextF_Date').val('');
+                $('#F_Feedback').val('');
+                 
+                $('#F_LeadNo').val('');
+                $('#F_Status').val('');
+                $('#F_Comment').val('');
+                $('#F_Date').val('');
+                $('#F_CompanyName').val(''); $('#F_ContactPerson').val('');
+                $('#F_Date').val(today);
+                $('#F_FDate').val(today); $('#F_Time').val('');
+            }
+        });
+        // }
+    });
+
+    function GetCalling() {
+        debugger;
+
+        $.get("../Quotation/GetCalling", {}, function (data) {
+            if (data != null) {
+                $('#mstJobNo').empty();
+
+                var opt = new Option('--Select--', 0);
+                $("#mstJobNo").append(opt);
+
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].Mobile + "~" + data[i].sName, data[i].Mobile);
+                    $("#mstJobNo").append(opt);
+                }
+            }
+        });
+    }
+    function GetCallingDet() {
+        debugger;
+
+        $.get("../Quotation/GetCallingDet", { sMobile: $("#mstJobNo").val() }, function (data) {
+            if (data != null) {
+               
+                $('#F_ContactPerson').val(data[0].Name);
+                $('#F_Feedback').val(data[0].Remark);
+                $('#Ratio').val(data[0].Per);
+            }
+        });
+    }
+
+</script>*@

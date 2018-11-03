@@ -1,0 +1,132 @@
+﻿@model CompxERP.Models.Jourmaster 
+
+@using GridMvc.Html
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>    
+<script src="~/Scripts/gridmvc.min.js"></script> 
+<link href="~/Content/gridmvc.datepicker.css" rel="stylesheet" />
+<link href="~/Content/gridmvc.datepicker.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.7.1.js"></script>
+  <link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>
+  
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+
+        var iType = 0;
+        iType = getUrl()["MstType"]
+        if (iType == 74) {
+            $('#lgOrder').html("Production Scheme Information");
+        }
+        else  
+        { $('#lgOrder').html("Production Voucher"); }
+        
+         
+        $('#Print').click(function () {
+            debugger;
+            alert('POP');
+         @*   $.ajax({
+                url: '@Url.Action("Create", "Sauda")',
+                type: "POST",
+                data: { "sData": '{' + a + '"LstItem":' + JSON.stringify(itm) + '}' },
+                datatype: "JSON",
+                ContentType: "application/json",
+                success: function (d) {
+                    alert("hi");  //check is successfully save to database   
+                    if (d.status == true) { 
+                       alert("hi");
+                    }
+                    else {
+                        alert('Failed to Save Data');
+                    }
+                },
+            });*@
+        });
+        function getUrl() {
+            debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        // $(function () {
+        $('a.Print').click(function () {
+            var url = $(this).attr('href');
+            window.open(url, "popupWindow", "width=600,height=800,scrollbars=yes");
+        });
+        return false;
+        //});
+        function abc() {
+            alert('1111');
+        }
+    });
+
+    </script>
+     
+     
+ <style>
+    tr td:nth-child(1) {width:11%; text-indent:0; text-align:left; }tr td:nth-child(2) {width:7%;}tr td:nth-child(3) {width:9%;}tr td:nth-child(4) {width:9%;}tr td:nth-child(5) {width:9%;}tr td:nth-child(6) {width:9%;}tr td:nth-child(7) {width:9%;}tr td:nth-child(8) {width:9%;}tr td:nth-child(9) {width:9%;}tr td:nth-child(10) {width:9%;}tr td:nth-child(11) {width:9%;}
+        </style>
+</head>
+
+<body>
+   @* <fieldset>
+            <legend id ="lgOrder">Order</legend>*@
+    <div class="div1">
+   
+    <div class="div2">
+        
+    <div class="buttonlink"> 
+        @Html.ActionLink("Create New", "Porduction","PuSL" ,new {MstType= ViewBag.MstType },null) 
+        </div>
+        <h2 id ="lgOrder">Purchase Detail</h2>
+   </div>
+
+                        @Html.HiddenFor(model => model.msttype)
+    
+
+     
+         <div class="container-fluid" style="width:98%;">
+                @Html.Grid( Model.ListArea ).Columns(columns =>
+{
+    columns.Add().Titled("Action").Encoded(false)
+                        .Sanitized(false)
+                        .SetWidth("11%")
+                        .RenderValueAs(d => @<b> 
+                            @Html.ActionLink("Edit", "Production", new { MstCode = d.mstcode  , MstType = d.msttype  ,comp = d.compcode,  id = d.mstcode }, new { @class = "editDialog", style = "background-image:url('/Images/edit1.png');background-position:left top; background-repeat:no-repeat;color:transparent; background-size:15px 15px; border:none; ", title = "Edit"}) 
+                            @Html.ActionLink("Print", "Print", new { comp = d.compcode, mstCode = d.mstcode }, new {  target="_blank", @class = "Print", style = "background-image:url('/Images/print1.png');background-position:left top; background-repeat:no-repeat;color:transparent; background-size:15px 15px; ", title = "Print" } ) 
+                          @Html.ActionLink("PendingVehicleReport", "PendingVehicleReport", new { comp = d.compcode, mstCode = d.mstcode }, new {  target="_blank", @class = "Print", style = "background-image:url('/Images/print1.png');background-position:left top; background-repeat:no-repeat;color:transparent; background-size:15px 15px; ", title = "Print" } ) 
+                        </b>);   
+    columns.Add(c => c.mstcode).Titled("Code").Filterable(true).Encoded(false).Sanitized(false).SetWidth("7%").Sortable(true);
+    columns.Add(c => c.mstdate).Titled("Date").Format("{0:dd/MM/yyyy}").SetWidth("9%").Filterable(true);
+    columns.Add(c => c.msttota).Titled("Total").SetWidth("9%").Filterable(true);
+    columns.Add(c => c.mstchno).Titled("Voucher No").SetWidth("9%").Filterable(true);
+    columns.Add(c => c.mstchnm).Titled("mstchnm").SetWidth("20%").Filterable(true);
+    columns.Add(c => c.mstrema).Titled("Remark").SetWidth("25%").Filterable(true);
+}).WithPaging(13)
+            </div> 
+
+        </div>
+     
+ @* </fieldset>*@
+</body>
+</html>
+
+ 

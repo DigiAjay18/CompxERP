@@ -1,0 +1,169 @@
+﻿@model CompxERP.Models.itgroup
+@using System.Web.Optimization
+@{
+    ViewBag.Title = "CreateType";
+  // Layout = "~/Views/Shared/_Layout.cshtml";
+   Layout = "~/Views/Shared/_CRMLayout.cshtml";
+}
+@Styles.Render("~/Content/angularcss")
+  
+
+@if (ViewBag.MenCode != null)
+{
+  <script src="~/Scripts/jquery-1.7.1.min.js"></script> 
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />  
+    
+<script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+      <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+     <link rel="stylesheet" href="~/css/font-awesome.min.css">
+   
+    <link href="~/css/add.css" rel="stylesheet" />
+      <link rel="stylesheet" href="~/css/responsive.css">
+}
+
+<div class="dialogdemoBasicUsage  modal_mid popuptxt" data-ng-controller="cntrlSetCat" id="popupContainer" data-ng-cloak="" data-ng-app="CompXApp">
+      <md-toolbar>
+      <div class="md-toolbar-tools">
+         <h2>Add  Category</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="hide()">
+          <md-icon  aria-label="Close dialog"><i class="fa fa-times" aria-hidden="true"></i></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+@using (Html.BeginForm("CreateType", "ItemSetup", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+     <md-dialog-content>
+      <div class="md-dialog-content">
+
+
+        @*@Html.HiddenFor(model => model.groupsrno)
+        @Html.HiddenFor(model => model.grourepo)
+        @Html.HiddenFor(model => model.grouunde)
+        @Html.HiddenFor(model => model.grouposi)
+        @Html.HiddenFor(model => model.groumain)
+        @Html.HiddenFor(model => model.compcode)
+        @Html.HiddenFor(model => model.groudefa)*@
+        @*@Html.HiddenFor(model => model.groucode)*@
+
+
+          <input type ="hidden" id ="isEdit" value="0" /> 
+  <input type ="hidden" id ="M_itgpcode" value="0" /> 
+
+        <div id="" style="color: red; font-weight: bold" class="col-xs-10">
+            @TempData["Msg"]
+        </div>
+
+        <div id="Type-edit" class="col-xs-4" style="display: none">
+            @TempData["Msg"]
+        </div>
+       
+          <div class="form-group"> 
+             <div class="col-sm-12 padd_l padd_5">
+                 <label class="control-label">Category</label>
+                  @*@Html.TextBoxFor(model => model.category, new { @class = "form-control",@maxlength = 50, ng_model="categoryNM"})*@
+                  <input class="form-control" id="M_Category" name="Alias" maxlength="50" type="text" ng-model="M_Category">
+             </div>
+         </div>
+           <div class="form-group"> 
+             <div class="col-sm-6 padd_l padd_5">
+                 <label class="control-label">Alias</label>
+                   @*  @Html.TextBoxFor(model => model.itgpalia, new { @class = "form-control",@maxlength = 10 ,ng_model="itgpalia" })*@
+                  <input class="form-control" id="M_itgpalia" name="Alias" maxlength="10" type="text" ng-model="M_itgpalia">
+             </div>
+               <div class="col-sm-6 padd_l padd_5">
+                 <label class="control-label">Sort</label>
+                 @* @Html.TextBoxFor(model => model.itgpsort, new { @class = "form-control",@maxlength = 2, @type = "number", ng_model="itgpsort"})*@
+                  <input class="form-control" id="M_itgpsort" name="Alias" maxlength="2" type="number" ng-model="M_itgpsort">
+             </div>
+         </div>
+         <div class="form-group"> 
+             <div class="col-sm-12 padd_l padd_5">
+                   <input type="button" value="Save" id="btnAddItem"   class="btn btn-default" data-dismiss="modal" ng-click="SetCatItem()"/>
+
+  @if (ViewBag.MenCode == null)
+{
+                  <button type="button" class="closeBtnBlack btn btn-default" data-dismiss="modal" ng-click="hide()">Close</button>
+  }
+
+                 @if (ViewBag.MenCode != null)
+{
+            <input type="button" value="Show Category" id="btnShowCate"    class="btn btn-default" data-dismiss="modal" ng-click="ShowCategory()"/>}
+
+             </div>
+        </div>
+
+        <div class="col-xs-8">
+            <div class="row">
+                @*<label class="control-label col-sm-2" style="font-size: 12px">Sno. </label>
+                <div class="col-sm-2" id="targetDiv">
+                    @Html.TextBoxFor(model => model.itgpcode, new { @class = "form-control",ng_model="itgpcode", style = "font-size:12px", @id = "target", @disabled = "true" }) 
+                </div>*@
+               
+
+            </div>
+        </div>
+
+    
+
+        <div class="col-xs-8">
+            <div class="row">
+                <div style="padding: 10px 0px; text-align: left">
+                    @* <button type="submit" id="btnUpdate1" name="Command" value="Update" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+                        <span class="ui-button-text">save</span></button>*@
+                  @*  <input type="submit" id="btnUpdate" value="save" style="padding: 10px 20px" />*@
+           
+                </div>
+            </div>
+        </div>
+    </div>
+     </md-dialog-content>
+}
+
+
+     @if (ViewBag.MenCode != null)
+{                                 <div class="width_100">
+                            <div class="md-dialog-content">
+                                     <table id="tblCategory" class="table table-fixed table-striped table-bordered j_table_new">
+                                        <thead class="thead-default">
+                                            <tr style="color:white;">
+                                                <th style="width:5%">SrNo</th> 
+                                                <th style="width:40%">Category</th> 
+                                                <th style="width:20%">Alias </th>
+                                                <th style="width:5%">Sort </th>
+                                                <th style="width:10%">Code </th>
+                                                <th style="width:20%">Edit </th>
+                                            </tr>   </thead>
+                                        <tbody style="height:350px;">
+                                              <tr ng-repeat="x in getCategory">
+                                                <td style="width:5%">{{$index+1}}</td> 
+                                                <td style="width:40%">{{x.itgpname}}</td>  
+ <td style="width:20%">{{x.itgpalia}}</td>  
+                                                <td style="width:5%">{{x.itgpsort}}</td>  
+                                                <td style="width:10%">{{x.itgpcode}}</td>  
+                                                  <td style="width:20%">  
+                                                      <button   ng-click="DelCate(x)"   ><img src="../../Images/remove.png" width="20"/></button> 
+                                                      <button  ng-click="edit(x)"  ><img src="../../Images/edit1.png" width="20"/></button> 
+                                                        </td>
+                                                         
+                                            </tr>
+                                     </tbody>
+                                        </table>
+                                </div>
+                          </div>
+    }
+
+
+ 
+    </div>
+

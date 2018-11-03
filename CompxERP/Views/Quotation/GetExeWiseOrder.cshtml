@@ -1,0 +1,305 @@
+﻿@model CompxERP.Models.clsFilter
+
+<style>
+    .modal {
+        padding-left: 0;
+    }
+
+    #DealerApprove .modal-dialog.dealerList {
+        width: 95%;
+    }
+</style>
+
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+<script src="~/Scripts/keynload.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+            if (dd < 10) {dd = '0' + dd;}
+            if (mm < 10) {mm = '0' + mm;}
+            var today = dd + '/' + mm + '/' + yyyy;
+            var aCode = '@ViewBag.aCode';
+            debugger;
+            if (aCode != '0')$('#From_Date').val('01/04/2018');
+            else $('#From_Date').val(today);
+            $('#To_Date').val(today);
+            $(function () {
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+
+    function fetchPartyMData1() {
+        $.ajax({
+            cache: false, async: false, type: "POST",
+            url: "@(Url.Action("/GetExeWiseOrderData", "Quotation"))",
+            data: { aFrom_Date: $('#From_Date').val(), aTo_Date: $('#To_Date').val(), aEmpCode: $('#TB_Executive').val() },
+            success: function (data) {
+                $.ajax({
+                    cache: false, async: false, type: "POST",
+                    url: "@(Url.Action("/GetExeWiseOrderCompany", "Quotation"))",
+                    data: {},
+                    success: function (data1) {
+                        var $row = "";
+                        var tData = "";
+                        var sSubTot1 = [];
+                        var sSubTot = 0;
+                        var sGrdTot1 = [];
+                        var sGrdTot = 0;
+                        var sEmpNm = "";
+                        var isTotal = false;
+
+                        $.each(data1.CustDet, function (i, val1) { sSubTot1[i] = 0; sGrdTot1[i] = 0; });
+
+                        var $table = $('<table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0"/>');
+                        $.each(data1.CustDet, function (i, val1) { tData += '<th width="' + (90 / data1.CustDet.length) + '%">' + val1.aName + '</th>'; });
+                        $table.append('<thead class="thead-default"><tr><th width="5%">Month</th>' + tData + '<th width="5%">Total</th></tr></thead>');
+                        var $tbody = $('<tbody style="height:400px;"/>');
+
+                        $.each(data.CustDet, function (i, val) {
+
+                            /* { Subtotal*/
+                            if (sEmpNm != val.aEmpCode && sEmpNm != "") {
+                                $row = $('<tr/>');
+                                $row.append($('<td width="5%" style="font-weight: bold;"/>').html('Sub Total'));
+                                $.each(data1.CustDet, function (i, val1) {
+                                    $row.append($('<td width="' + (90 / data1.CustDet.length) + '%" style="font-weight: bold;"/>').html(sSubTot1[i]));
+                                });
+                                $row.append($('<td width="5%" style="font-weight: bold;"/>').html(sSubTot));
+
+                                $tbody.append($row);
+                                isTotal = false;
+                                sSubTot = 0;
+                                $.each(data1.CustDet, function (i, val1) { sSubTot1[i] = 0; });
+                            }
+                            sSubTot += val.Total;
+                            $.each(data1.CustDet, function (i, val1) { sSubTot1[i] += val['a' + val1.aCode]; });
+
+                            sGrdTot += val.Total;
+                            $.each(data1.CustDet, function (i, val1) { sGrdTot1[i] += val['a' + val1.aCode]; });
+                            /* } Subtotal*/
+
+                            if (sEmpNm != val.aEmpCode) {
+                                if (sEmpNm != "") isTotal = true;
+                                $row = $('<tr/>');
+                                $row.append($('<td width="100%" align="left"/>').html("<hr/><b>" + val.aEmpName + "</b>")); sEmpNm = val.aEmpCode;
+                                $tbody.append($row);
+                            }
+
+                            $row = $('<tr/>');
+                            $row.append($('<td width="5%"/>').html(val.aMonthNm + " " + val.aYear));
+
+                            $.each(data1.CustDet, function (i, val1) {
+                                $row.append($('<td width="' + (90 / data1.CustDet.length) + '%"/>').html(val['a' + val1.aCode]));
+                            });
+
+                            $row.append($('<td width="5%"/>').html(val.Total));
+                            $tbody.append($row);
+
+                        });
+
+                        /* { Subtotal*/
+                        $row = $('<tr/>');
+                        $row.append($('<td width="5%" style="font-weight: bold;"/>').html('Sub Total'));
+                        $.each(data1.CustDet, function (i, val1) {
+                            $row.append($('<td width="' + (90 / data1.CustDet.length) + '%" style="font-weight: bold;"/>').html(sSubTot1[i]));
+                        });
+                        $row.append($('<td width="5%" style="font-weight: bold;"/>').html(sSubTot));
+
+                        $tbody.append($row);
+                        isTotal = false;
+                        sSubTot = 0
+
+                        /* } Subtotal*/
+
+                        $table.append($tbody);
+                        $('#PartyMData').html($table);
+
+                        var $table1 = $('<table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0"/>');
+                        var $tbody1 = $('<tbody/>');
+                        $row1 = $('<tr/>');
+                        $row1.append($('<td width="5%" style="font-weight: bold;"/>').html('Grand Total'));
+                        $.each(data1.CustDet, function (i, val1) {
+                            $row1.append($('<td width="' + (90 / data1.CustDet.length) + '%" style="font-weight: bold;"/>').html(sGrdTot1[i]));
+                        });
+                        $row1.append($('<td width="5%" style="font-weight: bold;"/>').html(sGrdTot));
+                        $tbody1.append($row1);
+                        sGrdTot = 0
+                        $table1.append($tbody1);
+                        $('#PartyMData1').html($table1);
+                    }
+                });
+            }
+        });
+    }
+    function fetchPartyMData() {
+        debugger;
+        $.ajax({
+            cache: false, async: false, type: "POST",
+            url: "@(Url.Action("/GetExeWiseOrderData", "Quotation"))",
+            data: { aFrom_Date: $('#From_Date').val(), aTo_Date: $('#To_Date').val(), aEmpCode: $('#TB_Executive').val() },
+            success: function (data) {
+                $.ajax({
+                    cache: false, async: false, type: "POST",
+                    url: "@(Url.Action("/GetExeWiseOrderCompany", "Quotation"))",
+                    data: {},
+                    success: function (data1) {
+                        var $row = "";
+                        var tData = "";
+                        var sSubTot1 = [];
+                        var sSubTot = 0;
+                        var sGrdTot1 = [];
+                        var sGrdTot = 0;
+
+                        var sCSubTot1 = [];
+                        var sCSubTot = 0;
+                        var sCGrdTot1 = [];
+                        var sCGrdTot = 0;
+
+                        var sEmpNm = "";
+                        var isTotal = false;
+
+                        $.each(data1.CustDet, function (i, val1) { sSubTot1[i] = 0; sCSubTot1[i] = 0; sGrdTot1[i] = 0; sCGrdTot1[i] = 0; });
+
+                        var $table = $('<table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0"/>');
+                        $.each(data1.CustDet, function (i, val1) {tData += '<th width="' + (85 / data1.CustDet.length) + '%">' + val1.aName + '</th>';});
+                        $table.append('<thead class="thead-default"><tr><th width="5%">Month</th>'+tData+'<th width="10%">Total</th></tr></thead>');
+                        var $tbody = $('<tbody style="height:400px;"/>');
+                        
+                        $.each(data.CustDet, function (i, val) {
+                            /* { Subtotal*/
+                            debugger;
+                            if (sEmpNm != val.aEmpCode+'' && sEmpNm != "") {
+                                $row = $('<tr/>');
+                                $row.append($('<td width="5%" style="font-weight: bold;"/>').html('Sub Total'));
+                                $.each(data1.CustDet, function (i, val1) {
+                                    $row.append($('<td width="' + (85 / data1.CustDet.length) + '%" style="font-weight: bold;"/>').html(sSubTot1[i] + '/' + formatNumber(sCSubTot1[i])));
+                                });
+                                $row.append($('<td width="10%" style="font-weight: bold;"/>').html(sSubTot + '/' + formatNumber(sCSubTot)));
+
+                                $tbody.append($row);
+                                isTotal = false;
+                                sSubTot = 0;
+                                sCSubTot = 0;
+                                $.each(data1.CustDet, function (i, val1) { sSubTot1[i] = 0; sCSubTot1[i] = 0; });
+                            }
+                            sSubTot += val.QTotal;
+                            sCSubTot += val.CTotal;
+                            $.each(data1.CustDet, function (i, val1) { sSubTot1[i] += val['Q' + val1.aCode]; sCSubTot1[i] += val['C' + val1.aCode]; });
+
+                            sGrdTot += val.QTotal;
+                            sCGrdTot += val.CTotal;
+                            $.each(data1.CustDet, function (i, val1) { sGrdTot1[i] += val['Q' + val1.aCode]; sCGrdTot1[i] += val['C' + val1.aCode]; });
+                            /* } Subtotal*/
+                            if (sEmpNm != val.aEmpCode + '') {
+                                if (sEmpNm != "") isTotal = true;
+                                $row = $('<tr/>');
+                                $row.append($('<td width="100%" align="left"/>').html("<hr/><b>" + val.aEmpName + "</b>")); sEmpNm = val.aEmpCode+'';
+                                $tbody.append($row);
+                            }
+
+                            $row = $('<tr/>');
+                            $row.append($('<td width="5%"/>').html(val.aMonthNm + " " + val.aYear));
+
+                            $.each(data1.CustDet, function (i, val1) {
+                                $row.append($('<td width="' + (85 / data1.CustDet.length) + '%"/>').html(val['Q' + val1.aCode] + '/' + formatNumber(val['C' + val1.aCode])));
+                            });
+
+                            $row.append($('<td width="10%"/>').html(val.QTotal + '/' + formatNumber(val.CTotal)));
+                            $tbody.append($row);
+                           
+                        });
+
+                        /* { Subtotal*/
+                            $row = $('<tr/>');
+                            $row.append($('<td width="5%" style="font-weight: bold;"/>').html('Sub Total'));
+                            $.each(data1.CustDet, function (i, val1) {
+                                $row.append($('<td width="' + (85 / data1.CustDet.length) + '%" style="font-weight: bold;"/>').html(sSubTot1[i] + '/' + formatNumber(sCSubTot1[i])));
+                            });
+                            $row.append($('<td width="10%" style="font-weight: bold;"/>').html(sSubTot + '/' + formatNumber(sCSubTot)));
+
+                            $tbody.append($row);
+                            isTotal = false;
+                            sSubTot = 0
+                            sCSubTot = 0
+                        
+                        /* } Subtotal*/
+
+                        $table.append($tbody);
+                        $('#PartyMData').html($table);
+
+                        var $table1 = $('<table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0"/>');
+                        var $tbody1 = $('<tbody/>');
+                        $row1 = $('<tr/>');
+                        $row1.append($('<td width="5%" style="font-weight: bold;"/>').html('Grand Total'));
+                        $.each(data1.CustDet, function (i, val1) {
+                            $row1.append($('<td width="' + (85 / data1.CustDet.length) + '%" style="font-weight: bold;"/>').html(sGrdTot1[i] + '/' + formatNumber(sCGrdTot1[i])));
+                        });
+                        $row1.append($('<td width="10%" style="font-weight: bold;"/>').html(sGrdTot + '/' +formatNumber(sCGrdTot)));
+                        $tbody1.append($row1);
+                        sGrdTot = 0
+                        sCGrdTot = 0
+                        $table1.append($tbody1);
+                        $('#PartyMData1').html($table1);
+                    }
+                });
+            }
+        });
+    }
+    
+    fetchPartyMData();
+
+</script>
+<div class="modal-content">
+
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+        {
+        <div class="modal-header">
+            <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+            <h4 class="modal-title">Executive Wise Order</h4>
+        </div>
+        <div class="modal-body input_popup">
+              <label class="col-sm-1 padd_l padd_5">
+                   Executive 
+                  </label>
+                  <div class="col-sm-2 padd_l padd_3">
+               
+                @if (CompxERP.Models.SessionMaster.UserType == 0 || CompxERP.Models.SessionMaster.UserType == 1)
+                {
+                    @Html.DropDownList("TB_Executive", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control" }) 
+                }
+                else
+                {
+                    @Html.DropDownList("TB_Executive", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control", @disabled = true, @readonly = true }) 
+                }
+            </div>
+            <label class="col-sm-1 padd_l padd_3">From</label>
+            <div class="col-sm-2 padd_l padd_3">
+                <input type="text" class="form-control" id="From_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+            <label class="col-sm-1 padd_l padd_3">To</label>
+            <div class="col-sm-2 padd_l padd_3">
+                <input type="text" class="form-control" id="To_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+
+            <span class="input-group-btn">
+                <input type="button" id="FillCalling" value="Search" class="btn btn-search" onclick="fetchPartyMData()" />
+            </span>
+        </div>
+        <div class="modal-body input_popup">
+            <div id="PartyMData" class="btn transaction_styl clearfix tablecontainer table table-fixed table-bordered j_table_new table-striped"></div>
+            <div id="PartyMData1" class="btn transaction_styl clearfix tablecontainer table table-fixed table-bordered j_table_new table-striped"></div>
+        </div>
+        }
+    }
+</div>

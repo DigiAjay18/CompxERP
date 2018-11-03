@@ -1,0 +1,342 @@
+﻿@model CompxERP.Models.clsTicketMst
+
+@{
+    ViewBag.Title = "RaiseTicket";
+}
+
+   <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+
+            $('.pickdate').each(function () {
+                if ($(this).val() == '') {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    // $(this).val(today);
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    $('#tDate').val(today);
+
+                }
+            });
+        });
+
+    </script>
+
+    <script language="javascript" type="text/javascript">
+
+
+        function FillSubMenu() {
+            debugger;
+            $('#tType').empty();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillSubMenu", "Home")',
+                data: { "iMenu": $('#Menu').val() },
+                success: function (data) {
+                    var opt = new Option('--Select--', 0);
+                    $("#tType").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].Value, data[i].Key);
+                        $("#tType").append(opt);
+                    }
+                }
+            });
+        }
+
+        function FillInvoice() {
+            debugger;
+            $('#MemberNo').empty();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillInvoice", "Home")',
+                data: { "iMenu": $('#Ticket').val() },
+                success: function (data) {
+                    var opt = new Option('--Select--', 0);
+                    $("#MemberNo").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].Value, data[i].Key);
+                        $("#MemberNo").append(opt);
+                    }
+                }
+            });
+        }
+
+    </script>
+ 
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Submit A Ticket</h4>
+        </div>
+        <div class="modal-body input_popup">
+          @using (Html.BeginForm("RaiseTicket", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+          {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+                       <input type ="hidden" name="EmpList" id ="EmpList" />
+              
+                                   @* <div class="col-sm-12 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3  padd_l padd_5">Ticket Id</label>
+                                            <div class="col-sm-3 padd_l padd_5"> 
+                                                @Html.TextBoxFor(model => model.PaymentID, new { @class = "form-control", @readonly = true })
+                                                @Html.ValidationMessageFor(model => model.PaymentID)
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                    <div class="col-sm-6 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 padd_l padd_5">Date  </label>
+                                            <div class="col-sm-6 padd_l padd_5"> 
+                                                @Html.TextBoxFor(m => m.sDate, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" })
+                                             
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 padd_5 ">Ticket For </label>
+                                            <div class="col-sm-6 padd_l padd_5"> 
+                                                @Html.DropDownList("tFor", new List<SelectListItem> {  
+           new SelectListItem { Text="-- Select --", Value="0"},
+           new SelectListItem { Text="CompX", Value="1"},
+           new SelectListItem { Text="RPOS", Value="2"} ,
+           new SelectListItem { Text="Solution", Value="3"} 
+          }, new { @class = "form-control", @onchange = "FillInvoice()" })
+
+                                            </div>
+                                        </div>
+                                    </div>@*
+                                    <div class="col-sm-6 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 padd_l padd_5">Invoice No.</label>
+                                            <div class="col-sm-6 padd_l padd_5"> 
+                                       @Html.DropDownList("MemberNo", (SelectList)ViewBag.vwCategory, "--Select--", new { @class = "form-control", required = "required" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 padd_5">Invoice Date  </label>
+                                            <div class="col-sm-6 padd_l padd_5"> 
+   @Html.TextBoxFor(model => model.PaymentFromdts, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" })
+                                            </div>
+                                        </div>
+                                    </div>*@
+               
+                                    <div class="col-sm-6 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 padd_l padd_5">Topic</label>
+                                            <div class="col-sm-6 padd_l padd_5">
+                                                @Html.DropDownList("tTopic", new List<SelectListItem>  {  
+           new SelectListItem { Text="-- Select --", Value="0"},
+           new SelectListItem { Text="Masters", Value="731"},
+           new SelectListItem { Text="Transactions", Value="732"}, 
+           new SelectListItem { Text="Reports", Value="733"} ,
+           new SelectListItem { Text="Other", Value="736"} 
+           }, new { @class = "form-control", @onchange = "FillSubMenu()" }) 
+                                            </div>
+                                        </div>
+                                    </div>
+               
+                                    <div class="col-sm-6 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-6 padd_5">Type</label>
+                                            <div class="col-sm-6 padd_l padd_5">
+                                @Html.DropDownList("tType", new List<SelectListItem>  { new SelectListItem { Text="-- Select --", Value="0"}}, new { @class = "form-control" }) 
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Query/Issue Description</label>
+                                            <div class="col-sm-9 padd_l padd_5"> 
+                                                @Html.TextAreaFor(model => model.tDesc, new { @class = "form-control", })
+                                                @Html.ValidationMessageFor(model => model.tDesc)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 padd_l padd_5">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Upload Screenshot</label> 
+                                            <div class="col-sm-4 padd_l padd_5">
+                                                <input type="file" name="file" value="Browse" id="file" style="padding: 0px !important;" /> 
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="padd_l padd_5" style="width: 150px; margin: auto; text-align: center;"> 
+                                               @* <button type="submit" onclick="return ConfirmDelete();" class="btn btn-default" style="margin: 25px auto; margin-bottom: 15px;">Submit</button>*@
+                                                  <input type="button" id="InsTicket" value="Save" class="btn btn-default" /> 
+                                            </div>
+                                        </div>
+                                    </div>
+                           
+         
+          
+          }
+        </div>
+      
+      </div> 
+   
+
+
+<script lang="ja" type="text/javascript">
+    function ConfirmDelete() {
+        var x = confirm("Are you sure you want to Save?");
+        if (x) {
+            return Validateform();
+        }
+        else {
+            return false;
+        }
+    }
+
+    function Validateform() {
+
+        if ($("#MemberNo").val() == '') {
+            alert("Please Enter Invoice No");
+            $("#MemberNo").focus();
+            return false;
+        }
+
+        else if ($("#Menu").val() == '0') {
+            alert("Please Select Topic");
+            $("#Menu").focus();
+            return false;
+        }
+        else if ($("#tType").val() == '0') {
+            alert("Please Select Type");
+            $("#tType").focus();
+            return false;
+        }
+        else if ($("#Remark").val() == '') {
+            alert("Please Enter Remark");
+            $("#Remark").focus();
+            return false;
+        }
+        else if (CreateEmpList() == 0) {
+            alert("Please Enter atlest One Employee ...");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+
+    $('#btnAddItems').click(function () {
+        $('#tbodyItems').append('<tr class="trNewItem">' + $('.trTemplate').html() + '</tr>');
+        $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+        // BindDropDownEvent();
+    });
+
+
+    $('#InsTicket').click(function () {
+        debugger;
+         
+        var data = new FormData();
+       
+        data.append("tDate", $("#tDate").val());
+        data.append("tFor", $("#tFor").val());
+        data.append("tTopic", $("#tTopic").val());
+        data.append("tType", $("#tType").val());
+        data.append("tDesc", $("#tDesc").val());
+        data.append("tPath", $("#tPath").val());
+        var IMG_Path = $('#file').get(0).files[0];
+        data.append("ImageFile", IMG_Path);
+
+        $.ajax
+        ({
+            url: "/CRM/RaiseTicket",
+            type: "POST",
+            data: data ,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    alert(response);  
+                    $('#tFor').val('');  $('#tTopic').val('');   $('#tType').val('');   $('#tDesc').val('');  $('#tPath').val('');
+                }
+            }
+        });
+
+
+    });
+
+
+    function DeleteRow(obj) {
+        $(obj).parents('tr.trNewItem').remove();
+    }
+
+    function BindDropDownEvent() {
+        $('.ddlItem').change(function () {
+            var obj = $(this).parents('tr.trNewItem');
+            if ($(this).val() != -1) {
+                var itemRate = $('option:selected', this).attr('rateperitem');
+                $(obj).attr('itemid', $(this).val());
+                $(obj).find('.txtRate').val(itemRate);
+                $(obj).find('.txtQty').val('');
+                $(obj).find('.txtAmount').val('');
+
+            }
+            else {
+                $(obj).find('.txtAmount').val('');
+                $(obj).find('.txtRate').val('');
+                $(obj).find('.txtQty').val('');
+            }
+        });
+        $('.txtQty').change(function () {
+            var obj = $(this).parents('tr.trNewItem');
+            var itemRate = $('option:selected', obj).attr('rateperitem');
+            if (itemRate != undefined) {
+                var amt = ($(this).val()) * itemRate;
+                $(obj).find('.txtAmount').val(amt);
+            }
+            else {
+                alert('please select an item')
+            }
+        });
+
+
+    }
+
+</script>
+        
+  <script type="text/javascript">
+      $(function () {
+          $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+
+          $("[data-mask]").inputmask();
+      });
+      $(document).keydown(function (e) {
+          // ESCAPE key pressed
+          if (e.keyCode == 27) {
+              window.close();
+          }
+      });
+    </script>
+

@@ -1,0 +1,475 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   <meta name="viewport" content="width=device-width" />
+    <title>CompxERP</title>
+    <!----bootstrap css---->
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <!-----favicon.ico---->
+    <link href="~/img/splash/favicon.png" rel="shortcut icon">
+
+  
+  <link rel="stylesheet" href="~/css/bootstrap.min.css">
+  <link rel="stylesheet" href="~/css/aos.css">
+  <link rel="stylesheet" href="~/css/font-awesome.min.css">
+  <link rel="stylesheet" href="~/css/Home.css">
+  <link rel="stylesheet" href="~/css/responsive.css">
+  <link rel="stylesheet" href="~/css/style.css">
+  
+</head>
+
+
+
+
+<body class="compx_home">
+    <!-- /sidebar -->
+      <div id="sidebar">
+            <div id="nav-anchor"></div>
+            <nav>
+                <ul>
+                    <li>
+                      <a class="dotes" href="#slider"></a>
+                      <a class="over_txt" href="#slider">Home</a>
+                    </li>
+                    <li>
+                       <a class="dotes" href="#about"></a>
+                       <a class="over_txt" href="#about">About</a>
+                    </li>
+                    <li>
+                       <a class="dotes" href="#WhoCanBuy"></a>
+                       <a class="over_txt" href="#WhoCanBuy">Who Can Buy?</a>
+                    </li>
+                    <li>
+                       <a class="dotes" href="#functionality"></a>
+                       <a class="over_txt" href="#functionality">Functional Area</a>
+                   </li>
+                   
+                     <li>
+                          <a class="dotes" href="#DEPARTMENTS"></a>
+                          <a class="over_txt" href="#DEPARTMENTS">Departments</a>
+                     </li>
+                     <li>
+                        <a class="dotes" href="#footer"></a>
+                        <a class="over_txt" href="#footer">Contact</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- /sidebar -->
+   <header>
+    	
+    	
+     	<div class="top_header">
+	     	 <div class="container-fluid">
+	     	 	 <div class="row">
+	     	 	 	 <div class="col-md-3 col-sm-4 col-xs-4">
+	     	 	 	 	 <div class="logo_main">
+                                 <a href="/index/Index">
+	                      <img src="/img/LOGO.png">
+                                     </a>
+	     	 	 	 	 </div>
+	     	 	 	 </div>
+	     	 	 	 <div class="col-md-9 col-sm-8 col-xs-8">
+	     	 	 	
+	     	 	 	 	 <div class="address_menu">
+	     	 	 	 	 	<ul class="nav navbar-nav pull-right">
+						      <li><a href="/html/aboutUs">About Us</a></li>
+						      <li class="dropdown"> 
+                                <a class="dropdown-toggle" data-toggle="dropdown" style="cursor:pointer;">
+                                 Support <span class="caret"></span>
+                               </a>
+    		                    <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                                  <li><a href="/Home/Clientlogin">Client Portal</a></li>
+                                 @* <li><a href="/Home/EmployeePortalLogin">Employee</a></li>
+                                  <li><a href="/Home/DistributorLogin">Distributor </a></li>
+                                  <li><a href="/Home/DealerLogin">Dealer </a></li>
+                                  <li><a href="/Home/superAdmin">Super Admin</a></li>*@
+                                  <li><a href="/Home/partnerlogin">Partner Portal</a></li>
+                                  <li><a href="/Html/Download">Downloads</a></li>
+                                  <li><a href="/Html/utilities">Utilities</a></li>
+             
+                                </ul>
+
+						      </li>
+                              <li><a href="/html/Contacus">Contact Us</a></li>
+						      <li><a href="/Home/Login">Login</a></li>
+						     
+						    </ul>
+	     	 	 	 	 </div>
+	     	 	 	 	
+	     	 	 	 </div>
+	     	 	 </div>
+	     	 </div>
+     	</div>
+     
+    </header> 
+    <!--------header end---->
+    <!--------header end---->
+
+  
+<!-----slider---->
+<div class="slider-container" id="slider">
+  <div class="slider-control left inactive"></div>
+  <div class="slider-control right"></div>
+  <ul class="slider-pagi"></ul>
+  <div class="slider">
+    <div class="slide slide-0 active">
+      <div class="slide__bg"></div>
+      <div class="slide__content">
+        <svg class="slide__overlay" viewBox="0 0 720 405" preserveAspectRatio="xMaxYMax slice">
+          <path class="slide__overlay-path" d="M0,0 150,0 500,405 0,405" />
+        </svg>
+          <div class="slide__text home_screen">
+          <img src="/img/home_screen1.png">
+        </div>
+         
+       
+      </div>
+    </div>
+    <div class="slide slide-1 ">
+      <div class="slide__bg"></div>
+      <div class="slide__content">
+        <svg class="slide__overlay" viewBox="0 0 720 405" preserveAspectRatio="xMaxYMax slice">
+          <path class="slide__overlay-path" d="M0,0 150,0 500,405 0,405" />
+        </svg>
+          <div class="slide__text">
+        
+          <p class="slide__text-desc"  data-aos="zoom-in">Comp<span style="font-size:35px; font-family: overlock-regular;
+    font-style: italic;">X</span> a Unique Product for all types of Inventories & Accountancy Management be it Traders or Manufacturers</p>
+          
+        </div>
+      </div>
+    </div>
+    <div class="slide slide-2">
+      <div class="slide__bg"></div>
+      <div class="slide__content">
+        <svg class="slide__overlay" viewBox="0 0 720 405" preserveAspectRatio="xMaxYMax slice">
+          <path class="slide__overlay-path" d="M0,0 150,0 500,405 0,405" />
+        </svg>
+      
+         
+         <div class="slide__text">
+          <img src="/img/erp.png"  class="slider_textimg" data-aos="fade-up" data-aos-easing="ease" data-aos-delay="400" >
+          <img src="/img/multiUser.png"  class="slider_textimg" data-aos="fade-up" data-aos-easing="ease" data-aos-delay="800" >  
+   
+             
+        </div> 
+      </div>
+    </div>
+
+  </div>
+</div>
+<!---sldierend ---->
+
+
+<!-----about us------>
+<section class="about_us" id="about"> 
+	<div class="col-md-6 col-sm-6 col-xs-12 abou_box about_left"  data-aos="fade-up" style="padding: 0">
+		 
+	</div>
+	<div class="col-md-6 col-sm-6 col-xs-12 abou_box about_us_right" data-aos="fade-down">
+		
+		<p>Comp<span style="font-size:24px; font-family: overlock-regular;
+    font-style: italic;">X</span> a unique Product for all types of</p>
+         <p>Inventories & Accountancy Management</p>
+        <p> be it for all</p>
+        <p>Traders or Manufacturers</p>
+	</div>
+</section>
+<!-----about us end------>
+
+<!----who can buy------>
+<section class="whoCanBuy" id="WhoCanBuy">
+	<div class="container-fluid">
+		<div class="top_head text-center" data-aos="flip-up">
+			<h3>Who Can Buy?</h3>
+			<p>Comp<span style="font-size:24px; font-family: overlock-regular;
+    font-style: italic;">X</span> is a multi faceted versatile solution with its Lite & ERP version for Traders & Manufacturers of varied domains or business verticals as</p>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-12" style="padding: 0;" data-aos="fade-right">
+			 	<div class="who_buy_left">
+			 	 	<img src="/img/ipad.png">
+			 	</div>
+			</div>
+			<div class="col-md-6 col-sm-6 col-xs-12" data-aos="fade-left">
+				<div class="who_buy_right">
+					 <ul>
+					 	<li><img src="/img/dotes.png">FMCG (Retails)</li>
+					 	<li><img src="/img/dotes.png">Pharma (Drug , Medicine , Formulations)</li>
+					 	<li><img src="/img/dotes.png">Automobile (Components , Accessories , Heavy Machinery)</li>
+					 	<li><img src="/img/dotes.png">Agro (Food Processing , Fertilisers , Seed , Cotton , Oil , Yarn Etc)</li>
+					 	<li><img src="/img/dotes.png">Metallurgy (Iron & Steel)</li>
+					 	<li><img src="/img/dotes.png">Paints & Chemicals (Coating , Chemicals , Paints)</li>
+					 	<li><img src="/img/dotes.png">Packaging (Corrugated Boxes)</li>
+					 	<li><img src="/img/dotes.png">Electronics & Electricals</li>
+					 	<li>Much More......</li>
+					 </ul>
+			    </div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-----functionality_dv------>
+<section class="functionality_dv" id="functionality"> 
+	
+	
+	<div class="col-md-6 col-sm-6 col-xs-12 box_dv functionality_right"  data-aos="fade-up" style="padding: 0">
+	   <div class="who_buy_right">
+			<ul>
+			 	<li><img src="/img/dotes.png"> Item Setup - With 3-4 Level Category, Grouping</li>
+			 	<li><img src="/img/dotes.png">Account Setup - To Define All Types Of Accounts</li>
+			 	<li><img src="/img/dotes.png">Opening Entry - To open Balances on both Debit & Credit Side </li>
+			 	<li><img src="/img/dotes.png">Tax Setup - To Initialize all Types of Taxes Once (GST Types) </li>
+			 	<li><img src="/img/dotes.png">Payroll - Entire Manpower Management</li>
+			 	<li><img src="/img/dotes.png">Gift & Scheme Setup - To Boost Business Chain</li>
+			 	<li><img src="/img/dotes.png">All Transactions - To Maintain All Entries </li>
+			 	<li><img src="/img/dotes.png">P.O., S.O. Prev Debit, Debit Note, Credit Note </li>
+			 	<li><img src="/img/dotes.png">Final Accounts & 15 Management Reports </li>
+			 	<li><img src="/img/dotes.png">Multi Company, Multi User, Color & Font Settings</li>
+			 	<li><img src="/img/dotes.png">Data Backup Restore Options </li>
+			 	<li><img src="/img/dotes.png">User Management </li>
+			 	<li><img src="/img/dotes.png">General Setup </li>
+			</ul>
+	   </div>
+	</div>
+	<div class="col-md-6 col-sm-6 col-xs-12 box_dv right_fun" data-aos="fade-down" style="padding: 0;">
+		<h2 class="functional_area">Functional Area</h2>
+	</div>
+</section>
+<!-----functionality_dv end------>
+
+<!----DEPARTMENTS---------->
+<section class="departments_dv" id="DEPARTMENTS">
+   <div class="">
+
+      <div class="main_head_uses">
+          <h3 data-aos="fade-left">THE SOFTWARE USED BY VARIOUS DEPARTMENTS<!-- <img src="/img/erp.png" class="department_img" data-aos="flip-up"> --></h3>
+      </div>
+      <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="row">
+         <div class="col-md-3 col-sm-4 col-xs-12" data-aos="fade-up-right">
+             <ul class="multi_listDep">
+                <li> <img src="/img/dotes.png">Order Booking</li>
+                <li><img src="/img/dotes.png">Raw Material Ordering & Purchase</li>
+                <li><img src="/img/dotes.png">Gate Entry</li>
+                <li><img src="/img/dotes.png">Inward By Store</li>
+                <li><img src="/img/dotes.png">Store Management</li>
+                <li><img src="/img/dotes.png">Department Wise Issuance</li>
+                <li><img src="/img/dotes.png">Processing Department</li>
+                <li><img src="/img/dotes.png">Approval For Finished Goods</li>
+                <li><img src="/img/dotes.png">Packing</li>
+                <li><img src="/img/dotes.png">Transfer To Despatch</li>
+                <li><img src="/img/dotes.png">Branches Control</li>
+                <li><img src="/img/dotes.png">Business Scenario</li>
+             </ul>
+         </div>
+         <div class="col-md-4 col-sm-4 col-xs-12" data-aos="fade-up-left">
+              <ul class="multi_listDep">
+                <li><img src="/img/dotes.png">Business Growth & Evaluation</li>
+                <li><img src="/img/dotes.png">Costing Analysis</li>
+                <li><img src="/img/dotes.png">Payroll</li>
+                <li><img src="/img/dotes.png">User Level & Security</li>
+                <li><img src="/img/dotes.png">Multi Company Software</li>
+                <li><img src="/img/dotes.png">Multi User & Single User Solution</li>
+                <li><img src="/img/dotes.png">Controlling Systems (administrator & User)</li>
+                <li><img src="/img/dotes.png">Fast & Easy Querying System</li>
+                <li><img src="/img/dotes.png">Complete Accounting System (refer Features Of Accountancy)</li>
+                <li><img src="/img/dotes.png">Customize Reporting System</li>
+                <li><img src="/img/dotes.png">Telephone Directory</li>
+               
+             </ul>
+         </div>
+          <div class="col-md-5 col-sm-4 col-xs-12 rigth_dep" data-aos="fade-up-left" style="padding-right: 0px;">
+              <div class="top_dep height_300">
+                   <img src="/img/logo_dep.png">
+              </div>
+              <div class="bottom_dep height_300">
+                   <img src="/img/dep.jpg">
+              </div>
+          </div>
+      </div>
+    </div>
+   </div>
+</section>
+<!----DEPARTMENTS End---------->
+
+<footer id="footer" class="footer">
+    <div class="container">
+        
+        	<div class="row">
+            
+            	<div class="col-md-4 col-sm-4" data-aos="fade-down-right">
+                
+                	<div class="footer_box">
+                    
+                    	<a href="#"><img src="/img/footer_logo.png"></a>
+                        
+                        <p>Compx the Computation Expert is a best Suited solution for 
+Inventories & Accountancy Management for Both Traders or Manufacturers is almost every business domain </p>
+                        
+                  
+                    </div><!--/.footer_box -->
+                
+                </div>
+                
+                <div class="col-md-4 col-sm-4" data-aos="fade-down">
+               
+                </div>
+                
+                <div class="col-md-4 col-sm-4" data-aos="fade-down-left">
+                
+                	<div class="footer_box">
+                        
+                        <div class="footer_link">
+                        
+                        	<ul>
+                                <li> <a href="/index/Index">Home</a></li>
+                                
+                                <li><a href="/html/aboutUs">About</a></li>
+                                
+                                <li><a href="#">support</a></li>
+                                
+							 
+								  		
+                                <li><a href="/html/Contacus">Contact</a></li>
+                                
+                            </ul>
+                        
+                        </div><!--/.footer link -->
+                        <div class="social">
+							  <a href="https://www.facebook.com/DigiClayInfOtechh" class="link facebook" target="_parent"><span class="fa fa-facebook-square"></span></a>
+							  <a href="https://twitter.com/DigiClayInfOtech" class="link twitter" target="_parent"><span class="fa fa-twitter"></span></a>
+							  <a href="https://plus.google.com/+Digiclayinfotech#" class="link google-plus" target="_parent"><span class="fa fa-google-plus-square"></span></a>
+							  <a href="#" class="link youTube" target="_parent"><span class="fa fa-youtube-play"></span></a>
+						</div>
+                        <div class="sep"></div>
+                    
+                    </div><!--/.footer_box -->
+                    
+                    
+                   @*    <div class="copp_right">
+            
+            		<div class="copp_box">
+            
+            		
+                        <p>Powered by<a href="http://digiclayinfotech.com" target="_blank"><img src="/img/footer_digi.png"></a></p>
+            	        <p>&copy;2017 Compx. All Right Reserved By </p>
+            		</div>
+                     
+
+
+
+
+        			</div>*@
+                  
+    		   
+               </div>
+            
+            </div>
+        
+        </div>
+    <div class="footer_dvBottoom">
+        <div class="container">
+            <div class="row">
+            <div class="col-sm-4">
+                <div class="copp_box text-left">
+            
+            			<p style="cursor:pointer;">&copy;2017 Compx. All Right Reserved </p>
+                       
+                 </div>
+            </div>
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
+                <div class="copp_box text-left">
+            
+            			<p>Powered by<a href="http://digiclayinfotech.com" target="_blank"><img src="/img/footer_digi.png"></a></p>
+                       
+                 </div>
+            </div>
+                </div>
+            </div>
+        </div>
+  
+</footer>
+
+     
+
+  <!-----bootstrap script -->
+  <script src='~/js/jquery.min.js'></script>
+  <script  src="~/js/index.js"></script>
+  <script  src="~/js/aos.js"></script>
+  <script  src="~/js/jquery.scrollto.js"></script>
+
+  <script src="~/js/bootstrap.min.js"></script>
+
+  
+<script type="text/javascript">
+    AOS.init({
+        duration: 2000,
+    })
+
+    $(document).ready(function () {
+
+
+
+        /**
+         * This part causes smooth scrolling using scrollto.js
+         * We target all a tags inside the nav, and apply the scrollto.js to it.
+         */
+        $("nav a").click(function (evn) {
+            evn.preventDefault();
+            $('html,body').scrollTo(this.hash, this.hash);
+        });
+
+
+
+        /**
+         * This part handles the highlighting functionality.
+         * We use the scroll functionality again, some array creation and 
+         * manipulation, class adding and class removing, and conditional testing
+         */
+        var aChildren = $("nav li").children(); // find the a children of the list items
+        var aArray = []; // create the empty aArray
+        for (var i = 0; i < aChildren.length; i++) {
+            var aChild = aChildren[i];
+            var ahref = $(aChild).attr('href');
+            aArray.push(ahref);
+        } // this for loop fills the aArray with attribute href values
+
+        $(window).scroll(function () {
+            var windowPos = $(window).scrollTop(); // get the offset of the window from the top of page
+            var windowHeight = $(window).height(); // get the height of the window
+            var docHeight = $(document).height();
+
+            for (var i = 0; i < aArray.length; i++) {
+                var theID = aArray[i];
+                var divPos = $(theID).offset().top; // get the offset of the div from the top of page
+                var divHeight = $(theID).height(); // get the height of the div in question
+                if (windowPos >= divPos && windowPos < (divPos + divHeight)) {
+                    $("a[href='" + theID + "']").addClass("nav-active");
+                } else {
+                    $("a[href='" + theID + "']").removeClass("nav-active");
+                }
+            }
+
+            if (windowPos + windowHeight == docHeight) {
+                if (!$("nav li:last-child a").hasClass("nav-active")) {
+                    var navActiveCurrent = $(".nav-active").attr("href");
+                    $("a[href='" + navActiveCurrent + "']").removeClass("nav-active");
+                    $("nav li:last-child a").addClass("nav-active");
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

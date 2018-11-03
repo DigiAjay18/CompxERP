@@ -1,0 +1,169 @@
+﻿@model List<CompxERP.Models.SaleBook>
+@{
+   // Layout = "~/Views/Shared/_Layout.cshtml"; 
+} 
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sale Book</title>   
+<script src="~/Scripts/jquery-1.7.1.js"></script> 
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" /> 
+    <link href="~/Content/css/my-style.css" rel="stylesheet" /> 
+  <link rel="stylesheet" href="~/css/custom.css"> 
+
+    <style>
+          .bg_red {background:black !important;}
+        .bg_red td {background:black !important;color:white;}
+        .bg_red td a{color:white !important;font-weight:bold;text-decoration:none;}
+         
+    </style>
+
+    
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        function getUrl() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+         
+        debugger;
+
+       
+        var sTo = ""; var sFrom = ""; var sParty = "";var sType = "";
+        sTo = getUrl()["sFrom"]
+        sFrom = getUrl()["sTO"]
+       
+        if (getUrl()["PType"] == 42)
+            sType = "Sale Book ";
+        else
+            sType = "Purchase Book ";
+
+        document.getElementById("lgOrder").textContent = sType + " ( From :- " + getUrl()["sFrom"] + " To :-" + getUrl()["sTO"] + " )";
+        ShowHideLoader('hide');
+    });
+
+     </script>
+</head>
+
+<body> 
+
+        @using (Html.BeginForm())
+    {
+            @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+       
+     <div class="compex_head">
+            <div class="container">
+                 <h2 id ="lgOrder">   <sapn class="pull-right"><a href="/Home/menuNew"><i class="fa fa-home" aria-hidden="true"></i></a>
+                </sapn></h2></div>
+        </div>
+             
+        <div class="col-xs-10" style="width: 100%; overflow-x: auto;">
+          
+            @if (Model != null && Model.Count > 0)
+{
+                 
+    var sHeadNm = "";var isFirst = true;
+    var IGST = "0.0"; var CGST = "0.0"; var SGST = "0.0"; var Gross = "0.0"; var Net = "0.0"; 
+                
+                 <table id="tblTrackingData" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style ="text-align :center;width :12%" >Head</th> 
+                <th style ="text-align :center;width :7%"  >Date</th>
+                <th style ="text-align :center;width :7%"  >Bill No</th>
+                <th style ="text-align :center;width :24%" >Party</th>
+                <th style ="text-align :center;width :10%">Gross Amt</th>
+                <th style ="text-align :center;width :9%">CGST</th>
+                <th style ="text-align :center;width :9%">SGST</th> 
+                <th style ="text-align :center;width :9%">IGST</th> 
+                <th style ="text-align :center;width :10%">Bill Amt</th>   
+                <th style ="text-align :center;width :3%">Print</th>   
+            </tr>  
+        </thead>
+        <tbody>  
+            @foreach (var item in Model)
+            {
+                if (sHeadNm != @item.Acctname && isFirst != true)
+                {  <tr class="bg_red" > 
+                        
+                        <td style ="width :12%"></td> 
+                        <td style ="text-align :center;width :7%">   </td> 
+                        <td style ="text-align :center;width :7%">  </td>
+                        <td style ="width :24%" >Total</td>
+                        <td style ="text-align :right;width :10%" >@Gross </td>
+                        <td style ="text-align :right;width :9%" > @CGST </td>
+                        <td style ="text-align :right;width :9%" > @SGST </td>
+                        <td style ="text-align :right;width :9%" > @IGST </td>
+                        <td style ="text-align :right;width :10%" > @Net </td>   
+                        <td style ="text-align :right;width :9%" > @Net </td>   
+                        <td style ="text-align :right;width :3%" >   </td>   
+                    </tr> 
+                    IGST =  CGST = SGST = Gross = Net = "0.0"; 
+            }  
+                    <tr  ondblclick ="OperPuSL(@item.compcode ,@item.msttype,@item.mstcode )" >  
+                        <td style ="width :12%">@if (sHeadNm != @item.Acctname) { @item.Acctname; sHeadNm = @item.Acctname;   }  </td> 
+
+                        <td style ="text-align :center;width :7%"> @item.mstdate.ToString("dd-MM-yyyy") </td> 
+                        <td style ="text-align :center;width :7%">@item.mstchno </td>
+                        <td style ="width :24%" >@item.partyname </td>
+                        <td style ="text-align :right;width :10%" >@item.sumitdamou.ToString("0.00") </td>
+                        <td style ="text-align :right;width :9%" >@item.sumcgstamou.ToString("0.00") </td>
+                        <td style ="text-align :right;width :9%" >@item.sumsgstamou.ToString("0.00") </td>
+                        <td style ="text-align :right;width :9%" >@item.sumigstamou.ToString("0.00") </td>
+                        <td style ="text-align :right;width :10%" >@item.mstneta.ToString("0.00") </td>   
+                        <td style ="text-align :right;width :3%"><button type="button" onclick="PrintPuSL(@item.msttype,@item.mstcode, @item.compcode)"  class="btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../img/print1.png" /> </button> </td>
+                   </tr> 
+                                                Gross = (@item.sumitdamou + decimal.Parse(Gross)).ToString("0.00");
+                                                CGST = (@item.sumcgstamou + decimal.Parse(CGST)).ToString("0.00");
+                                                SGST = (@item.sumsgstamou + decimal.Parse(SGST)).ToString("0.00");
+                                                IGST = (@item.sumigstamou + decimal.Parse(IGST)).ToString("0.00");
+                                                Net = (@item.mstneta + decimal.Parse(Net)).ToString("0.00");
+                                                 
+                isFirst = false;
+            }
+                <tr class="bg_red"  > 
+                        
+                        <td style ="width :12%"></td> 
+                        <td style ="text-align :center;width :7%">   </td> 
+                        <td style ="text-align :center;width :7%">  </td>
+                        <td style ="width :24%" >Total</td>
+                        <td style ="text-align :right;width :10%" >@Gross </td>
+                        <td style ="text-align :right;width :9%" > @CGST </td>
+                        <td style ="text-align :right;width :9%" > @SGST </td>
+                        <td style ="text-align :right;width :9%" > @IGST </td>
+                        <td style ="text-align :right;width :10%" > @Net </td>  
+                        <td style ="text-align :right;width :3%" > </td>  
+                    </tr>  
+        </tbody>
+    </table>
+            }
+        </div> 
+    }
+</body>
+      
+</html>
+
+<script type="text/javascript" >
+    function OperPuSL(compcode ,msttype,mstcode )
+    { 
+        window.open('../../PuSL/Create?comp=' + compcode + '&MstCode=' + mstcode + '&MstType=' + msttype + '&mstcode_Print=0&MenCode=771', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=1050px, height=600px, top=10px, left=60px'  );
+        
+    }
+
+    function PrintPuSL(msttype, mstcode, Compcode) {
+        debugger;
+        window.open('../Pages/Reports.aspx?Code=' + mstcode + '&PType=' + msttype + '&comp=' + Compcode + '&msttype=' + msttype + '', '_blank');
+
+    }
+</script>
+ 

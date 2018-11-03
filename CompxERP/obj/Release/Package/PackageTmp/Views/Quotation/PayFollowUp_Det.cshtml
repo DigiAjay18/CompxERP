@@ -1,0 +1,120 @@
+﻿   
+@model List<CompxERP.Models.DueList> 
+ 
+
+ <div class="col-sm-12">
+     <h2>Due Details</h2>
+    <table id="tblPendingOrder" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+
+         @*<tr>
+            <th style="width:2%;"><input type="checkbox" class="btn btn-default" name="chkSelectAll" id="chkSelectAll" /></th> 
+           <th style="width:20%;">Company / Dealer Name</th> 
+          <th style="width:8%;">City</th>   
+            <th style="width:7%;">State </th>   
+<th style="width:8%;">Executive </th>  
+           
+            <th style="width:5%;">Cl.Bal</th>   
+          <th style="width:5%;">Due</th>  
+          <th style="width:5%;">Ord Value</th>    
+          <th style="width:5%;">Demanding Pay</th>    
+           <th style="width:5%;">Commited Pay</th>
+          <th style="width:7%;">Commited Date</th>   
+          <th style="width:8%;">Status</th>    
+          <th style="width:15%;">Remark</th>   
+        </tr>*@
+
+      <tr>
+            <th style="width:3%;">No@*<input type="checkbox" class="btn btn-default" name="chkSelectAll" id="chkSelectAll" />*@</th> 
+           <th style="width:25%;">  Dealer Name</th> 
+    @*  <th style="width:8%;">VCode</th>  *@ 
+      <th style="width:15%;">Particular</th>   
+         
+            <th style="width:10%;">Date</th>   
+          <th style="width:10%;">Term</th>  
+          <th style="width:10%;">Due Date</th>    
+          <th style="width:10%;">Due</th>    
+          <th style="width:10%;">OverDue Day</th>    
+   @*        <th style="width:5%;">Commited Pay</th>
+          <th style="width:7%;">Commited Date</th>   
+          <th style="width:8%;">Status</th>    
+          <th style="width:15%;">Remark</th>   <th style="width:5%;">FollowUp</th>  *@ 
+        </tr>
+    </thead>
+    <tbody style="height:500px;">
+           @{
+                 var iIndex = 0;
+        if (Model != null && Model.Count > 0)
+        {
+            var acctdesc = "";
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1; 
+               <tr>  
+                     <td  style="width:3%;"> <label class="checkbox-inline">
+  @* <input type="checkbox" data-id="@item.vouctype" class="chkSelect" />*@
+                         @iIndex
+    </label></td>   
+                 @if(  acctdesc != @item.acctdesc){ 
+                    <td style="width:25%;">@item.acctdesc</td> 
+                     acctdesc = @item.acctdesc;
+                 }
+                   else
+                   {<td style="width:25%;"> </td>  }
+                    
+                 @*<td style="width:8%;color:black">@item.vouccode</td>  *@  
+
+                   @if ((@item.voucdrvl - @item.voucblvl) >0 ) {
+                 <td style="width:15%;color:black">No. @item.voucrefn ==>  @item.voucdrvl.ToString("0.00")  </td>  }
+                else {
+                    <td style="width:15%;color:black">No. @item.voucrefn </td>  }
+                    
+                   @if (@item.voucdate.ToString("dd/MM/yyyy") == "01/04/1900")
+                   { <td style="width:10%;color:black"> 01/04/2018 </td>}
+                   else
+                   {<td style="width:10%;color:black"> @item.voucdate.ToString("dd/MM/yyyy") </td>}
+
+                    <td  style="width:10%;color:black"> @item.vouccond  </td>  
+                   
+                   
+                     @if (@item.voucdued.ToString("dd/MM/yyyy") == "01/01/0001")
+                   { <td style="width:10%;color:black"> 01/04/2018 </td>}
+                   else
+                   {
+                    <td  style="width:10%;color:black">@item.voucdued.ToString("dd/MM/yyyy")</td>   }
+                                       
+                    <td  style="width:10%;color:black">@item.voucblvl.ToString("0.00")</td>   
+                    <td  style="width:10%;color:black">@item.voucdays </td>   
+                   
+                   @*   
+                   <td  style="width:5%;">   <input type="text" class="form-control" id="txtCommitedPay_@iIndex"    />  </td> 
+                   <td  style="width:7%;">   <input type="text" class="form-control" id="PF_From_@iIndex"  data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />  </td> 
+                     
+                    <td  style="width:15%;"> <input type="hidden" id="hdnMstprtc" value=@item.vouccode     class="chkSelect" />   <textarea rows="1" id ="txtPF_Rema_@iIndex"  class="form-control"></textarea>  </td>   
+                  
+                     <td> <input type="button" id="btnSetPayFollowUp" value="Save"  onclick="SetPayFollowUp(@item.vouctype ,@item.vouccode, @item.voucrefn,@iIndex ,@item.compcode ,@item.acctcode )" class="btn btn-search" /></td>  
+                   
+                   <td> <input type="button" id="btnShowPayFollowUp" value=@item.FollowUp data-toggle="modal" data-target="#DV_PayFollowUp" onclick="ShowPayFollowUp(@item.vouctype ,@item.vouccode, @item.compcode  )" class="btn btn-search" /></td>  *@
+  
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+</div>
+          <div class="modal fade" id="DV_PayFollowUp" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+               @*  <button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                <div id="divPayFollowUp"></div>
+            </div>
+        </div>
+    </div>   
+    
+             

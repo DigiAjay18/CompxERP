@@ -1,0 +1,793 @@
+﻿@{
+    ViewBag.Title = "EmpDash";
+    Layout = "~/Views/Shared/_Layout.cshtml";  
+}
+@using System.Web.Optimization
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CRM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/Scripts/ng")
+    @Scripts.Render("~/Scripts/js")
+    @* <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+   *@
+    <style type="text/css">
+        header .header_bottom .nav.navbar-nav a {
+            padding: 10px 24px !important;
+        }
+
+        .right_sidebar .Quick_view.ClientDashboard li .risK_img {
+            float: left;
+            background: #CC1A57;
+            margin-top: 0;
+            padding: 4px;
+            width: 37%;
+            min-height: 76px;
+        }
+
+        .right_sidebar .Quick_view.ClientDashboard li .risK_imgTxt {
+            min-height: 76px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f2eded;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .btn.btn-default {
+            font-size: 16px;
+        }
+
+        .panel {
+            margin-bottom: 10px;
+        }
+
+        .right_sidebar .Quick_view > li {
+            padding: 5px;
+        }
+
+        .dealerList .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            padding: 3px 8px !important;
+        }
+
+        #btnDelete {
+            background: #e31e25 !important;
+            border: medium none !important;
+        }
+
+        body {
+            font-family: Verdana, Geneva, sans-serif;
+            font-size: 14px;
+        }
+
+        .slidingDiv {
+            height: 200px;
+            width: 400px;
+            background-color: #151515;
+            z-index: 999;
+            padding: 20px;
+            margin-top: 10px;
+            border-bottom: 5px solid #3399FF;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            display: none;
+            color: #fff;
+        }
+
+        .show_hide {
+            float: right;
+            position: relative;
+            z-index: 99;
+            margin-right: 5px;
+            border: solid 2px transparent;
+            margin-top: 2px;
+        }
+    </style>
+    <script type="text/javascript">
+        //google.load("visualization", "1", { packages: ["corechart"] });
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('.show_hide').length) {
+                $(".slidingDiv").slideToggle();
+            } else if (!$(e.target).closest('.slidingDiv').length) {
+                $('.slidingDiv').hide();
+            }
+        });
+        $(document).ready(function () {
+            $(".slidingDiv").delay(200).fadeIn(500);
+        });
+    </script>
+</head>
+<body class="compx">
+    <header class="main_header">
+        <div class="top_header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3 col-sm-3 col-xs-12 logo"><a href="#" class="logo_dv logo_marg">
+                        <img src="~/img/CRMLogo.png" /></a></div>
+                    <div class="col-md-9 col-sm-9">
+                        <div class="top_head NewTopHead">
+                            <span class="Crm_name">Customer Relationship Management </span>
+                            <ul class="nav navbar-nav pull-right">
+                                <li><a href=""></a></li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <span>@ViewBag.UserName  @*|| @CompxERP.Models.SessionMaster.CompCode || @CompxERP.Models.SessionMaster.UserID *@  </span>
+                                        <img src="/img/avatar.png" class="img-circle" style="border-radius: 50%; border-radius: 50%; border: 5px solid #F54F55; margin-bottom: 0px; width: 60px;" />
+                                    </a>
+                                </li>
+                                <li class="notification"><a href="#"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="label label-success">4</span></a></li>
+                                <li class="notification"><a href="/Home/partnerlogin"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header_bottom">
+            <div class="navbar navbar-inverse" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <div class="pull-right outputDate"><span id="output" style="margin-right: 10px;"></span><span id="time"></span></div>
+                    <div class="right_head_bottom pull-right">
+                        <h2 class="text-right">
+                            @* @if (ViewBag.UserType == "0")
+                            { <span>Supper Admin</span>}
+                            @if (ViewBag.UserType == "1")
+                            { <span>Admin</span>}
+                            @if (ViewBag.UserType == "2")
+                            { <span>Partner</span>}
+                            @if (ViewBag.UserType == "3")
+                            { <span>Distributor</span>}
+                            @if (ViewBag.UserType == "4")
+                            { <span>Dealer</span>}
+                            @if (ViewBag.UserType == "5")
+                            { <span>Tele Caller</span>}
+                            @if (ViewBag.UserType == "6")
+                            { <span>Service Mgr</span>}
+                            @if (ViewBag.UserType == "7")
+                            { <span>Service Eng</span>}
+                            @if (ViewBag.UserType == "8")
+                            { <span>Employee</span>}
+                            @if (ViewBag.UserType == "9")
+                            { <span>Client</span>}
+                            @if (ViewBag.UserType == "10")
+                            { <span>Employee ,Sale</span>}
+                            @if (ViewBag.UserType == "11")
+                            { <span>Employee ,Tech Supp</span>}*@
+
+                            <span>Employee</span>
+                            <img src="~/Img/company.png" /></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="content_center">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 col-sm-2 col-xs-12 icon-menu p0">
+                    <div id="MainMenu">
+                        <div class="list-group panel">
+
+                            @*  <a href="#demofirst" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu"> 
+                <img src="~/images/Picture1.png" class="md-display" />
+               <span class="md-display">Masters</span>
+                <img src="~/images/Picture1.png" class="sm-display img-size"/><span class="sm-display">Masters</span><i class="fa fa-caret-down sm-display"></i></a>
+        <div class="collapse" id="demofirst">
+                        @foreach (var sub in ViewBag.adsubmenu)
+                        {
+                            if (@sub.mendesc != "")
+                            {
+                                <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                            else
+                            {
+                                 <a class="submenuAncher" target="_blank"  href="@sub.menopti">@sub.menname</a> 
+                            }
+                        }   
+          </div>*@
+                            <a href="#demoTrans" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">
+                                <img src="~/images/Picture7.png" class="md-display" />
+                                <span class="md-display">Transactions</span>
+                                <img src="~/images/Picture7.png" class="sm-display img-size" /><span class="sm-display">Transactions</span> <i class="fa fa-caret-down sm-display"></i>
+                            </a>
+                            <div class="collapse" id="demoTrans">
+                                @foreach (var sub in ViewBag.vbTransactions)
+                                {
+                                    if (@sub.mendesc != "")
+                                    {
+                                    <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                                    else
+                                    {
+                                    <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                                    }
+                                }
+                            </div>
+                            <a href="#demo3" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">
+                                <img src="~/images/Picture4.png" class="md-display" />
+                                <span class="md-display">Reports</span>
+                                <img src="~/images/Picture4.png" class="sm-display img-size" /><span class="sm-display">Reports</span><i class="fa fa-caret-down sm-display"></i>
+                            </a>
+                            <div class="collapse" id="demo3">
+                                @foreach (var sub in ViewBag.vbReports)
+                                {
+                                    if (@sub.mendesc != "")
+                                    {
+                                    <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                                    else
+                                    {
+                                    <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                                    }
+                                }
+
+
+                            </div>
+                            @*<a href="#demo4" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">
+               <img src="~/images/Picture8.png" class="md-display"/>
+              <span class="md-display">Utilities</span>
+
+               <img src="~/images/Picture8.png" class="sm-display img-size"/><span class="sm-display">Utilities</span><i class="fa fa-caret-down sm-display"></i>
+
+          </a>
+        <div class="collapse" id="demo4">
+              <input type="button" class="btn_map" data-toggle="modal" data-target="#Calling" id="btnChangePassword" value="ChangePassword" data-backdrop="static" data-keyboard="true"  />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#InBoundImport" value="Calling Import" />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerImport" value="Dealer Import" />
+             <input type="button" class="btn_map" data-toggle="modal" data-target="#OpeingImport" value="Opeing Import" />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#LedgerImport" value="Ledger Import" />
+            <a class="submenuAncher"  href ="../UploadImg/CallingData.xls" > Download Calling Template </a>
+            <a class="submenuAncher"  href ="../UploadImg/DealerData.xls" > Download Dealer Template </a>
+            <a class="submenuAncher"  href ="../UploadImg/DealerOpening.xls" > Download Dealer Opening </a>
+            <a class="submenuAncher"  href ="../UploadImg/Ledger.xls" > Ledger Template </a>
+
+          
+          </div>*@
+
+                            @*<a href="#demoService" class="list-group-item list-group-item-success" data-toggle="collapse"   data-parent="#MainMenu">
+       <img src="~/images/Picture5.png" class="md-display" />
+        <span class="md-display">Service</span>
+
+     <img src="~/images/Picture5.png" class="sm-display img-size"/><span class="sm-display"> Service </span><i class="fa fa-caret-down sm-display"></i></a>
+           <div class="collapse" id="demoService">
+
+                 @foreach (var sub in ViewBag.vbService)
+                 {
+                     if (@sub.mendesc != "")
+                     {
+                                 <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                     else
+                     {
+                                 <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                     }
+                 }
+                
+          </div>*@
+                        </div>
+                    </div>
+
+                    <script>
+                        var $links = $('.list-group.panel a');
+                        $links.click(function () {
+                            $links.removeClass('selected');
+                            $(this).addClass('selected');
+                        });
+                    </script>
+                    <!----Menu End-->
+
+                </div>
+
+                <!----right side bar-->
+                <div class="col-md-10 col-sm-10 col-xs-12 padd_l right-screen">
+                    <div class="right_sidebar">
+                        <div class="panel panel-bd lobidisable">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+
+                                <ul class="Quick_view ClientDashboard">
+                                    @* @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                                    {
+                                        <li>
+                                            <a href="#"><span class="risK_img"><img src="/img/Distributort.png" /></span><span class="risK_imgTxt"> .Branch Office.<br>
+                                                <input id="lblDistributors" type="button" class="distributor_value"/></span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a  data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnDealerList1"><span class="risK_img blue_bg">
+                                            <img src="/img/dealers.png"></span><span class="risK_imgTxt blue_bgText"> Allied Dealers<br>
+                                                <input id="lblDealers" type="button" class="distributor_value"/>
+                                            </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a  data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnSaleBookList1">
+                                                <span class="risK_img gn">
+                                                    <img src="/img/Conversion.png" />
+                                                </span>
+                                                <span class="risK_imgTxt gnText">.Total Sales.<br />
+                                                    <input id="lblTotalSales" type="button" class="distributor_value" />
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li><a href="#"><span class="risK_img Dgn">
+                                            <img src="/img/UnderProcess.png"></span><span class="risK_imgTxt DgnTxt"> .Total Sale Value.
+                                                <br />
+                                                <input id="lblTotalSaleValue" type="button" class="distributor_value"/></span></a></li>
+                                        
+                                       
+                                        <li><a  data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnPayFollowUp1"><span class="risK_img yw">
+                                            <img src="/img/converticons.png"></span><span class="risK_imgTxt ywText">Total Outstanding<br />
+                                                <input id="lblTotalOutstanding" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a  data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnPayFollowUp2"><span class="risK_img bu">
+                                            <img src="/img/Billing_Qty.png"></span><span class="risK_imgTxt buText">Total Due<br />
+                                                <input id="lblTotalDue" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a href="#"><span class="risK_img Lyw">
+                                            <img src="/img/bill_iconNew.png"></span><span class="risK_imgTxt LywText">.Total Collection.<br />
+                                                <input id="lblTotalCollection" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnComplaintList1"><span class="risK_img rd">
+                                            <img src="/img/Target.png"></span><span class="risK_imgTxt rdText">Complaint Solved
+                                                <br />
+                                                <input id="lblComplaintSolved" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnComplaintList2"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">Pending Complaint<br />
+                                                <input id="lblPendingComplaint" type="button" class="distributor_value"/></span></a></li>    
+                                        <li><a data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnComplaintList3"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">Revenue From Complains<br />
+                                                <input id="lblRevenFromComplains" type="button" class="distributor_value"/></span></a></li>    
+                                        <li><a href="#"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">.Q3 Target.<br />
+                                                <input id="lblQ3Target" type="button" class="distributor_value"/></span></a></li>    
+                                        <li><a href="#"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">--<br />
+                                                <input id="lblOther" type="button" class="distributor_value"/></span></a></li>    
+                                    }
+                                    @if (ViewBag.UserType == "3")
+                                    { 			                        <li><a href="#"><span class="risK_img">
+                                        <img src="/img/AlliedDealer.png"></span><span class="risK_imgTxt"> Allied Dealer
+                                       <br>
+                                            <input id="lblDealers" class="distributor_value" type="text" disabled></span></a></li>
+                                        <li><a href="#"><span class="risK_img blue_bg">
+                                            <img src="/img/followUpt.png"></span><span class="risK_imgTxt blue_bgText">  Active  Dealers
+                                                <br>
+                                                57      </span></a></li>
+                                        <li><a href="#"><span class="risK_img gn">
+                                            <img src="/img/Conversion.png"></span><span class="risK_imgTxt gnText">license Billed<br />
+                                                135   </span></a></li>
+                                        <li><a href="#"><span class="risK_img yw">
+                                            <img src="/img/Target.png"></span><span class="risK_imgTxt ywText">Activated<br />
+                                                131 </span></a></li>
+                                        <li><a href="#"><span class="risK_img Dgn">
+                                            <img src="/img/BillingIcon.png"></span><span class="risK_imgTxt DgnTxt"> Sales Summary
+                                                <br />
+                                                1,41,550</span></a></li>
+                                        <li><a href="#"><span class="risK_img bu">
+                                            <img src="/img/BillingIcon.png"></span><span class="risK_imgTxt buText">Partner Margin
+                                                <br />
+                                                1,12,550</span></a></li>}
+                                    @if (ViewBag.UserType == "4")
+                                    {  <li><a href="/Quotation/ParkLead?MstType=1147"><span class="risK_img">
+                                        <img src="/img/Leads.png"></span><span class="risK_imgTxt"> Park Lead
+            <br>@ViewBag.TotalLead</span></a></li>
+                                        <li><a href="#"><span class="risK_img blue_bg">
+                                            <img src="/img/followUpt.png"></span><span class="risK_imgTxt blue_bgText">  Payout 
+                                                <br>
+                                                INR 2600     </span></a></li>
+                                        <li><a href="#"><span class="risK_img gn">
+                                            <img src="/img/Conversion.png"></span><span class="risK_imgTxt gnText">Leads Status<br />
+                                                3 in Process   </span></a></li>
+                                        <li><a href="#"><span class="risK_img yw">
+                                            <img src="/img/Target.png"></span><span class="risK_imgTxt ywText">Conversion<br />
+                                                2</span></a></li>
+                                        <li><a href="#"><span class="risK_img Dgn">
+                                            <img src="/img/BillingIcon.png"></span><span class="risK_imgTxt DgnTxt"> Sales Summary
+                                                <br />
+                                                INR 2600</span></a></li>
+                                    }
+                                    @if (ViewBag.UserType == "9")
+                                    {<li><a target="_blank" href="/Home/RaiseTicket"><span class="risK_img">
+                                        <img src="/img/RaiseTicket.png"></span><span class="risK_imgTxt">  Raise Ticket 
+                                                 <br>
+                                            124 </span></a></li>
+                                        <li><a target="_blank" href="/Customer/trackticket"><span class="risK_img blue_bg">
+                                            <img src="/img/tickitLocation.png"></span><span class="risK_imgTxt blue_bgText">  Track Ticket       </span></a></li>
+                                        <li><a target="_blank" href="/Home/Rate_Aservice"><span class="risK_img gn">
+                                            <img src="/img/st.png"></span><span class="risK_imgTxt gnText">  Rate Services    </span></a></li>
+                                        <li><a href="#"><span class="risK_img yw">
+                                            <img src="/img/Question.png"></span><span class="risK_imgTxt ywText"> Ask A Quotes  </span></a></li>
+                                        <li><a href="#"><span class="risK_img Dgn">
+                                            <img src="/img/sOffer.png"></span><span class="risK_imgTxt DgnTxt">  Special Offers   </span></a></li>
+                                        <li><a target="_blank" href="/Html/Download"><span class="risK_img bu">
+                                            <img src="/img/download.png"></span><span class="risK_imgTxt buText">  Download Update   </span></a></li>
+                                    }
+                                    @if (ViewBag.UserType == "8" || ViewBag.UserType == "10" || ViewBag.UserType == "11")
+                                    { *@<li><span class="risK_img">
+                                        <img src="/img/planning.png"></span><span class="risK_imgTxt">
+                                            <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#ParkLead" id="btnPlanningEntry" value="Planning Entry" />
+                                        </span></li>
+                                    <li><span class="risK_img blue_bg">
+                                        <img src="/img/overdues.png"></span><span class="risK_imgTxt blue_bgText">
+                                            <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#ParkLead" id="btnOverDue" value="Over Due List" />
+                                        </span></li>
+                                    <li><span class="risK_img gn">
+                                        <img src="/img/followup.png"></span><span class="risK_imgTxt gnText">
+                                            <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#ParkLead" id="btnRecentFollowUp" value="Recent Follow Up" />
+                                        </span></li>
+                                    <li><span class="risK_img yw">
+                                        <img src="/img/ledger.png"></span><span class="risK_imgTxt ywText"><input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#ParkLead" id="btnLedger_Emp" value="Ledger" />
+                                        </span>
+
+                                    </li>
+                                    <li><a href="#"><span class="risK_img Dgn">
+                                        <img src="/img/Order.png"></span><span class="risK_imgTxt DgnTxt">
+                                            <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#ParkLead" id="btnOrder_EMP" value="Order" />
+                                            <br />
+                                        </span></a></li>
+                                    <li><a href="#"><span class="risK_img bluelight">
+                                        <img src="/img/history.png"></span><span class="risK_imgTxt bluelightText">History<br />
+                                        </span></a></li>
+                                    <li><a href="#"><span class="risK_img Lyw">
+                                        <img src="/img/follow-summary.png"></span><span class="risK_imgTxt LywText"> Follow Up Summary
+                                                <br />
+                                        </span></a></li>
+                                    @* }*@
+                                </ul>
+
+                            </div>
+                        </div>
+                        <div class="charts_div">
+                            <div class="row">
+                                <!-- Bar Chart -->
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="panel panel-bd lobidisable">
+                                        <div class="panel-heading">
+                                            <div class="panel-title">
+                                                @* <h4>BUSINESS STATISTICS - 2017-18</h4>*@
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            @*<canvas class="main-chart" id="line-chart" height="200" width="600"></canvas>
+                                            <canvas class="main-chart" id="chartdiv" height="200" width="600"></canvas>*@
+                                            <div id="chartdiv" style="height: 270px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*  <div class="col-xs-12 col-sm-12 col-md-4">
+                                    @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                                    {
+                                        <div class="panel panel-bd lobidisable">
+                                            <div class="panel-heading">
+                                                <div class="panel-title">
+                                                    <h4>Available Statistics Since 1 Apr 2018</h4>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body Available_Statistics">
+
+                                                <ul class="site-stats">
+                                                 
+   <li class="bg_lh bg11"><a id="btnOrderQty" href="#"  data-toggle="modal" data-target="#DealerApprove"><i class="icon-user"></i><strong>  <input id="lblOrderQty" type="button" disabled class="distributor_value" />  </strong> <small>Order Qty</small></a></li>
+  <li class="bg_lh bg12"><i class="icon-plus"></i><strong><input id="lblApproveQty" type="button" disabled class="distributor_value" /></strong> <small>.Pending Order.</small></li>
+  <li class="bg_lh bg13"><i class="icon-shopping-cart"></i><strong><input id="lblDispatchQty" type="button" disabled class="distributor_value" /></strong> <small>.Dispatch.</small></li>
+  <li class="bg_lh bg14"><i class="icon-tag"></i><strong><input id="lblPendingDispatchQty" type="button" disabled class="distributor_value" /></strong> <small>.Pending Dispatch.</small></li>
+  <li class="bg_lh bg15"><i class="icon-shopping-cart"></i><strong><input id="lblAvaiStckQty" type="button" disabled class="distributor_value" /></strong> <small>.Available Stock Qty.</small></li>
+  <li class="bg_lh bg15"><i class="icon-tag"></i><strong><input id="lblReqStckQty" type="button" disabled class="distributor_value" /></strong> <small>.Required Stock Qty.</small></li>
+  
+
+                                                </ul>
+
+
+                                            </div>
+                                        </div>
+                                    }
+                                </div>*@
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!----left side bar end-->
+
+
+
+
+            </div>
+        </div>
+    </section>
+    <footer id="page-footer" class="text-center">
+
+        <p>
+            <span style="margin-top: 10px; text-align: center;"><strong>CRM</strong> &copy; copyright 2017</span>
+            <img src="~/Img/footer_logoNew.png" class="img-responsive" style="float: right; margin-right: 10px;">
+        </p>
+    </footer>
+
+    <!-----Follow up register **************----->
+    <div class="modal fade" id="ParkLead" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <div class="modal-content">
+                <div id="divParkLead"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade dealeert" id="DealerApprove" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <div id="dvDealerApprove"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        document.onkeydown = function (e) {
+            if (e.which == 27) {
+
+                $("#divParkLead").html("");
+                $("#dvDealerApprove").html("");
+            }
+        }
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var today = dd + '/' + mm + '/' + yyyy;
+
+        $('#btnCloseDv').click(function () {
+
+            $("#divParkLead").html("");
+            //$("#dvDealerApprove").html("");
+            $("#cancel_btn").click();
+        });
+
+        function ClearDvData() {
+
+            $("#divParkLead").html("");
+            //$("#dvDealerApprove").html("");
+            $("#DealerApprove").html("");
+            // $("#dvEmpDealerList").html("");
+            //$("#dvDist_Deal").html("");
+
+            window.location = "../Home/EmpDash";
+        }
+
+
+
+
+        function validateNumber(event) {
+            var key = window.event ? event.keyCode : event.which;
+            if (event.keyCode === 8 || event.keyCode === 46) {
+                return true;
+            } else if (key < 48 || key > 57) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+
+        $('#btnLedger_Emp').click(function () {
+            debugger;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "Ledger", sCode: '0', sRpType: '' },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPaymentFollowupPlanning').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PayFollowUpPlaning", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPaymentFollowupPlanningSearch').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PaymentPlanning" },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        function PayFollowUp() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PayFollowUp" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+
+        $('#btnPayFollowUpList').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PayFollowUpList" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+
+
+        $('#btnOrder_EMP').click(function () {
+            debugger;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Order", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "174", mstcode_Print: 0 },
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPlanningEntry').click(function () {
+            debugger;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("PlanningPayFollowup", "Quotation")",
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                    // ShowHideLoader('hide');
+                },
+                error: function () {
+                    alert('Error');
+                    // ShowHideLoader('hide');
+                }
+            });
+        });
+
+        function PayFollowUp() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PayFollowUp" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+        $('#btnPayFollowUp').click(function () {
+            PayFollowUp();
+        });
+
+
+        $('#btnOverDue').click(function () {
+            debugger;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("OverDueList", "Quotation")",
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                    // ShowHideLoader('hide');
+                },
+                error: function () {
+                    alert('Error');
+                    // ShowHideLoader('hide');
+                }
+            });
+        });
+
+        $('#btnRecentFollowUp').click(function () {
+            debugger;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PayFollowUpHisAll", "Quotation")",
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                    // ShowHideLoader('hide');
+                },
+                error: function () {
+                    alert('Error');
+                    // ShowHideLoader('hide');
+                }
+            });
+        });
+
+        //  if(@CompxERP.Models.SessionMaster.UserType == 8 )
+        //{
+        GetEmpFollowUp();
+        // }
+
+        function GetEmpFollowUp() {
+
+            debugger;
+            //ShowHideLoader('show');
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetDueListEmp", "Home")",
+                success: function (data) {
+                    $("#chartdiv").html(data);
+                    //ShowHideLoader('hide');
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+
+        function formatNumber(number) {
+            if (number != "") {
+                number = number.toFixed(2) + '';
+                x = number.split('.');
+                x1 = x[0];
+                x2 = x.length > 1 ? '.' + x[1] : '';
+                var rgx = /(\d+)(\d{3})/;
+                while (rgx.test(x1)) {
+                    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+                }
+
+                return x1 + x2;
+            }
+            return "0";
+        }
+        //$(function () {
+        //    $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+        //    $("[data-mask]").inputmask();
+        //});
+        //$(document).keydown(function (e) {
+        //    if (e.keyCode == 27) {
+        //        window.close();
+        //    }
+        //});
+    </script>
+    @Scripts.Render("~/Scripts/boot")
+</body>
+</html>

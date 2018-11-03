@@ -1,0 +1,3120 @@
+﻿@{
+    ViewBag.Title = "superDash";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+@using System.Web.Optimization
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CRM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!----bootstrap css---->
+    @*<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <!-----favicon.ico---->
+
+    <!------custom css---->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/css/responsive.css" />    
+    <link href="~/css/jquery.smartmenus.bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/ddaccordion.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+
+    
+
+    <script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>*@
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+
+    @Styles.Render("~/bundles/css")
+
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/Scripts/ng")
+    @Scripts.Render("~/Scripts/js")
+
+
+
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <script type="text/javascript">
+        google.load("visualization", "1", { packages: ["corechart"] });
+    </script>
+
+    <style>
+        header .header_bottom .nav.navbar-nav a {
+            padding: 10px 24px !important;
+        }
+
+        .right_sidebar .Quick_view.ClientDashboard li .risK_img {
+            float: left;
+            background: #CC1A57;
+            margin-top: 0;
+            padding: 4px;
+            width: 37%;
+            min-height: 76px;
+        }
+
+        .right_sidebar .Quick_view.ClientDashboard li .risK_imgTxt {
+            min-height: 76px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f2eded;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .btn.btn-default {
+            font-size: 16px;
+        }
+
+        .panel {
+            margin-bottom: 10px;
+        }
+
+        .right_sidebar .Quick_view > li {
+            padding: 5px;
+        }
+
+        .dealerList .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            padding: 3px 8px !important;
+        }
+
+        #btnDelete {
+            background: #e31e25 !important;
+            border: medium none !important;
+        }
+    </style>
+
+
+    <!--notification start-->
+
+    <script type="text/javascript">
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('.show_hide').length) {
+                $(".slidingDiv").slideToggle();
+            } else if (!$(e.target).closest('.slidingDiv').length) {
+                $('.slidingDiv').hide();
+            }
+        });
+
+        $(document).ready(function () {
+            $(".slidingDiv").delay(200).fadeIn(500);
+        });
+    </script>
+    <style>
+        body {
+            font-family: Verdana, Geneva, sans-serif;
+            font-size: 14px;
+        }
+
+        .slidingDiv {
+            height: 200px;
+            width: 400px;
+            background-color: #151515;
+            z-index: 999;
+            padding: 20px;
+            margin-top: 10px;
+            border-bottom: 5px solid #3399FF;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            display: none;
+            color: #fff;
+        }
+
+        .show_hide {
+            /*display:none;*/
+            float: right;
+            position: relative;
+            z-index: 99;
+            margin-right: 5px;
+            border: solid 2px transparent;
+            margin-top: 2px;
+        }
+    </style>
+    <!--notification End-->
+
+</head>
+<body class="compx">
+
+    <!----header---->
+    <header class="main_header">
+        <!----top header---->
+        <div class="top_header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3 col-sm-3 col-xs-12 logo">
+                        <a href="#" class="logo_dv logo_marg">
+                            <img src="~/img/CRMLogo.png" /></a>
+                    </div>
+                    <div class="col-md-9 col-sm-9">
+                        <div class="top_head NewTopHead">
+                            <span class="Crm_name">Customer Relationship Management </span>
+                            <ul class="nav navbar-nav pull-right">
+                                <li><a href=""></a></li>
+
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                       <span>@ViewBag.UserName  @*|| @CompxERP.Models.SessionMaster.CompCode || @CompxERP.Models.SessionMaster.UserID *@  </span> <img src="/img/avatar.png" class="img-circle" style="border-radius: 50%; border-radius: 50%; border: 5px solid #F54F55; margin-bottom: 0px;width:60px;" />       
+                                  </a>
+                                </li>
+                              
+
+                                <li class="notification"><a href="#"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="label label-success">4</span></a></li>
+                                @*<li><a href="#"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>*@
+                                <li class="notification"><a href="/Home/partnerlogin"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!----top header end---->
+
+        <!----bottom header---->
+        <div class="header_bottom">
+            <!-- Navbar -->
+            <div class="navbar navbar-inverse" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <div class="pull-right outputDate"><span id="output" style="margin-right: 10px;"></span><span id="time"></span></div>
+                    <!-- Left nav -->
+                    @*<ul class="nav navbar-nav">
+                         @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                        {  
+                             <li class="active"><a href="#">Masters <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#MapDealer" id="MnDealer" value="Dealer Master" /></a></li>
+                                    <li><a href="#">Item Setup <span class="caret"></span></a>
+                                        <ul class="dropdown-menu menu-sub">
+                                            <li><a target="_blank" href=" /itemsetup/createtype?MenCode=1">Category</a></li>
+                                            <li><a target="_blank" href=" /itemsetup/createsubtype?MenCode=1">Sub Category</a></li>
+                                            <li><a target="_blank" href=" /itemsetup/itemain?MenCode=1">Item Setup</a></li>  
+                                        </ul>
+                                    </li>
+                                    <li><a target="_blank" href=" /User/Rights?MenCode=1">User Setup</a></li> 
+                                    <li> 
+                                        <a>
+                                            <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnBrand" value="Brand Master" /></a></li>
+
+<li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnFinancialTerms" value="Financial Terms" /></a></li>
+ <li><a>     <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnOtherTerms" value="Other Terms" /></a></li>
+                                     
+                                     <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnRegion" value="Bank Master" /></a>
+                                    </li>
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnDept" value="Department Master" /></a></li>
+
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnApproveDealer" value="Dealer Approve" /></a>
+                                    </li>
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#EmployeeMaster" id="btnEmployeeMaster" value="Employee Setup" /></a>
+                                    </li>
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#departmentSetup" id="btnDepartmentSetup" value="Designation Setup" /></a>
+                                    </li>
+                                     <li><a target="_blank" href=" /Master/City">City Master</a></li>
+                                      
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#CityMaster" id="btnCityMaster" value="Route Map" /></a>
+                                    </li>
+                                  
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerAllotment" id="btnDealerAllotment" value="Dealer Allocation" /></a>
+                                    </li>
+                                     <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerAllotment" id="btnDealerMapAcct" value="Map Dealer" /></a>
+                                    </li>
+
+                                    <li>
+                                     <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdApprove" value="Pending Order"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+*@
+                           @************@
+                           @*  <li><a href="#">Master <span class="caret"></span></a>
+       <ul class="dropdown-menu">
+                        @foreach (var sub in ViewBag.adsubmenu)
+                        {   <li >
+                            <div>  
+                                @if (@sub.mendesc != ""){
+                                <a> <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" /></a>}
+                                else
+                                {
+                                 <a target="_blank" href="@sub.menopti">@sub.menname</a> 
+                                }
+                            </div>
+                         </li>  }   
+                  </ul>   
+                                 </li>*@
+                        @************@
+                     
+
+                       @* <li><a href="#">Transactions <span class="caret"></span></a>
+                            <ul class="dropdown-menu"> 
+                                 @foreach (var sub in ViewBag.vbTransactions)
+                        {   <li >
+                            <div>  
+                                @if (@sub.mendesc != ""){
+                                <a> <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" /></a>}
+                                else
+                                {
+                                 <a target="_blank" href="@sub.menopti">@sub.menname</a> 
+                                }
+                            </div>
+                         </li>  }*@
+
+
+@*                                    <li>   <a><input type="button" class="btn_map" data-toggle="modal" data-target="#Calling" id="btnCalling" value="Calling" data-backdrop="static" data-keyboard="true"  /></a>
+                                </li>
+                                <li>
+                                   <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnParkLead" value="Park Lead"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                             <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="MnFollow" value="Follow Up Entry"  data-backdrop="static" data-keyboard="true" /></a></li>
+                                 
+                                <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnQuotation" value="Quotation Entry"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                                 <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnOrder" value="Order Entry"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                                   <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnPlanDispatch" value="Plan Dispatch"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                                
+                                   <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnPayFollowUp" value="Payment FollowUp"  data-backdrop="static" data-keyboard="true" /></a></li> 
+
+                             
+ <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnBankReceipt" value="Bank Receipt"  data-backdrop="static" data-keyboard="true" /></a></li>  
+
+                                   <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdFollowUp" value="Order FollowUp"  data-backdrop="static" data-keyboard="true" /></a></li> 
+   
+                                @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                                {   
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#AllotTask" id="btnAllotTask" value="Allot Task" /></a>
+                                    </li>                      
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#ReallotIndextrack" id="btnReallotIndextrack" value="Re Allot Task" /></a>
+                                    </li> 
+                                }
+                                @if (ViewBag.UserType == "3")
+                                {  
+                                    <li><a href="#" data-toggle="modal" data-target="#MapDealer">Dealer Master</a></li> 
+                                }
+                                @if (ViewBag.UserType == "4")
+                                { 
+                                        
+                                    <li><a href="#">Upload Sales</a></li> 
+                                    <li><a href="/Dealer/Quotation">Quotation</a></li> }
+                                @if (ViewBag.UserType == "9")
+                                { 
+                                    <li><a href="/Home/Rate_Aservice">Rating</a></li>
+                                    <li><a href="#">Ask A Quote </a></li> 
+                                    <li><a href="/Customer/ProductReg">Register A Product</a></li>}
+                                @if (ViewBag.UserType == "8" || ViewBag.UserType == "10" || ViewBag.UserType == "11")
+                                { 
+                                          
+                                    <li><a href="#" data-toggle="modal" data-target="#ConversionEntry">Conversion Entry </a></li>
+                                    <li><a href="#">Quotation Entry</a></li>  
+                                         <li><a data-toggle="modal" data-target="#Allot_Task_List" id="A_Allot_Task_List">Allot Task List</a></li>
+    
+                                }
+                                <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#RaiseTicket" id="btnRaiseTicket" value="Raise Ticket" /></a>
+                                </li>
+
+                                
+
+                                <li><a href="#" data-toggle="modal" data-target="#FollowUp"></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Reports <span class="caret"></span></a>
+<ul class="dropdown-menu">
+    @* @foreach (var sub in ViewBag.vbReports)
+                        {   <li >
+                            <div>  
+                                @if (@sub.mendesc != ""){
+                                <a> <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" /></a>}
+                                else
+                                {
+                                 <a target="_blank" href="@sub.menopti">@sub.menname</a> 
+                                }
+                            </div>
+                         </li>  }
+
+</ul>
+
+                         @*   <ul class="dropdown-menu">
+                              
+                                <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnCallingList" value="Calling List"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                               @if (ViewBag.UserType == "0" || ViewBag.UserType == "1" || ViewBag.UserType == "8")
+                                {
+                                     <li><a href="#" data-toggle="modal" id="btnDealerList" data-target="#ParkLead">Dealer List</a></li>//DealerList
+                                    <li><a href="#" data-toggle="modal" id="btnCallingSummary" data-target="#ParkLead"  data-backdrop="static" data-keyboard="true">Calling Summary </a></li>
+                                   <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#LeadList" id="MnLeadList" value="Park Lead List"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li> 
+                                     <li><input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="FollowUpList" value="Follow Up List"  data-backdrop="static" data-keyboard="true" /> </li>
+                                    
+                                    <li><a href="#" data-toggle="modal" id="bntQuotList" data-target="#QuotList"  data-backdrop="static" data-keyboard="true">Quotation List</a></li>
+                                        <li><a href="#" data-toggle="modal" id="bntOrderList" data-target="#DealerApprove"  data-backdrop="static" data-keyboard="true">Order List</a></li>
+                                     <li>
+                                     <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdApprove_I" value="Approved Order"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li>
+                                        <li>
+                                     <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdDispatch" value="Dispatch List"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li> 
+                                      <li>
+                                     <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdApprove_II" value="Pending Order"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li>
+                       <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnPayFollowUpList" value="Payment FollowUp List"  data-backdrop="static" data-keyboard="true" /></a></li> 
+                                        <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnTrialBal" value="Trial Balance"  data-backdrop="static" data-keyboard="true" /></a></li>
+                                    <li><a target="_blank" href="/Report/Filter">Report Viewer</a></li>
+                                        <li>
+                                             <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#FRegister1" id="UserList" value="User List" /></a>
+                                          </li>
+                                   
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#EmpList" id="btnEmpList" value="Employee List" /></a>
+                                    </li>
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#EmpDealerList" id="btnEmpDealerList" value="Employee-Dealer List" /></a>
+                                    </li>
+                                   <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnMnUserWork" value="User Work"  data-backdrop="static" data-keyboard="true" /></a></li> 
+                                }
+                                @if (ViewBag.UserType == "3")
+                                { 
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerList" id="DealerSearch" value="Dealer List" /></a>
+                                    </li>
+                                    <li><a href="#">Dealer Performance</a></li>
+                                    <li><a href="#">Target Analysis </a></li>
+                                }
+                                @if (ViewBag.UserType == "4")
+                                {
+                                   <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#LeadList" id="MnLeadList" value="Park Lead List" /></a>
+                                    <li><a href="#">Payout </a></li>
+                                  
+                                    <li><a href="#">Sales Summary</a></li>
+                                }
+                                @if (ViewBag.UserType == "9")
+                                {
+                                    <li><a href="/Customer/ProdIndex">Product List</a></li>
+<li><a href="#">Ticket Rating </a></li>
+                                    <li><a href="#">Quotes</a></li>
+                                    <li><a href="#">Downloads </a></li>
+                                }
+                                @if (ViewBag.UserType == "8" || ViewBag.UserType == "10" || ViewBag.UserType == "11")
+                                {
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#LeadList" id="MnLeadList" value="Park Lead List" /></a>
+                                    </li><li>
+                                              <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#THoldList" id="btnTicket_Hold_List" value="Ticket Hold List" /></a>
+                                           </li> 
+                                    <li><a href="/Customer/EmpDoneTasklist">Ticket Done List</a></li>
+  
+                                    <li><a href="#" data-toggle="modal" data-target="#FRegister">Follow Up Register</a></li>
+                                          
+                                }
+
+                                  <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdFollowUpList" value="Order FollowUp List"  data-backdrop="static" data-keyboard="true" /></a></li> 
+
+                                  <li><a> <input type="button" class="btn_map" data-toggle="modal"  data-target="#ParkLead" id="btnLedger" value="Ledger"  data-backdrop="static" data-keyboard="true" /></a></li> 
+                                <li>
+                                   <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#AllIndextrackticket" id="btnAllIndextrackticket" value="Ticket List" /></a>
+                                </li>
+                                
+                            </ul>
+
+                        </li>
+                        <li><a href="#">Utilities <span class="caret"></span></a>
+                            <ul class="dropdown-menu"> 
+                                  <li>    </li>
+                                @if (ViewBag.UserType == "9")
+                                {
+                                    <li><a href="/Html/Download">Downloads</a></li>
+                                }
+                                 
+                                    <li>
+                                       
+                                    </li>
+                                     
+                              @*  
+                            </ul>
+                        </li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="~/pdf/CompXCloud.pdf" target="_blank">Help</a></li>
+                    </ul>}*@
+
+                    <div class="right_head_bottom pull-right">
+                        <h2 class="text-right">
+                            @if (ViewBag.UserType == "0")
+                            { <span>Supper Admin</span>}
+                            @if (ViewBag.UserType == "1")
+                            { <span>Admin</span>}
+                            @if (ViewBag.UserType == "2")
+                            { <span>Partner</span>}
+                            @if (ViewBag.UserType == "3")
+                            { <span>Distributor</span>}
+                            @if (ViewBag.UserType == "4")
+                            { <span>Dealer</span>}
+                            @if (ViewBag.UserType == "5")
+                            { <span>Tele Caller</span>}
+                            @if (ViewBag.UserType == "6")
+                            { <span>Service Mgr</span>}
+                            @if (ViewBag.UserType == "7")
+                            { <span>Service Eng</span>}
+                            @if (ViewBag.UserType == "8")
+                            { <span>Employee</span>}
+                            @if (ViewBag.UserType == "9")
+                            { <span>Client</span>}
+                            @if (ViewBag.UserType == "10")
+                            { <span>Employee ,Sale</span>}
+                            @if (ViewBag.UserType == "11")
+                            { <span>Employee ,Tech Supp</span>}
+
+                            <img src="~/Img/company.png" /></h2>
+                    </div>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+
+    </header>
+    <section class="content_center">
+        <div class="container-fluid">
+            <div class="row">
+                <!----left side bar-->
+
+                <!----left side bar end-->
+                <div class="col-md-2 col-sm-2 col-xs-12 icon-menu p0">
+
+    <!----Menu Start-->
+                       <div id="MainMenu">
+        <div class="list-group panel">
+        
+           <a href="#demofirst" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu"> 
+                <img src="~/images/Picture1.png" class="md-display" />
+               <span class="md-display">Masters</span>
+                <img src="~/images/Picture1.png" class="sm-display img-size"/><span class="sm-display">Masters</span><i class="fa fa-caret-down sm-display"></i></a>
+          <div class="collapse" id="demofirst">
+           @*  <input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnQuotation" value="Quotation Entry"  data-backdrop="static" data-keyboard="true" />*@
+        
+                        @foreach (var sub in ViewBag.adsubmenu)
+                        {
+                            if (@sub.mendesc != "")
+                            {
+                                <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                            else
+                            {
+                                 <a class="submenuAncher" target="_blank"  href="@sub.menopti">@sub.menname</a> 
+                            }
+                        }   
+           
+          </div>
+
+          <a href="#demoTrans" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">
+               <img src="~/images/Picture7.png" class="md-display" />
+               <span class="md-display">Transactions</span>
+               <img src="~/images/Picture7.png" class="sm-display img-size"/><span class="sm-display">Transactions</span> <i class="fa fa-caret-down sm-display"></i>
+
+          </a>
+           <div class="collapse" id="demoTrans">
+
+                 @foreach (var sub in ViewBag.vbTransactions)
+                 {
+                     if (@sub.mendesc != "")
+                     {
+                                 <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                     else
+                     {
+                                 <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                     }
+                 }
+
+@*              <a href="" class="list-group-item">Subitem 1</a>
+            <a href="" class="list-group-item">Subitem 2</a>
+            <a href="" class="list-group-item">Subitem 3</a>
+                <a href="" class="list-group-item">Subitem 1</a>
+            <a href="" class="list-group-item">Subitem 2</a>
+            <a href="" class="list-group-item">Subitem 3</a>
+                <a href="" class="list-group-item">Subitem 1</a>
+            <a href="" class="list-group-item">Subitem 2</a>
+            <a href="" class="list-group-item">Subitem 3</a>
+                  <a href="" class="list-group-item">Subitem 3</a>*@
+          </div>
+
+          <a href="#demo3" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">              
+              <img src="~/images/Picture4.png" class="md-display" />
+              <span class="md-display">Reports</span>
+               <img src="~/images/Picture4.png" class="sm-display img-size"/><span class="sm-display">Reports</span><i class="fa fa-caret-down sm-display"></i>
+
+          </a>
+          <div class="collapse" id="demo3"> 
+
+                @foreach (var sub in ViewBag.vbReports)
+                {
+                    if (@sub.mendesc != "")
+                    {
+                                <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                    else
+                    {
+                                 <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                    }
+                }
+
+              @* <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#EmpDealerList" id="btnEmpDealerList" value="Employee-Dealer List" /></a>*@
+
+           @*  <a href="" class="list-group-item">Subitem 1</a>
+            <a href="" class="list-group-item">Subitem 2</a>
+            <a href="" class="list-group-item">Subitem 3</a>*@
+          </div>
+          <a href="#demo4" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">
+               <img src="~/images/Picture8.png" class="md-display"/>
+              <span class="md-display">Utilities</span>
+
+               <img src="~/images/Picture8.png" class="sm-display img-size"/><span class="sm-display">Utilities</span><i class="fa fa-caret-down sm-display"></i>
+
+          </a>
+          <div class="collapse" id="demo4">
+              <input type="button" class="btn_map" data-toggle="modal" data-target="#Calling" id="btnChangePassword" value="ChangePassword" data-backdrop="static" data-keyboard="true"  />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#InBoundImport" value="Calling Import" />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerImport" value="Dealer Import" />
+             <input type="button" class="btn_map" data-toggle="modal" data-target="#OpeingImport" value="Opeing Import" />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#LedgerImport" value="Ledger Import" />
+            <a class="submenuAncher"  href ="../UploadImg/CallingData.xls" > Download Calling Template </a>
+            <a class="submenuAncher"  href ="../UploadImg/DealerData.xls" > Download Dealer Template </a>
+            <a class="submenuAncher"  href ="../UploadImg/DealerOpening.xls" > Download Dealer Opening </a>
+            <a class="submenuAncher"  href ="../UploadImg/Ledger.xls" > Ledger Template </a>
+
+           @* <a href="" class="list-group-item">Subitem 1</a>
+            <a href="" class="list-group-item">Subitem 2</a>
+            <a href="" class="list-group-item">Subitem 3</a>*@
+          </div>
+         
+  <a href="#demoService" class="list-group-item list-group-item-success" data-toggle="collapse"   data-parent="#MainMenu">
+       <img src="~/images/Picture5.png" class="md-display" />
+        <span class="md-display">Service</span>
+
+       <img src="~/images/Picture5.png" class="sm-display img-size"/><span class="sm-display"> Service </span><i class="fa fa-caret-down sm-display"></i></a>
+           <div class="collapse" id="demoService">
+
+                 @foreach (var sub in ViewBag.vbService)
+                 {
+                     if (@sub.mendesc != "")
+                     {
+                                 <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                     else
+                     {
+                                 <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                     }
+                 }
+                
+          </div>
+        </div>
+      </div>
+                    
+                     <script>
+                         var $links = $('.list-group.panel a');
+                         $links.click(function () {
+                             $links.removeClass('selected');
+                             $(this).addClass('selected');
+                         });
+             </script>  
+    <!----Menu End-->
+                   @*< <div class="left_panel newProfile text-center">
+                        img src="@Url.Content(@ViewBag.vbImgPath)" style="border-radius: 50%; border-radius: 50%; border: 5px solid #F54F55; margin-bottom: 24px;" 
+                        <img src="/img/avatar.png" style="border-radius: 50%; border-radius: 50%; border: 5px solid #F54F55; margin-bottom: 24px;" />
+                       <span>@ViewBag.UserName  @*|| @CompxERP.Models.SessionMaster.CompCode || @CompxERP.Models.SessionMaster.UserID 
+                    </div>*@
+                </div>
+
+                <!----right side bar-->
+                <div class="col-md-10 col-sm-10 col-xs-12 padd_l right-screen">
+                    <div class="right_sidebar">
+                        <div class="panel panel-bd lobidisable">
+                            <div class="panel-heading">
+                                @* <div class="panel-title">
+				                        <h4>QUICK REVIEW</h4>
+				                    </div>*@
+                            </div>
+                            <div class="panel-body">
+
+                                <ul class="Quick_view ClientDashboard">
+                                    @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                                    {
+                                        <li><a target="_blank" href="#"><span class="risK_img">
+                                            <img src="/img/Distributort.png"></span><span class="risK_imgTxt"> Branch Office<br>
+                                                <input id="lblDistributors" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a  data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnDealerList1"><span class="risK_img blue_bg">
+                                            <img src="/img/dealers.png"></span><span class="risK_imgTxt blue_bgText"> Allied Dealers<br>
+                                                <input id="lblDealers" type="button" class="distributor_value"/>
+                                            </span></a></li>
+                                        <li><a><span class="risK_img gn">
+                                            <img src="/img/Conversion.png"></span><span class="risK_imgTxt gnText">Total Sales<br />
+                                                <input id="lblTotalSales" type="button" class="distributor_value"/>
+                                            </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img Dgn">
+                                            <img src="/img/UnderProcess.png"></span><span class="risK_imgTxt DgnTxt"> Total Sale Value
+                                                <br />
+                                                <input id="lblTotalSaleValue" type="button" class="distributor_value"/></span></a></li>
+                                        
+                                       
+                                        <li><a  data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnPayFollowUp1"><span class="risK_img yw">
+                                            <img src="/img/converticons.png"></span><span class="risK_imgTxt ywText">Total Outstanding<br />
+                                                <input id="lblTotalOutstanding" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a  data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnPayFollowUp2"><span class="risK_img bu">
+                                            <img src="/img/Billing_Qty.png"></span><span class="risK_imgTxt buText">Total Due<br />
+                                                <input id="lblTotalDue" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img Lyw">
+                                            <img src="/img/bill_iconNew.png"></span><span class="risK_imgTxt LywText">Total Collection<br />
+                                                <input id="lblTotalCollection" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnComplaintList1"><span class="risK_img rd">
+                                            <img src="/img/Target.png"></span><span class="risK_imgTxt rdText">Complaint Solved
+                                                <br />
+                                                <input id="lblComplaintSolved" type="button" class="distributor_value"/></span></a></li>
+                                        <li><a data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnComplaintList2"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">Pending Complaint<br />
+                                                <input id="lblPendingComplaint" type="button" class="distributor_value"/></span></a></li>    
+                                        <li><a data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#DealerApprove" id="btnComplaintList3"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">Revenue From Complains<br />
+                                                <input id="lblRevenFromComplains" type="button" class="distributor_value"/></span></a></li>    
+                                        <li><a target="_blank" href="#"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">Q3 Target<br />
+                                                <input id="lblQ3Target" type="button" class="distributor_value"/></span></a></li>    
+                                        <li><a target="_blank" href="#"><span class="risK_img bluelight">
+                                            <img src="/img/Margin_icon.png"></span><span class="risK_imgTxt bluelightText">--<br />
+                                                <input id="lblOther" type="button" class="distributor_value"/></span></a></li>    
+                                    }
+                                    @if (ViewBag.UserType == "3")
+                                    { 			                        <li><a target="_blank" href="#"><span class="risK_img">
+                                        <img src="/img/AlliedDealer.png"></span><span class="risK_imgTxt"> Allied Dealer
+                                       <br>
+                                            <input id="lblDealers" class="distributor_value" type="text" disabled></span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img blue_bg">
+                                            <img src="/img/followUpt.png"></span><span class="risK_imgTxt blue_bgText">  Active  Dealers
+                                                <br>
+                                                57      </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img gn">
+                                            <img src="/img/Conversion.png"></span><span class="risK_imgTxt gnText">license Billed<br />
+                                                135   </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img yw">
+                                            <img src="/img/Target.png"></span><span class="risK_imgTxt ywText">Activated<br />
+                                                131 </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img Dgn">
+                                            <img src="/img/BillingIcon.png"></span><span class="risK_imgTxt DgnTxt"> Sales Summary
+                                                <br />
+                                                1,41,550</span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img bu">
+                                            <img src="/img/BillingIcon.png"></span><span class="risK_imgTxt buText">Partner Margin
+                                                <br />
+                                                1,12,550</span></a></li>}
+                                    @if (ViewBag.UserType == "4")
+                                    {  <li><a target="_blank" href="/Quotation/ParkLead?MstType=1147"><span class="risK_img">
+                                        <img src="/img/Leads.png"></span><span class="risK_imgTxt"> Park Lead
+            <br>@ViewBag.TotalLead</span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img blue_bg">
+                                            <img src="/img/followUpt.png"></span><span class="risK_imgTxt blue_bgText">  Payout 
+                                                <br>
+                                                INR 2600     </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img gn">
+                                            <img src="/img/Conversion.png"></span><span class="risK_imgTxt gnText">Leads Status<br />
+                                                3 in Process   </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img yw">
+                                            <img src="/img/Target.png"></span><span class="risK_imgTxt ywText">Conversion<br />
+                                                2</span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img Dgn">
+                                            <img src="/img/BillingIcon.png"></span><span class="risK_imgTxt DgnTxt"> Sales Summary
+                                                <br />
+                                                INR 2600</span></a></li>
+                                    }
+                                    @if (ViewBag.UserType == "9")
+                                    {<li><a target="_blank" href="/Home/RaiseTicket"><span class="risK_img">
+                                        <img src="/img/RaiseTicket.png"></span><span class="risK_imgTxt">  Raise Ticket 
+                                                 <br>
+                                            124 </span></a></li>
+                                        <li><a target="_blank" href="/Customer/trackticket"><span class="risK_img blue_bg">
+                                            <img src="/img/tickitLocation.png"></span><span class="risK_imgTxt blue_bgText">  Track Ticket       </span></a></li>
+                                        <li><a target="_blank" href="/Home/Rate_Aservice"><span class="risK_img gn">
+                                            <img src="/img/st.png"></span><span class="risK_imgTxt gnText">  Rate Services    </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img yw">
+                                            <img src="/img/Question.png"></span><span class="risK_imgTxt ywText"> Ask A Quotes  </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img Dgn">
+                                            <img src="/img/sOffer.png"></span><span class="risK_imgTxt DgnTxt">  Special Offers   </span></a></li>
+                                        <li><a target="_blank" href="/Html/Download"><span class="risK_img bu">
+                                            <img src="/img/download.png"></span><span class="risK_imgTxt buText">  Download Update   </span></a></li>
+                                    }
+                                    @if (ViewBag.UserType == "8" || ViewBag.UserType == "10" || ViewBag.UserType == "11")
+                                    { <li><a target="_blank" href="/Quotation/ParkLead?MstType=1147"><span class="risK_img">
+                                        <img src="/img/Leads.png"></span><span class="risK_imgTxt">Parked Leads
+                                                 <br>@ViewBag.TotalLead</span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img blue_bg">
+                                            <img src="/img/followUpt.png"></span><span class="risK_imgTxt blue_bgText">  Follow Up
+                                                <br>
+                                                @ViewBag.TotalFolloUp   </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img gn">
+                                            <img src="/img/Conversion.png"></span><span class="risK_imgTxt gnText">  Conversion<br />
+                                                7   </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img yw">
+                                            <img src="/img/Target.png"></span><span class="risK_imgTxt ywText">Target Q1<br />
+                                            </span></a></li>
+                                        <li><a target="_blank" href="#"><span class="risK_img Dgn">
+                                            <img src="/img/BillingIcon.png"></span><span class="risK_imgTxt DgnTxt"> Billing Q1
+                                                <br />
+                                            </span></a></li>
+                                    }
+                                </ul>
+
+                            </div>
+                        </div>
+                        <div class="charts_div">
+                            <div class="row">
+                                <!-- Bar Chart -->
+                                <div class="col-xs-12 col-sm-12 col-md-8">
+                                    <div class="panel panel-bd lobidisable">
+                                        <div class="panel-heading">
+                                            <div class="panel-title">
+                                                <h4>BUSINESS STATISTICS - 2017-18</h4>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            @*<canvas class="main-chart" id="line-chart" height="200" width="600"></canvas>
+                                            <canvas class="main-chart" id="chartdiv" height="200" width="600"></canvas>*@
+                                            <div id="chartdiv" style="height:270px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4">
+                                    @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                                    {
+                                        <div class="panel panel-bd lobidisable">
+                                            <div class="panel-heading">
+                                                <div class="panel-title">
+                                                    <h4>Available Statistics Since 1 Apr 2018</h4>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body Available_Statistics">
+
+                                                <ul class="site-stats">
+                                                    @*<li class="bg_lh bg11"><i class="icon-user"></i><strong>@ViewBag.Total_Ticket</strong> <small>Total Tickets</small></li>
+                                                    <li class="bg_lh bg12"><i class="icon-plus"></i><strong>@ViewBag.Resolve_Ticket</strong> <small>Resolved  </small></li>
+                                                    <li class="bg_lh bg13"><i class="icon-shopping-cart"></i><strong>@ViewBag.Bal_Ticket</strong> <small>Balance</small></li>*@
+
+   <li class="bg_lh bg11"><a id="btnOrderQty" href="#"  data-toggle="modal" data-target="#DealerApprove"><i class="icon-user"></i><strong>  <input id="lblOrderQty" type="button" disabled class="distributor_value" />  </strong> <small>Order Qty</small></a></li>
+  <li class="bg_lh bg12"><i class="icon-plus"></i><strong><input id="lblApproveQty" type="button" disabled class="distributor_value" /></strong> <small>Pending Order</small></li>
+  <li class="bg_lh bg13"><i class="icon-shopping-cart"></i><strong><input id="lblDispatchQty" type="button" disabled class="distributor_value" /></strong> <small>Dispatch</small></li>
+  <li class="bg_lh bg14"><i class="icon-tag"></i><strong><input id="lblPendingDispatchQty" type="button" disabled class="distributor_value" /></strong> <small>Pending Dispatch</small></li>
+  <li class="bg_lh bg15"><i class="icon-shopping-cart"></i><strong><input id="lblAvaiStckQty" type="button" disabled class="distributor_value" /></strong> <small>Available Stock Qty</small></li>
+  <li class="bg_lh bg15"><i class="icon-tag"></i><strong><input id="lblReqStckQty" type="button" disabled class="distributor_value" /></strong> <small>Required Stock Qty</small></li>
+  
+
+                                                </ul>
+
+
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!----left side bar end-->
+
+
+
+
+            </div>
+        </div>
+    </section>
+    <footer id="page-footer" class="text-center">
+
+      @*   <a href="#" class="show_hide" width="20" height="20">
+            <img src="images/notification.png" alt="Notification" class="show_hide" /></a>
+
+        <input type="hidden"  ID="hdnMCode" runat="server" />
+        <br />
+        <div class="slidingDiv" id="slidv" runat="server">
+            <strong>Notification </strong>
+
+            <a href="#" class="show_hide">
+                <img src="images/close.png" /></a><br />
+            <hr />
+            <table>
+                <tr>
+                    <td>
+                        <a href="InsReminder.aspx?Expired=Yes" target="_blank">
+                            <img src="images/insurance.png" width="20" id="imgins1" runat="server" height="20" /></a></td>
+                    <td>
+                        <input type="button" ID="notify1" class="show_hide" value="Reminder"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="InsReminder.aspx?Expired=No" target="_blank">
+                            <img src="images/insurance.png" width="20" id="imgins2" runat="server" height="20" /></a></td>
+                    <td>
+                        <input type="text"   ID="notify2" class="show_hide" value="Reminder"  />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="images/insurance.png" width="20" id="img1" runat="server" height="20" /></td>
+                    <td> 
+                        <a onclick="CallNotify()">
+                            <input type="button"  ID="notify3"  class="show_hide" value="Reminder" style="font-size:Small;color:White;" /></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="text"  ID="Label2" class="show_hide" />
+                    </td>
+                </tr>
+            </table>
+
+        </div>*@
+
+        <p>
+            <span style="margin-top: 10px; text-align: center;"><strong>CRM</strong> &copy; copyright 2017</span>
+            <img src="~/Img/footer_logoNew.png" class="img-responsive" style="float: right; margin-right: 10px;">
+        </p>
+    </footer>
+
+    <!--------Map Dealer--->
+    <div class="modal fade mapDealercLS" id="MapDealer" role="dialog" tabindex="-1">
+        <div class="modal-dialog createDistributerDv">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvDist_Deal"></div>
+            </div>
+        </div>
+    </div>
+    <!--------Map Dealer--->
+    <div class="modal fade mapDealercLS" id="CallingList" role="dialog" tabindex="-1">
+        <div class="modal-dialog createDistributerDv">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvCallingList"></div>
+            </div>
+        </div>
+    </div>
+    <!--------Map Dealer--->
+    <div class="modal fade Category" id="Category" role="dialog" tabindex="-1">
+        <div class="modal-dialog Category">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvCategory"></div>
+            </div>
+        </div>
+    </div>
+    <!--------Map Dealer--->
+    <div class="modal fade SubCategory" id="SubCategory" role="dialog" tabindex="-1">
+        <div class="modal-dialog SubCategory">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvSubCategory"></div>
+            </div>
+        </div>
+    </div>
+
+    @*  <div class="modal fade CreateItem" id="CreateItem" role="dialog" tabindex="-1">
+        <div class="modal-dialog CreateItem">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvCreateItem"></div>
+            </div>
+        </div>
+    </div>*@
+    <!--------Dealer List--->
+    <div class="modal fade" id="DealerList" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+
+            <!-- Modal content-->
+
+
+        </div>
+    </div>
+
+
+    <!--------Lead List   --->
+    <div class="modal fade" id="LeadList" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title">Park Lead List</h4>
+                </div>
+                <div class="modal-body input_popup">
+
+                    <div class="form-group">
+                        @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                        {
+                            <label class="control-label col-sm-1 padd_l padd_5">Type</label>
+                            <div class="col-sm-1 padd_l padd_5">@*RefTypeID*@
+                                @Html.DropDownList("mstrfvc", new List<SelectListItem> { 
+           new SelectListItem { Text="-- Select --", Value="0"},
+           new SelectListItem { Text="Distributor", Value="1"},
+           new SelectListItem { Text="Dealer", Value="2"}, 
+            new SelectListItem { Text="Agent", Value="3"},  
+            new SelectListItem { Text="Employee", Value="4"},  
+           }, new { @class = "form-control", @onchange = "ShowDealer_Park();" })
+                            </div>
+                               
+                            <label class="control-label col-sm-1 padd_l padd_5">Select</label>
+                            <div class="col-sm-1 padd_l padd_5">@*RefNmId*@
+                                @Html.DropDownList("mstrfvt", new List<SelectListItem> { 
+           new SelectListItem { Text="-- Select --", Value="0"}, 
+           }, new { @class = "form-control" })
+
+                            </div>
+
+                        }
+                        <label class="control-label col-sm-1 padd_l padd_5">Inquiry For</label>
+                        <div class="col-sm-1 padd_l padd_5">
+                            @Html.DropDownList("I_ItemNm", ViewBag.ItemNm as SelectList, "--Select--", new { @class = "form-control" })
+                        </div>
+                        <label class="control-label col-sm-1 padd_l padd_5">Industries</label>
+                        <div class="col-sm-1 padd_l padd_5">
+                            @Html.DropDownList("ddlIndustries", new List<SelectListItem> { 
+           new SelectListItem { Text="-- Select --", Value="0"}, 
+           new SelectListItem { Text="Cotton", Value="1"},     
+           new SelectListItem { Text="Chemical", Value="2"},
+            new SelectListItem { Text="Electrical", Value="3"},     
+            new SelectListItem { Text="Food & beverages", Value="4"},
+            new SelectListItem { Text="Furniture", Value="5"},    
+            new SelectListItem { Text="Fabric & Footware", Value="6"},  
+            new SelectListItem { Text="Medical", Value="7"},  
+            new SelectListItem { Text="Machinary", Value="8"}, 
+            new SelectListItem { Text="Metal", Value="9"},  
+            new SelectListItem { Text="Plastic", Value="10"},  
+           }, new { @class = "form-control" })
+                        </div>
+
+                        <label class="control-label col-sm-1 padd_l padd_5 form_width">From</label>
+                        <div class="col-sm-1 padd_l padd_5">
+                            <input type="text" class="form-control" id="S_From_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                        </div>
+                        <label class="control-label col-sm-1 padd_l padd_5 form_width">To</label>
+                        <div class="col-sm-1 padd_l padd_5 btnDvflot">
+                            <input type="text" class="form-control" id="T_To_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                            <input type="text" class="form-control" id="PF_From_588" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">
+                            <span class="input-group-btn">
+                                <input type="button" id="LeadSearch" value="Search" class="btn btn-search" />
+                            </span>
+                        </div>
+                    </div>
+
+
+                    @*  <div class="col-sm-3 padd_l padd_5">@Html.DropDownList("EmployeeNM", (SelectList)ViewBag.EmployeeNM, "--Select--", new { @class = "form-control", required = "required" })
+                    </div>*@
+
+
+
+                    <div id="divDispatchEntries"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    @*    <div id="divDispatchEntries_Lead"></div>*@
+
+    <!-------- Quot List --->
+    <div class="modal fade" id="QuotList" role="dialog" tabindex="-1">
+        <div class="modal-dialog  dealerList">
+            <div id="divQuota"></div>
+        </div>
+    </div>
+
+
+    <!--------SourceMaster--->
+    <div class="modal fade" id="SourceMaster" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div id="divSource"></div>
+        </div>
+    </div>
+    <!--------SourceMaster--->
+    <div class="modal fade dealeert" id="DealerApprove" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <div id="dvDealerApprove"></div>
+        </div>
+    </div>
+
+
+    <!--------Dealer Allotment Setup--->
+    <div class="modal fade" id="DealerAllotment" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvDealerAllotment"></div>
+            </div>
+
+        </div>
+    </div>
+    <!--------Employee Master--->
+    <div class="modal fade" id="EmployeeMaster" role="dialog" tabindex="-1">
+        <div class="modal-dialog  dealerList">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divEmployeeMaster"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-----Follow up register **************----->
+    <div class="modal fade" id="ParkLead" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <div class="modal-content">
+                <div id="divParkLead"></div>
+            </div>
+        </div>
+    </div>
+    <!-----dvCalling----->
+    <div class="modal fade" id="Calling" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id="dvCalling"></div>
+            </div>
+        </div>
+    </div>
+    <!-----Quotation Out register----->
+    <div class="modal fade" id="QuotationOut" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <div class="modal-content">
+                <div id="divQuotation"></div>
+            </div>
+        </div>
+    </div>
+    <!-----ItemExtra register----->
+    <div class="modal fade" id="ItemExtra" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <div class="modal-content">
+                <div id="divItemExtra"></div>
+            </div>
+        </div>
+    </div>
+    <!-----Follow up register----->
+    <div class="modal fade" id="FRegister1" role="dialog" tabindex="-1">
+        <div class="modal-dialog createDistributerDv">
+            <div class="modal-content">
+                <div id="divLead"></div>
+            </div>
+        </div>
+    </div>
+    <!-----Emp List----->
+    <div class="modal fade" id="ReallotIndextrack" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divReallotIndextrack"></div>
+
+            </div>
+        </div>
+    </div>
+    <!-----Allot Task Entry----->
+    <div class="modal fade highz-index followUpFormNew" id="DvReAllotTicket" role="dialog" tabindex="-1" style="margin-top: 70px;">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="DvReAllotTicket_Entry"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----Allot Task Entry----->
+    <div class="modal fade" id="THoldList" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <h2>Hold List</h2>
+                <div id="DvTHoldList"></div>
+
+            </div>
+        </div>
+    </div>
+    <!----- AllotTask List----->
+    <div class="modal fade" id="AllotTask" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divAllotTask"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <!----- Allot_Task_List List----->
+    <div class="modal fade" id="Allot_Task_List" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divAllot_Task_List"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----RaiseTicket List----->
+    <div class="modal fade" id="RaiseTicket" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divRaiseTicket"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----RaiseTicket List----->
+    <div class="modal fade" id="Raise_Ticket_List" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div id="divA_Raise_Ticket_List"></div>
+        </div>
+    </div>
+    <!-----Emp List----->
+    <div class="modal fade" id="EmpList" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divEmpList"></div>
+
+            </div>
+        </div>
+    </div>
+    <!-----EmpDealerList List----->
+    <div class="modal fade" id="EmpDealerList" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvEmpDealerList"></div>
+
+            </div>
+        </div>
+    </div>
+    <!-----ParkLead List----->
+    <div class="modal fade" id="ParkLeadEdit" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divParkLeadEdit"></div>
+
+            </div>
+        </div>
+    </div>
+    <!-----divAllIndextrackticket List----->
+    <div class="modal fade" id="AllIndextrackticket" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divAllIndextrackticket"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----InBound----->
+    <div class="modal fade" id="InBound" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divInBound"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-----AllEmpHoldTasklist List----->
+    <div class="modal fade" id="AllEmpHoldTasklist" role="dialog" tabindex="-1">
+        <div class="modal-dialog dealerList">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="divAllEmpHoldTasklist"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--------City Master--->
+    <div class="modal fade" id="CityMaster" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div id="dvCityMaster"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--------departmentSetup--->
+    <div class="modal fade" id="departmentSetup" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Designation Setup</h4>
+                </div>
+                <div class="modal-body input_popup">
+                    <div class="form-group">
+                        @*<div class="col-sm-2 padd_l padd_5">D.ID</div>
+                        <div class="col-sm-3 padd_l padd_5">
+                            <input style="background: #f2eded;" class="form-control" id="DepartmentID" name="DepartmentID" value="1" type="text" disabled>
+                        </div>*@
+
+                        <div class="col-sm-2 padd_l padd_5">Department Name</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            @Html.DropDownList("Department_ID", (SelectList)ViewBag.vwDepartment, "--Select--", new { @class = "form-control", @onchange = "FillDegignationList();", required = "required" })
+                        </div>
+                        <div class="col-sm-2 padd_l padd_5">Designation</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Designation" name="namtx" value="" type="text">
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="InsDepartment" value="Save" class="btn btn-default" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+                <div class="col-sm-12">
+                    <div id="divDepartmentSetup"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----InBoundImport----->
+    <div class="modal fade" id="InBoundImport" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Calling Import</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button id="fake-file-button-browse" type="button" class="btn btn-default">
+                                <img src="~/img/Open-file-icon.png" />
+
+                            </button>
+                        </span>
+                        <input type="file" class="files-input-upload" id="InBound_Path" style="display: none" accept=".xls">
+                        @*id="files-input-upload"*@
+
+                        <input type="text" id="fake-file-input-name" disabled="disabled" placeholder="File not selected" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default bg_btnred" id="btnInBound" disabled="disabled">@*id="fake-file-button-upload"*@
+                                <img src="~/img/upload.png" />
+                            </button>
+                        </span>
+                    </div>
+
+                    <script type="text/javascript">
+                        // Fake file upload
+                        document.getElementById('fake-file-button-browse').addEventListener('click', function () {
+                            document.getElementById('InBound_Path').click();
+                        });
+
+                        document.getElementById('InBound_Path').addEventListener('change', function () {
+                            document.getElementById('fake-file-input-name').value = this.value;
+
+                            document.getElementById('btnInBound').removeAttribute('disabled');
+                        });
+                    </script>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----DealerImport----->
+    <div class="modal fade" id="DealerImport" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Dealer Import  </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button id="fake-file-button-browse-1" type="button" class="btn btn-default">
+                                <img src="~/img/Open-file-icon.png" />
+
+                            </button>
+                        </span>
+                        <input type="file" class="files-input-upload" id="Dealer_Path" style="display: none" accept=".xls">
+                        @*id="files-input-upload"*@
+
+                        <input type="text" id="fake-file-input-name-1" disabled="disabled" placeholder="File not selected" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default bg_btnred" id="btnDealerImport" disabled="disabled">@*id="fake-file-button-upload"*@
+                                <img src="~/img/upload.png" />
+                            </button>
+                        </span>
+                    </div>
+
+                    <script type="text/javascript">
+                        // Fake file upload
+                        document.getElementById('fake-file-button-browse-1').addEventListener('click', function () {
+                            document.getElementById('Dealer_Path').click();
+                        });
+
+                        document.getElementById('Dealer_Path').addEventListener('change', function () {
+                            document.getElementById('fake-file-input-name-1').value = this.value;
+
+                            document.getElementById('btnDealerImport').removeAttribute('disabled');
+                        });
+                    </script>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----OpeingImport----->
+    <div class="modal fade" id="OpeingImport" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Opeing Import  </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button id="fake-file-button-browse-2" type="button" class="btn btn-default">
+                                <img src="~/img/Open-file-icon.png" />
+
+                            </button>
+                        </span>
+                        <input type="file" class="files-input-upload" id="Opeing_Path" style="display: none" accept=".xls">
+                        @*id="files-input-upload"*@
+
+                        <input type="text" id="fake-file-input-name-2" disabled="disabled" placeholder="File not selected" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default bg_btnred" id="btnOpeingImport" disabled="disabled">@*id="fake-file-button-upload"*@
+                                <img src="~/img/upload.png" />
+                            </button>
+                        </span>
+                    </div>
+
+                    <script type="text/javascript">
+                        // Fake file upload
+                        document.getElementById('fake-file-button-browse-2').addEventListener('click', function () {
+                            document.getElementById('Opeing_Path').click();
+                        });
+
+                        document.getElementById('Opeing_Path').addEventListener('change', function () {
+                            document.getElementById('fake-file-input-name-2').value = this.value;
+
+                            document.getElementById('btnOpeingImport').removeAttribute('disabled');
+                        });
+                    </script>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-----LedgerImport----->
+    <div class="modal fade" id="LedgerImport" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Ledger Import  </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button id="fake-file-button-browse-3" type="button" class="btn btn-default">
+                                <img src="~/img/Open-file-icon.png" />
+
+                            </button>
+                        </span>
+                        <input type="file" class="files-input-upload" id="Ledger_Path" style="display: none" accept=".xls">
+                        @*id="files-input-upload"*@
+
+                        <input type="text" id="fake-file-input-name-3" disabled="disabled" placeholder="File not selected" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default bg_btnred" id="btnLedgerImport" disabled="disabled">@*id="fake-file-button-upload"*@
+                                <img src="~/img/upload.png" />
+                            </button>
+                        </span>
+                    </div>
+
+                    <script type="text/javascript">
+                        // Fake file upload
+                        document.getElementById('fake-file-button-browse-3').addEventListener('click', function () {
+                            document.getElementById('Ledger_Path').click();
+                        });
+
+                        document.getElementById('Ledger_Path').addEventListener('change', function () {
+                            document.getElementById('fake-file-input-name-3').value = this.value;
+
+                            document.getElementById('btnLedgerImport').removeAttribute('disabled');
+                        });
+                    </script>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @*  <script src="~/js/jquery.min.js"></script>*@
+    @* <script src="~/js/bootstrap.min.js"></script>*@
+    <!----js for chart---->
+    <script src="~/js/chart.min11.js"></script>
+    <script src="~/js/chart-data.js"></script>
+    <!----js for customJ---->
+    @*  <script src="~/js/customJ.js"></script>*@
+
+
+
+    <script type="text/javascript">
+
+        //$(document).ready(function () {
+        //    //$(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+        //    //$('#InsDealer').show();
+        //    //$('#UpdDealer').hide();
+
+        //    $('.pickdate').each(function () {
+        //        if ($(this).val() == '') {
+        //            var today = new Date();
+        //            var dd = today.getDate();
+        //            var mm = today.getMonth() + 1; //January is 0!
+
+        //            var yyyy = today.getFullYear();
+        //            if (dd < 10) {
+        //                dd = '0' + dd;
+        //            }
+        //            if (mm < 10) {
+        //                mm = '0' + mm;
+        //            }
+        //            var today = dd + '/' + mm + '/' + yyyy;
+        //            $(this).val(today);
+        //        }
+        //    });
+
+        //});
+
+
+        //  FillMaxNo();
+
+        document.onkeydown = function (e) {
+            if (e.which == 27) {
+
+                $("#divParkLead").html("");
+                $("#dvDealerApprove").html("");
+            }
+        }
+
+        //FillDealer();
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var today = dd + '/' + mm + '/' + yyyy;
+        $('#F_Date').val(today);
+        $('#F_FDate').val(today);
+
+        $('#btnCloseDv').click(function () {
+
+            $("#divParkLead").html("");
+            $("#dvDealerApprove").html("");
+            $("#cancel_btn").click();
+        });
+
+        function ClearDvData() {
+
+
+            $("#divParkLead").html("");
+            $("#dvDealerApprove").html("");
+            $("#DealerApprove").html("");
+            $("#dvEmpDealerList").html("");
+            $("#dvDist_Deal").html("");
+
+            window.location = "../Home/superDash";
+
+
+            //            $('.modal').remove();
+            //$('.modal-backdrop').remove();
+            ////$('body').removeClass( "modal-open" );
+
+            //         //$('#ParkLead').data('modal', null); 
+
+            //$("#divParkLead").html("");
+            //$("#dvDealerApprove").html("");
+            //window.close();
+        }
+
+        function FillMaxNo() {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillMaxNoDist", "Home")',
+                data: {},
+                success: function (data) {
+
+                    if (data.Dis_ID != "") $('#Dis_ID').val(data.Dis_ID); else $('#Dis_ID').val('0');
+                    if (data.Deal_ID != "") $('#Deal_ID').val(data.Deal_ID); else $('#Deal_ID').val('0');
+                    if (data.Dis_ID != "") $('#lblDistributors').val(data.Dis_ID); else $('#lblDistributors').val('0');
+                    if (data.Deal_ID != "") $('#lblDealers').val(data.Deal_ID); else $('#lblDealers').val('0');
+                    if (data.TotalSales != "") $('#lblTotalSales').val(data.TotalSales); else $('#lblTotalSales').val('0');
+                    if (data.TotalSaleValue != "") $('#lblTotalSaleValue').val(data.TotalSaleValue); else $('#lblTotalSaleValue').val('0');
+                    if (data.TotalCollection != "") $('#lblTotalCollection').val(data.TotalCollection); else $('#lblTotalCollection').val('0');
+                    if (data.ComplaintSolved != "") $('#lblComplaintSolved').val(data.ComplaintSolved); else $('#lblComplaintSolved').val('0');
+                    if (data.PendingComplaint != "") $('#lblPendingComplaint').val(data.PendingComplaint); else $('#lblPendingComplaint').val('0');
+                    if (data.RevenFromComplains != "") $('#lblRevenFromComplains').val(parseFloat(data.RevenFromComplains).toFixed(2)); else $('#lblRevenFromComplains').val('0');
+                    if (data.Q3Target != "") $('#lblQ3Target').val(data.Q3Target); else $('#lblQ3Target').val('0');
+                    if (data.Other != "") $('#lblOther').val(data.Other); else $('#lblOther').val('0');
+                    if (data.AvaiStckQty != "") $('#lblAvaiStckQty').val(parseInt(data.AvaiStckQty)); else $('#lblAvaiStckQty').val('0');
+                    if (data.ReqStckQty != "") $('#lblReqStckQty').val(parseInt(data.ReqStckQty)); else $('#lblReqStckQty').val('0');
+                }
+            });
+        }
+        function FillMaxNo1() {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillMaxNoDist1", "Home")',
+                data: {},
+                success: function (data) {
+
+                    if (data.TotalOutstanding != "") $('#lblTotalOutstanding').val(data.TotalOutstanding); else $('#lblTotalOutstanding').val('0');
+                    if (data.TotalDue != "") $('#lblTotalDue').val(data.TotalDue); else $('#lblTotalDue').val('0');
+                    if (data.OrdeQty != "") $('#lblOrderQty').val(data.OrdeQty); else $('#lblOrderQty').val('0');
+                    if (data.ApprQty != "") $('#lblApproveQty').val(parseInt(data.ApprQty)); else $('#lblApproveQty').val('0');
+                    if (data.Dispatch != "") $('#lblDispatchQty').val(parseInt(data.Dispatch)); else $('#lblDispatchQty').val('0');
+                    if (data.PendingDispatch != "") $('#lblPendingDispatchQty').val(parseInt(data.PendingDispatch)); else $('#lblPendingDispatchQty').val('0');
+                }
+            });
+        }
+
+
+
+        //function SetDealerCode() {
+        //    
+
+        //    var sCode = ""; var sCity = "";
+
+        //    if ($('#Deal_City_I').val() == "1")
+        //        sCity = "IND";
+        //    else if ($('#Deal_City_I').val() == "2")
+        //        sCity = "BPL";
+        //    else if ($('#Deal_City_I').val() == "3")
+        //        sCity = "UJN";
+        //    else if ($('#Deal_City_I').val() == "4")
+        //        sCity = "KND";
+        //    else if ($('#Deal_City_I').val() == "5")
+        //        sCity = "KGN";
+        //    else if ($('#Deal_City_I').val() == "6")
+        //        sCity = "RTM";
+        //    sCode = "D" + sCity + SetNo($('#Deal_ID').val());
+        //    $('#Deal_Code').val(sCode);
+        //}
+
+
+
+        $('#MnDealer').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Dist_Deal", "Master")",
+                data: { isDistributor: false },
+                success: function (data) {
+                    $("#dvDist_Deal").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+
+        $('#btnCallingList').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "Calling" },
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+            // $.ajax({
+            //      type: "GET",
+            //       url: "@Url.Action("GetCallingData", "Quotation")",
+            //      data: {},
+            //     success: function (data) {
+            //         $("#dvCallingList").html(data);
+            //     },
+            //     error: function () {
+            //        alert('Error');
+            //    }
+            // });
+
+        });
+
+        $('#MnDistributor').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Dist_Deal", "Master")",
+                data: { isDistributor: true },
+                success: function (data) {
+                    $("#dvDist_Deal").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+
+
+
+
+        //function SetDistributorCode() {
+        //    
+
+        //    var sCode = ""; var sCity = "";
+
+        //    if ($('#Dis_State').val() == "1")
+        //        sCity = "MP";
+        //    else
+        //        sCity = "MP";
+
+        //    sCode = "D" + sCity + SetNo($('#Dis_ID').val());
+        //    $('#Dis_Code').val(sCode);
+        //}
+
+        function SetUserType() {
+
+
+            if ($('#ddlUserCategory').val() == "8") {
+                $("#ddlUserType").removeAttr('disabled');
+            }
+            else {
+                $('#ddlUserType').val(0);
+                $("#ddlUserType").attr("disabled", "disabled");
+            }
+        }
+
+        function SetNo(ChNo) {
+            var str = new String(ChNo);
+            if (str.length == 1)
+                return "00" + str;
+            else if (str.length == 2)
+                return "0" + str;
+            else
+                return str;
+        }
+
+
+
+        @*function FillCity() {
+                 
+                 $('#ShowTable').html("");
+                 $.ajax({
+                     type: 'GET',
+                     url: '@Url.Action("GetLeadNoDet", "Home")',
+                     data: { "sLeadNO": +$('#F_LeadNo').val() },
+                     success: function (data) {
+                         $('#F_CompanyName').val(data.Company); $('#F_ContactPerson').val(data.Person);
+                         $('#F_Time').val(data.F_Count); $('#F_F_Date').val(data.LDate); $('#LeadDealer_No').val(data.LeadNo);
+                     }
+                 });
+             }*@
+
+        //function ShowLead() {
+        //    
+        //    $('#F_LeadNo').show();
+        //    $('#F_Dealer').hide();
+        //    $('#lblLead').show();
+        //    $('#lblDealer').hide();
+        //}
+        //function ShowDealer() {
+        //    
+        //    $('#F_LeadNo').hide();
+        //    $('#F_Dealer').show();
+        //    $('#lblLead').hide();
+        //    $('#lblDealer').show();
+        //}
+
+            @* function FillLeadNo() {
+                 
+                 $('#F_LeadNo').empty();
+
+                 $.ajax({
+                     type: 'POST',
+                     url: '@Url.Action("FillLeadNo", "Home")',
+                data: { 'EmpCode': $('#F_FollowBy').val() },
+                success: function (data) {
+                    //var opt = new Option('--Select--', 0);
+                    //$("#F_LeadNo").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].itgpname, data[i].itgpcode);
+                        $("#F_LeadNo").append(opt);
+                    }
+
+                }
+            });
+        }*@
+
+        function ChkPasswordOwn() {
+
+            if ($('#newpass').val() != "" && $('#newpass').val() != $('#cnewpass').val()) {
+                alert('Password Not Match .');
+                $('#cnewpass').val('');
+            }
+        }
+
+        function ChkPassword_Deal() {
+
+            if ($('#Deal_Password').val() != "" && $('#Deal_Password').val() != $('#Deal_RePassword').val()) {
+                alert('Password Not Match .');
+                $('#Deal_RePassword').val('');
+            }
+        }
+
+        function ChkPassword_Dist() {
+
+            if ($('#Dis_Password').val() != "" && $('#Dis_Password').val() != $('#Dis_RePassword').val()) {
+                alert('Password Not Match .');
+                $('#Dis_RePassword').val('');
+            }
+        }
+
+        function SetUserNM() {
+
+
+
+            if ($('#sEmp_empname').val() != '') {
+                $('#sEmpUser').val(getFirstWord($('#sEmp_empname').val()) + $('#iEmp_empcode').val());
+            }
+        };
+        function getFirstWord(str) {
+            var spacePosition = str.indexOf(' ');
+            if (spacePosition === -1)
+                return str;
+            else
+                return str.substr(0, spacePosition);
+        };
+        function ChkNewPassword() {
+
+            if ($('#NewPass').val() != "" && $('#NewPass').val() != $('#ConfPass').val()) {
+                alert('Password Not Match .');
+                $('#ConfPass').val('');
+            }
+        }
+
+        $(document).ready(function () {
+            $('[id^=Dis_Mob2]').keypress(validateNumber);
+        });
+
+
+
+
+
+        function validateNumber(event) {
+            var key = window.event ? event.keyCode : event.which;
+            if (event.keyCode === 8 || event.keyCode === 46) {
+                return true;
+            } else if (key < 48 || key > 57) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+
+        $('#btnCityMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CityMaster", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#dvCityMaster").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnDepartmentSetup').click(function () {
+
+            FillDegignationList();
+           @* $.ajax({
+                type: "GET",
+                url: "@Url.Action("DepartmentSetup", "Master")",
+                data: { },
+                success: function (data) {
+                    $("#divDepartmentSetup").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });*@
+
+        });
+
+        $('#btnDealerAllotment').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("EmpAllotMst", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#dvDealerAllotment").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnDealerMapAcct').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("MapDealer", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#dvDealerAllotment").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#LeadSearch').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            if ($('#mstrfvt').val() > 0)
+                iEmp = $('#mstrfvt').val();
+
+            if ($('#I_ItemNm').val() > 0)
+                iItem = $('#I_ItemNm').val();
+
+            if ($('#ddlIndustries').val() > 0)
+                iIndustries = $('#ddlIndustries').val();
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetLeadList", "Quotation")",
+                data: { iEmpCode: iEmp, ItemID: iItem, To: $('#T_To_Date').val(), From: $('#S_From_Date').val(), iIndustries: iIndustries, iMstType: 1147 },
+                success: function (data) {
+                    $("#divDispatchEntries").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#bntExportExcell').click(function () {
+            window.open('../Pages/Reports.aspx?Code=0&PType=InBoundExl', '_blank');
+        });
+
+        $('#btnEmployeeMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("EmployeeSetup", "Master")",
+                data: { empCode: 0 },
+                success: function (data) {
+                    $("#divEmployeeMaster").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+
+        $('#btnSourceMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 50 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#btnFinancialTerms').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 55 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#btnOtherTerms').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 44 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#btnNotification').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 870 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnBrand').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 61 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSrvMaster').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 873 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnDept').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 11 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+     @*   $('#btnCallingStatus').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 871 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });*@
+        $('#btnRegion').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 163 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnApproveDealer').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ApprovDealerList", "Master")",
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnFloatScheme').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FloatScheme", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPaymentFollowupPlanning').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PayFollowUpPlaning", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPaymentFollowupPlanningSearch').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PaymentPlanning" },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOfferAccept').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("OfferAccept", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSchemeMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SchemeMaster", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        function ComplaintList(x) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "ComplaintList", sCode: x },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+        $('#btnComplaintList').click(function () { ComplaintList(0); });
+        $('#btnComplaintList1').click(function () { ComplaintList(2); });
+        $('#btnComplaintList2').click(function () { ComplaintList(1); });
+        $('#btnComplaintList3').click(function () { ComplaintList(0); });
+
+
+
+       @* $('#').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("", "")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });*@
+
+        $('#MnFollow').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FollowUp", "Quotation")",
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#FollowUpList').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "FollowUp" },
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#InsDepartment').click(function () {
+
+
+            if ($('#Designation').val() == "") {
+                $('#Designation').focus();
+                alert('Please Enter Designation Name ...');
+                return
+            }
+
+            if ($('#Designation').val() != '') {
+                $.get("/Home/InsDepartment", { Department_ID: $('#Department_ID').val(), Designation: $('#Designation').val() }, function (data) {
+                    if (data != null) {
+                        alert('Saved Successfully ...');
+
+                        $('#Department_ID').val('');
+                        $('#Designation').val('');
+                        FillDegignationList();
+
+                    }
+                });
+            }
+        });
+
+
+        function FillDegignationList() {
+
+            $.get("FillDegignationList", { iDept: $('#Department_ID').val() }, function (data) {
+                if (data != null) {
+                    var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+                    $table.append('<thead><tr style="ba"><th width="10%">S.No</th><th width="35%">Department</th><th width="35%">Designation</th><th width="10%">&nbsp;</th><th width="10%">&nbsp;</th></tr></thead>');
+                    var $tbody = $('<tbody style="height:390px;"/>');
+
+
+                    $.each(data, function (i, val) {
+                        var $row = $('<tr/>');
+                        $row.append($('<td width=10%"/>').html(i + 1));
+                        $row.append($('<td width="35%"/>').html(val.studadd2));
+                        $row.append($('<td width="35%"/>').html(val.StudName));
+
+                        //$row.append($('<td width="10%"/>').html('<button type="button"  data-toggle="modal" class="deleteContact btn btn btn-danger btn-xs"><img src="../../img/eye.png" style="width:18px;"/></button> <input type ="hidden" id="hdnMstCode_' + i + '" value ="' + val.MstCode + '"  />'));
+                        //$row.append($('<td width="10%"/>').html('<button type="button"   class="deleteContactNew"><img src="../Images/deleteNEw.png" style="width:20px;"/></button>'));
+                        $tbody.append($row);
+                    });
+                    $table.append($tbody);
+                    $('#divDepartmentSetup').html($table);
+                }
+            });
+        }
+
+        $('#btnCallingSummary').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CallSummary", "Report")",
+                data: {},
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        function DealerList() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("DealerList", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+});
+        }
+        $('#btnDealerList').click(function () { DealerList(); });
+        $('#btnDealerList1').click(function () { DealerList(); });
+
+        $('#bntQuotList').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetQuotList", "Quotation")",
+                data: { iEmpCode: 0, ItemID: 0, To: "", From: "", iIndustries: 0, iMstType: 1163 },
+                success: function (data) {
+                    $("#divQuota").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#bntOrderList').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "Order" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdApprove').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdApprove" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnOrdApprove_II').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdApprove" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnOrdApprove_I').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdApprove_I" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdDispatch').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "DispatchOrd" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnParkLead').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ParkLead", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "1147" },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnApproveOrder').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getProduction", "Quotation")",
+                data: { IsApprove: true },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnProductionList').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getProduction", "Quotation")",
+                data: { IsApprove: false },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPendingOrder').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PendingOrder", "Quotation")",
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        function PayFollowUp() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PayFollowUp" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+        $('#btnPayFollowUp').click(function () {
+            PayFollowUp();
+        });
+        $('#btnPayFollowUp1').click(function () {
+            PayFollowUp();
+        });
+        $('#btnPayFollowUp2').click(function () {
+            PayFollowUp();
+        });
+
+        $('#btnBankReceipt').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "BankReceipt" },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPayFollowUpList').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PayFollowUpList" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnTrialBal').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "TrialBal" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdFollowUp').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdFollowUp" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSrvCycle').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SrvCycle", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSrvComplement').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Complaint", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnMnUserWork').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "UserWork" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdFollowUpList').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdFollowUpList" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnLedger').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "Ledger" },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnCalling').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("tblCallDet", "Quotation")",
+                data: {},
+                success: function (data) {
+                    $("#dvCalling").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnChangePassword').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ChangePassword", "User")",
+                data: {},
+                success: function (data) {
+                    $("#dvCalling").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnQuotation').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Quotation", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "1163", mstcode_Print: 0 },
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrder').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Order", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "174", mstcode_Print: 0 },
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        /*start 181018 %temp%*/
+        $('#btnOrderQty').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetExeWiseOrder", "Quotation")",
+                data: {},
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        /*end 181018 %temp%*/
+        $('#btnPlanDispatch').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PlanDispatch", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "80", mstcode_Print: 0 },
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnItemExtra').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ItemExin", "Master")",
+                data: { iItemCode: 1 },
+                success: function (data) {
+                    $("#divItemExtra").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+
+        $('#btnEmpList').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_EmpList", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#divEmpList").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnEmpDealerList').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getDealerList", "Master")",
+                data: { empID: 0 },
+                success: function (data) {
+                    $("#dvEmpDealerList").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+
+        $('#btnRaiseTicket').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("RaiseTicket", "CRM")",
+                data: {},
+                success: function (data) {
+                    $("#divRaiseTicket").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        function ShowDealer_Park() {
+
+            $.get("FillReference", { RefTypeID: $("#mstrfvc").val() }, function (data) {
+                if (data != null) {
+                    $('#mstrfvt').empty();
+
+                    var opt = new Option('--Select--', 0);
+                    $("#mstrfvt").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].studName, data[i].studCode);
+                        $("#mstrfvt").append(opt);
+                    }
+                }
+            });
+        }
+
+
+        $('#btnImport').click(function () {
+
+
+            $.get("/Home/ImportData", {}, function (data) {
+                if (data != null) {
+                    alert('Saved Successfully ...');
+                }
+            });
+        });
+        $('#btnImportDataItem').click(function () {
+
+
+            $.get("/Home/ImportDataItem", {}, function (data) {
+                if (data != null) {
+                    alert('Saved Successfully ...');
+                }
+            });
+        });
+        $('#btnInBound').click(function () {
+
+
+            var data = new FormData();
+            var InBound_File = $('#InBound_Path').get(0).files[0];
+            data.append("ImageFile", InBound_File);
+
+            $.ajax
+           ({
+               url: "/Home/ImportInBound",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                   }
+               }
+           });
+
+        });
+        $('#btnDealerImport').click(function () {
+
+
+            var data = new FormData();
+            var Dealer_File = $('#Dealer_Path').get(0).files[0];
+            data.append("ImageFile", Dealer_File);
+            ShowHideLoader('show');
+            $.ajax
+           ({
+               url: "/Home/DealerImport",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                       ShowHideLoader('hide');
+                   }
+               }
+           });
+
+        });
+
+        $('#btnOpeingImport').click(function () {
+
+
+            var data = new FormData();
+            var Dealer_File = $('#Opeing_Path').get(0).files[0];
+            data.append("ImageFile", Dealer_File);
+
+            $.ajax
+           ({
+               url: "/Home/OpeningImport",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                   }
+               }
+           });
+
+        });
+
+        function getFirstWord(str) {
+            var spacePosition = str.indexOf(' ');
+            if (spacePosition === -1)
+                return str;
+            else
+                return str.substr(0, spacePosition);
+        };
+
+        $('#btnLedgerImport').click(function () {
+            var data = new FormData();
+            var Ledger_File = $('#Ledger_Path').get(0).files[0];
+            data.append("ImageFile", Ledger_File);
+
+            $.ajax
+           ({
+               url: "/Home/LedgerImport",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                   }
+               }
+           });
+
+        });
+
+        function FillLeadDet(Mstcode) {
+            alert('super');
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ParkLead", "Quotation")",
+         data: { MstCode: Mstcode, MstType: 1147, comp: 62 },
+         success: function (data) {
+             $("#divParkLeadEdit").html(data);
+         },
+         error: function () {
+             alert('Error');
+         }
+     });
+ }
+ //setInterval(FillMaxNo, 30000);
+ //setInterval(FillMaxNo1, 50000);
+ FillMaxNo();
+ FillMaxNo1();
+ //setTimeout(FillMaxNo, 3000);//change timeout duration here
+
+ getGraphStatisticsData(174);
+
+ function getGraphStatisticsData(TypeID) {
+     if (TypeID == undefined)
+         TypeID = 0;
+
+     $.ajax({
+         type: 'POST',
+         dataType: 'json',
+         contentType: 'application/json',
+         url: '@Url.Action("getChartData", "Home")',
+         data: "{ 'iType': '" + TypeID + "'}",
+         success: function (chartsdata) {
+             getGraph(chartsdata.lstGraph);
+             if (TypeID == 0) {
+                 Statistics(chartsdata.lstStatistic);
+             }
+         }
+     });
+ }
+
+ function getGraph(chartsdata) {
+     var data = new google.visualization.DataTable();
+     var options = {
+         'legend': 'left',
+         'title': 'My Big Pie Chart',
+         'is3D': true,
+         'width': 400,
+         'height': 300
+     };
+
+     data.addColumn('string', 'Remark');
+     data.addColumn('number', 'Amt');
+
+     for (var i = 0; i < chartsdata.length; i++) {
+         data.addRow([chartsdata[i].Remark, chartsdata[i].Amt]);
+         // data.addRow([chartsdata[i].Remark + ' / '+ [chartsdata[i].ItmRemark , chartsdata[i].Amt]);
+     }
+
+     var chart;
+     //if (document.getElementById('optBar').checked == true)
+     //   chart = new google.visualization.BarChart(document.getElementById('chartdiv'));
+     //else if (document.getElementById('optArea').checked == true)
+     //    chart = new google.visualization.AreaChart(document.getElementById('chartdiv'));
+     //else if (document.getElementById('optScatter').checked == true)
+     //    chart = new google.visualization.ScatterChart(document.getElementById('chartdiv'));
+     //else if (document.getElementById('optPie').checked == true)
+     //    chart = new google.visualization.PieChart(document.getElementById('chartdiv'));
+     //else if (document.getElementById('optColumn').checked == true)
+     chart = new google.visualization.ColumnChart(document.getElementById('chartdiv'));
+     //else if (document.getElementById('optLine').checked == true)
+     //  chart = new google.visualization.LineChart(document.getElementById('chartdiv'));
+
+     // chart.draw(data,options );
+     chart.draw(data,
+       {
+           title: "Order", position: "top", fontsize: "14px", chartArea: { width: '70%' }, 'isStacked': true, 'legend': 'bottom',
+           'vAxis': { 'title': 'O R D E R' },
+       });
+
+ }
+
+ function formatNumber(number) {
+     if (number != "") {
+         number = number.toFixed(2) + '';
+         x = number.split('.');
+         x1 = x[0];
+         x2 = x.length > 1 ? '.' + x[1] : '';
+         var rgx = /(\d+)(\d{3})/;
+         while (rgx.test(x1)) {
+             x1 = x1.replace(rgx, '$1' + ',' + '$2');
+         }
+
+         return x1 + x2;
+     }
+     return "0";
+ }
+
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            //Datemask dd/mm/yyyy
+            $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+            //Money Euro
+            $("[data-mask]").inputmask();
+        });
+        $(document).keydown(function (e) {
+            // ESCAPE key pressed
+            if (e.keyCode == 27) {
+                //alert("2");
+                window.close();
+            }
+        });
+
+    </script>
+
+    @*  <script id="sessionJs" type="text/javascript">
+       
+       
+      function GetData()
+      {
+               
+          $.ajax(
+              {
+                  type: "POST", //doing POST
+                  url: "http://servername/default.aspx", //change URL as per your needs
+                  data: "{'value':'" + value + "'}",
+                  contentType: "application/json; charset=utf-8", //Sending JSON
+                  dataType: "json",
+                  failure: function (msg) { alert(msg); },//do something in case of failure
+                  success: function (msg) {
+                      //lblDealers
+                      alert(msg.d);
+                  } //do what you got to do on success
+              }
+          );
+      }
+
+      setTimeout(GetData, 3000);//change timeout duration here
+    </script>
+    *@
+    @*    
+<script >
+    $(document).ready(function () {
+        try { 
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+          
+             
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+            $(document).keydown(function (e) {
+                // ESCAPE key pressed
+                if (e.keyCode == 27) {
+                    //alert("2");
+                    window.close();
+                }
+            });
+
+        } catch (e) { }
+    });
+    </script>*@
+
+    @Scripts.Render("~/Scripts/boot")
+
+    @* <script src="~/js/jquery-1.11.3.min.js"></script>
+     <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/jquery.smartmenus.js"></script>
+    <script src="~/js/jquery.smartmenus.bootstrap.js"></script>*@
+
+
+</body>
+</html>
+

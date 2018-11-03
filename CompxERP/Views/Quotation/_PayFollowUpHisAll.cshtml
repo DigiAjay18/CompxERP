@@ -1,0 +1,54 @@
+﻿   
+@model List<CompxERP.Models.clsFollow> 
+  
+@*  
+@{
+    ViewBag.Title = "Dash";
+    Layout = "~/Views/Shared/EmpLayout.cshtml";
+}*@
+
+ <div class="col-sm-12">
+     
+    <table id="tblPendingOrder" class="table table-bordered table-striped" style="margin-top:10px;margin-bottom:10px;">
+    <thead>
+      <tr>
+            <th style="width:5%;">No</th>  
+          <th style="width:10%;">Entry Date</th>
+          <th style="width:10%;">Next Date</th> 
+           <th style="width:25%;">Party Name</th>
+          <th style="width:10%;">CommitPay</th> 
+          <th style="width:37%;">Remark</th> 
+        </tr>
+    </thead>
+    <tbody style="height:350px;">
+          @{
+                 var iIndex = 0;   
+            if (Model != null && Model.Count > 0)
+        { 
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1;
+                  
+              <tr>  
+                     <td  style="width:5%;">@iIndex </td>    
+                  <td  style="width:10%;"> @Convert.ToDateTime(@item.F_Date).ToString("dd/MM/yyyy").ToString()  </td>  
+                  <td  style="width:10%;"> @Convert.ToDateTime(@item.MstDate  ).ToString("dd/MM/yyyy") </td>    
+                  <td  style="width:25%;">@item.Status </td>   
+                  <td  style="width:10%;text-align:right;">@item.CommitPay </td>  
+                     <td  style="width:37%;">@item.Remark  </td>    
+                   
+                </tr>
+           
+            }
+              
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+</div>
+ 

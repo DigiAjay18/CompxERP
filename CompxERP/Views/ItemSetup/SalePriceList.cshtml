@@ -1,0 +1,243 @@
+﻿@{
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sale Price List</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+     <link rel="stylesheet" href="~/css/bootstrap.min.css">
+<link rel="stylesheet" href="~/css/font-awesome.min.css">
+ <link rel="stylesheet" href="~/css/custom.css">
+ <link rel="stylesheet" href="~/css/responsive.css"> 
+<style>
+    .btn_right a {margin-right: 12px;}
+    .newMyCLas {background:#F6E9E9;border: 1px solid #ccc;}
+</style>
+
+
+    
+ <script type="text/javascript">
+     $(function () {
+         $("[data-mask]").inputmask();
+
+         var today = new Date();
+         var dd = today.getDate();
+         var mm = today.getMonth() + 1; //January is 0!
+
+         var yyyy = today.getFullYear();
+         if (dd < 10) {
+             dd = '0' + dd;
+         }
+         if (mm < 10) {
+             mm = '0' + mm;
+         }
+         var today = dd + '/' + mm + '/' + yyyy;
+         $('#txtDate').val(today);
+
+     });
+        </script>
+<script>
+    $(document).ready(function () {
+
+        $('input[value="save"]').click(function (e) { 
+            e.preventDefault();
+            debugger;
+            a = '"itemcode":"' + $('#itemcode').val() + '",';
+
+            $.ajax({
+                url: '@Url.Action("SavePriceList", "ItemSetup")',
+                type: "POST",
+                data: { "itm": '{"dDate":"' + $('#txtDate').val() + '","Data":' + JSON.stringify(itmRate) + '}' },
+                datatype: "JSON",
+                ContentType: "application/json",
+                success: function (d) {
+                    debugger;
+                    location = location.href;
+                    window.location.href = response.Url;
+                    e.preventDefault();
+                    if (d.status == true) {
+                        alert('SuccessFully Done');
+                        formItems = [];
+                        $('#itemcode').val('');
+                        debugger;
+
+                        e.preventDefault();
+                    }
+                    else { alert('Failed to Save Data'); }
+                },
+                error: function (xhr, status, error) { alert('Failed to Save Data'); }
+            });
+        });
+
+        $(document).on('focusout', '.txtItemRate', function () {
+
+            var Rate = 0; var ItemID = 0;
+            var index = $(this).closest("tr").index();
+            var $row = $(this).closest("tr")
+            $('#sItemRate').val('');
+
+            if ($('#txtItemRate_' + index).val() != "") Rate = $('#txtItemRate_' + index).val(); else Rate = 0;
+
+            debugger;
+            if (Rate != "" && Rate != "0") {
+                //if (LotArr.length > 0) {
+                //    var iv = -1;
+                //    LotArr.find(function (item, itmeindex) {
+                //        if (item.PeLotNo == LotNo) {
+                //            iv = itmeindex;
+                //        }
+                //    });
+
+                //    if (iv != -1)
+                //        LotArr.splice(iv, 1);
+                //}
+
+                itmRate.push({
+                    ItemRate: $("#txtItemRate_" + index).val(),
+                    itemcode: $("#hdnItem_" + index).val()
+                });
+            }
+
+            $('#sItmRate').val('"Data":' + JSON.stringify(itmRate));
+
+            $('#txtItemRate_' + parseInt(index + 1)).focus();
+        });
+
+
+    });
+
+    var itm = [];
+    var itmRate = [];
+
+    function getItems() {
+        $.ajax({
+            cache: false,
+            async: false,
+            type: "POST",
+            url: "@Url.Action("ItemRateList", "ItemSetup")",
+            data: { "subcat": $('#subCategory').val() },
+            success: function (data) {
+                itm = data;
+                GenratedItemTable(itm)
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to Retrieve Status.');
+            }
+        });
+    }
+    function getUrl() {
+        //debugger;
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+    function GenratedItemTable(itm) {
+        if (itm.length > 0) {
+            var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>'); 
+            var $tbody = $('<tbody  style="height: 470px;"/>');
+            $.each(itm, function (i, val) {
+                var $row = $('<tr/>');
+                $row.append($('<td width="30%"/>').html(val.Desc)); 
+                $row.append('<td><input type="text" value="' + val.ItemRate + '" id="txtItemRate_' + i + '"   class="txtItemRate" newMyCLas text-right" onkeypress="return isNumberKey(event)" maxlength="9" /><input type ="hidden" id="hdnItem_' + i + '" value ="' + val.itemcode + '"  />&nbsp;</td>');
+
+                $tbody.append($row);  
+            });
+            $table.append($tbody);
+            $('#ShowTable').html($table);
+        }
+        else
+            $('#ShowTable').html("");
+
+    }
+
+
+</script>
+
+  <script>
+      //script for number validation
+      function isNumberKey(evt) {
+          var charCode = (evt.which) ? evt.which : event.keyCode
+          if (charCode > 31 && (charCode < 48 || charCode > 57))
+              return false;
+          return true;
+      }
+
+    
+</script>
+
+</head>
+<body>
+    <div>
+
+            <!----compex_heading---->
+        <div class="compex_head">
+            <div class="container-fluid">
+                <div class="col-md-3 col-sm-3 col-xs-12"></div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2>Sale Price List</h2>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-12 account_setup">
+                    <div class="btn_right">
+                        <a href="/Home/menuNew"><img src="~/Images/home.png" width="22" height="22" /></a>
+                        <a href='/Home/LogOff' style="border: none; font-size: 14px;"><img src="~/Images/logout.png" width="22" height="22" /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+     <!----compex_BODY---->
+        <div class="compex_form">
+            <div class="container">
+                <div class="Personal_form">
+                     <fieldset>
+						  <legend>Sale Price List</legend>
+							  <div class="form-group">
+                                   
+                                  
+                                    <label class="control-label col-sm-1 padd_l padd_5">S.No</label>
+                                    <div class="col-sm-1 padd_l padd_5">
+                                         <input type="text" id ="txtMstCode" value="@ViewBag.vwMstCode"  class="form-control" readonly = true/> 
+                                        <input type ="hidden" id ="sItmRate" />
+                                    </div>
+                                    <label class="control-label col-sm-1 padd_l padd_5"> Date</label> 
+								    <div class="col-sm-1 padd_l padd_5">
+                                       <input type="text" id ="txtDate" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask/>
+                                    </div>
+                                    <label class="control-label col-sm-1 padd_l padd_5">Sub Category</label> 
+								    <div class="col-sm-2 padd_l padd_5" id="targetDiv1"> 
+                                         @Html.DropDownList("subCategory", (SelectList)ViewBag.vwCategory ,  "--Select--" ,new { @class = "form-control",  required = "required", @onchange="getItems()" })
+                                    </div>
+                              </div>
+                      </fieldset>
+                      <fieldset>
+						    <legend>Item</legend>
+                            <div id="ShowTable" class="item_tab_r"  style="height: 470px;"></div>
+                      </fieldset>
+                      <div  style="width:100px;margin:4px auto !important;">
+                         <input type="submit" class="btn btn-default" id="submit" value="save" style="font-size:16px;"/>
+                      
+                      </div>
+                    </div>
+                </div>
+            </div>
+          @{
+        if (TempData["Msg"] != null)
+        {    
+               <script type="text/javascript">
+                   alert(@Html.Raw(Json.Encode(TempData["Msg"])));
+    </script>
+        } 
+            }
+    </div>
+</body>
+</html>

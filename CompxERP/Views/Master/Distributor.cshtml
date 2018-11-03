@@ -1,0 +1,150 @@
+﻿ <!--------Create Distributor--->
+    @*<div class="modal fade" id="CreateDistributor" role="dialog" tabindex="-1">
+        <div class="modal-dialog createDistributerDv">
+
+       *@
+     <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create Distributor</h4>
+                </div>
+                <div class="modal-body input_popup">
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">D.ID</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input style="background: #f2eded;" class="form-control" id="Dis_ID" name="didNumber" value="1" type="text" disabled></div>
+                        <div class="col-sm-2 padd_l padd_5"></div>
+                        <div class="col-sm-2 padd_l padd_5">Name</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Name" name="namtx" value="" type="text"></div>
+
+                        <div class="col-sm-2 padd_l padd_5"></div>
+                        <div class="col-sm-4 padd_l padd_5"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">Mobile</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Mob2" name="Add3" value="" type="text" maxlength="10"></div>
+                        <div class="col-sm-2 padd_l padd_5">LandLine </div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_LandLine" name="pobox" value="" maxlength="10" type="text"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">Email</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Email" name="Add3" value="" type="text"></div>
+                        <div class="col-sm-2 padd_l padd_5">Skype  </div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Skype" name="pobox" value="" type="text"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">Country</div>
+                        <div class="col-sm-3 padd_l padd_5">
+                            @Html.DropDownList("Dis_Country", new List<SelectListItem> {  
+           new SelectListItem { Text="India", Value="1"},
+           new SelectListItem { Text="England", Value="2"}, 
+           new SelectListItem { Text="Bahrain", Value="3"}, 
+           new SelectListItem { Text="Iran", Value="4"}, 
+           new SelectListItem { Text="Iraq", Value="5"}, 
+           new SelectListItem { Text="Kuwait", Value="6"}, 
+           new SelectListItem { Text="Northern Ireland", Value="7"}, 
+           new SelectListItem { Text="Oman", Value="8"}, 
+           new SelectListItem { Text="Saudi Arabia", Value="9"}, 
+           new SelectListItem { Text="Scotland", Value="10"}, 
+           new SelectListItem { Text="South africa", Value="11"}, 
+           new SelectListItem { Text="UAE", Value="12"}, 
+           new SelectListItem { Text="Wales", Value="13"}, 
+           }, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">State</div>
+                        <div class="col-sm-3 padd_l padd_5">@Html.DropDownList("Dis_State", new List<SelectListItem> {  
+           new SelectListItem { Text="M.P.", Value="1"},   
+           }, new { @class = "form-control", @onblur = "SetDistributorCode();" })
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">City</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            @Html.DropDownList("Dis_City_I", new List<SelectListItem> {  
+            new SelectListItem { Text="Indore", Value="1834"},
+           new SelectListItem { Text="Bhopal", Value="1831"}, 
+           new SelectListItem { Text="Ujjain", Value="1904"}, 
+           new SelectListItem { Text="Khandwa", Value="4493"}, 
+           new SelectListItem { Text="Khargone", Value="4494"}, 
+           new SelectListItem { Text="Ratlam", Value="1876"},    
+           }, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <div class="col-sm-2 padd_l padd_5">Address1</div>
+                        <div class="col-sm-10 padd_l padd_5">
+                            <input class="form-control" id="Dis_Add2" name="Add3" value="" type="text" placeholder="Flat/House/Block No ,Lane/Street"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">Address 2</div>
+                        <div class="col-sm-10 padd_l padd_5">
+                            <input class="form-control" id="Dis_Add3" name="Add3" value="" type="text" placeholder="Flat/House/Block No ,Lane/Street"></div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">H.O. City</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            @Html.DropDownList("Dis_City", new List<SelectListItem> {  
+           new SelectListItem { Text="Indore", Value="1834"},
+           new SelectListItem { Text="Bhopal", Value="1831"}, 
+           new SelectListItem { Text="Ujjain", Value="1904"}, 
+           new SelectListItem { Text="Khandwa", Value="4493"}, 
+           new SelectListItem { Text="Khargone", Value="4494"}, 
+           new SelectListItem { Text="Ratlam", Value="1876"},  
+           }, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-2 padd_l padd_5">Office Address</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Add1" name="Add1" value="" type="text" placeholder="Flat/House/Block No ,Lane/Street"></div>
+
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">P.O Box </div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_pobox" name="pobox" value="" type="text"></div>
+                        <div class="col-sm-2 padd_l padd_5">GSTIN</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_GSTIN" name="Add3" value="" type="text"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">Contact Person</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_ContactPerson" name="Add3" value="" type="text"></div>
+                        <div class="col-sm-2 padd_l padd_5">Mobile  </div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Mob1" name="pobox" value="" maxlength="10" type="text"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">UserName </div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_UserName" name="pobox" value="" type="text"></div>
+                        <div class="col-sm-2 padd_l padd_5">Password</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Password" name="Add3" value="" maxlength="8" autocomplete="off" type="password"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">Re-Password</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_RePassword" name="Add3" onblur="ChkPassword_Dist();" maxlength="8" autocomplete="off" type="password"></div>
+                        <div class="col-sm-2 padd_l padd_5">Code  </div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Dis_Code" name="Add3" value="" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="InsDistributor" value="Save" class="btn btn-default" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+@*        </div>
+    </div>
+     *@

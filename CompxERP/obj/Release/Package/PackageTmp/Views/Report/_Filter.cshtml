@@ -1,0 +1,696 @@
+﻿@model CompxERP.Models.clsFilter 
+
+@*@using GridMvc.Html*@
+@{
+    Layout = null;
+}
+
+ 
+
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Filter</title>    
+@*<script src="~/Scripts/gridmvc.min.js"></script> 
+<link href="~/Content/gridmvc.datepicker.css" rel="stylesheet" />
+<link href="~/Content/gridmvc.datepicker.min.css" rel="stylesheet" />*@
+ <script src="~/Scripts/jquery-1.7.1.js"></script>
+@* <link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>*@
+   
+    @*  <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+   <link href="~/Content/css/menu.css" rel="stylesheet" />
+    <link href="~/Content/css/my-style.css" rel="stylesheet" />*@
+          <!----jcss-font---->
+ 
+ 
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+ 
+  <!------custom css---->
+
+<link rel="stylesheet" href="~/css/font-awesome.min.css">
+<link rel="stylesheet" href="~/css/custom.css"> 
+<link rel="stylesheet" href="~/css/responsive.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="~/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+ 
+<script src="~/Scripts/Angular/NewAccount.js"></script> 
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+        });
+    </script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        var today = dd + '/' + mm + '/' + yyyy;
+        $('#dFrom').val(today);
+        $('#dTo').val(today);
+
+        function getUrl() {
+            debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+        
+        $('#btnFilter').click(function () {
+             
+            if ($("#dFrom").val() == "") { alert("Please Enter From Date ..."); $("#dFrom").focus(); return; }
+            if ($("#dTo").val() == "") { alert("Please Enter To Date ..."); $("#dTo").focus(); return; }
+
+            debugger;
+
+            if (($("#example1 .chkSelect:checked").length == 0) && (document.getElementById('SalesBookGST').checked == false && document.getElementById('GSTR1').checked == false && document.getElementById('GSTR2').checked == false && document.getElementById('GSTR3B').checked == false && document.getElementById('SalesBook').checked == false && document.getElementById('PurchaseBook').checked == false)) {
+                alert('Please select any record'); return false;
+            }
+            else {
+                var  PartyIds = $.map($("#example1 .chkSelect:checked"), function (n, i) {
+                    return $(n).attr("data-dispatch-entry-id");
+                }).join(',');
+            }
+             
+            //window.open('../../Report/LedgerReport?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&sParty=' + PartyIds, '_blank' );
+            if (document.getElementById('SalesBookGST').checked == true && document.getElementById('Sale').checked == true)
+                window.open('../../Pages/Reports.aspx?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&PType=GST&Code=0&TypeID=42', '_blank');
+            else if (document.getElementById('PurchaseBookGST').checked == true && document.getElementById('Purchase').checked == true)
+                window.open('../../Pages/Reports.aspx?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&PType=GST&Code=0&TypeID=43', '_blank');            else if (document.getElementById('GSTR1').checked == true)
+                    window.open('../../Pages/Reports.aspx?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&PType=GSTR1&Code=0', '_blank');
+                else if (document.getElementById('GSTR2').checked == true)
+                    window.open('../../Pages/Reports.aspx?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&PType=GSTR2&Code=0' , '_blank');
+                else if (document.getElementById('GSTR3B').checked == true)
+                    window.open('../../Pages/Reports.aspx?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&PType=GSTR3B&Code=0' , '_blank');
+            else if (document.getElementById('SalesBook').checked == true && document.getElementById('Sale').checked == true)
+                window.open('../../Report/PuSLBookData?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&PType=42&Code=' + PartyIds, '_blank');
+            else if (document.getElementById('PurchaseBook').checked == true && document.getElementById('Purchase').checked == true)
+                window.open('../../Report/PuSLBookData?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&PType=43&Code=' + PartyIds, '_blank');
+            else if (document.getElementById('Ledger').checked == true  )
+                window.open('../../Report/Ledger?sFrom=' + $("#dFrom").val() + '&sTO=' + $("#dTo").val() + '&sParty=' + PartyIds, '_blank');
+        });
+
+        $('#btnReset').click(function () {
+
+           
+            debugger;
+
+            if ($("#dvCity .chkSelect1_City:checked").length == 0) {
+                alert('Please select any record'); return false;
+            }
+            else {
+                var PartyIds = $.map($("#dvCity .chkSelect1_City:checked"), function (n, i) {
+                    return $(n).attr("data-dispatch-entry-id");
+                }).join(',');
+            }
+              
+            alert(PartyIds);
+        });
+
+        $("#chkSelectAll").change(function () {
+            $("#example1 .chkSelect").prop('checked', $(this).prop("checked"));
+        });
+        $("#chkSelectAll_Emp").change(function () { 
+            $("#dvEmployee .chkSelect1").prop('checked', $(this).prop("checked"));
+        });
+        $("#chkSelectAll_Agent").change(function () {
+            $("#dvAgent .chkSelectAgent").prop('checked', $(this).prop("checked"));
+        });
+        $("#chkSelectAll_City").change(function () {
+            $("#dvCity .chkSelect_City").prop('checked', $(this).prop("checked"));
+        });
+        $("#chkSelectAll1_City").change(function () {
+            $("#dvCity .chkSelect1_City").prop('checked', $(this).prop("checked"));
+        });
+    });
+    
+    function OpenSale()
+    { 
+        $('#SalesSub').show();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenPur()
+    { 
+        $('#PurchaseSub').show();
+        $('#SalesSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenVouture() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').show();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenGST() {
+        $('#GSTSub').show();
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+    }
+    function OpenBarcode() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').show();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenCash() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').show();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenOutstand() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').show();
+        $('#GSTSub').hide();
+    }
+    function OpenOverall() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenCRM() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenAccount() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenStock() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenEmployee() {
+        $('#SalesSub').hide();
+        $('#PurchaseSub').hide();
+        $('#VoutureSub').hide();
+        $('#BarcodeSub').hide();
+        $('#cashSub').hide();
+        $('#OutstandingSub').hide();
+        $('#GSTSub').hide();
+    }
+
+    function OpenDueList_3() {
+        $('#DueList').show();
+        $('#CashBook').hide();
+        $('#BarCodeRegister').hide();
+        $('#PurchaseBookLedger').hide();
+        $('#SalesOrderLedger').hide(); 
+        $('#GSTSub').hide();
+    }
+    function OpenCashBook_3() {
+        $('#DueList').hide();
+        $('#CashBook').show();
+        $('#BarCodeRegister').hide();
+        $('#PurchaseBookLedger').hide();
+        $('#SalesOrderLedger').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenBarCodeRegister_3() {
+        $('#DueList').hide();
+        $('#CashBook').hide();
+        $('#BarCodeRegister').show();
+        $('#PurchaseBookLedger').hide();
+        $('#SalesOrderLedger').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenPurchaseBookLedger_3() {
+        $('#DueList').hide();
+        $('#CashBook').hide();
+        $('#BarCodeRegister').hide();
+        $('#PurchaseBookLedger').show();
+        $('#SalesOrderLedger').hide();
+        $('#GSTSub').hide();
+    }
+    function OpenSalesOrderLedger_3() {
+        $('#DueList').hide();
+        $('#CashBook').hide();
+        $('#BarCodeRegister').hide();
+        $('#PurchaseBookLedger').hide();
+        $('#SalesOrderLedger').show();
+        $('#GSTSub').hide();
+    }
+    </script>
+     
+      <style type="text/css">
+	fieldset {
+    border: 1px solid silver !important;
+    margin: 0 2px 5px !important;
+    padding: 0.35em 0.625em 0 !important;
+}
+
+.primary_CLS legend {
+    width: 100px;
+    text-align: center;
+    border-radius: 5px;
+}
+.filterWiseDv .col-sm-3 {
+    width: 20%;
+}
+</style>
+</head>
+
+    <body class="compx">
+   
+@*         <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery-2.2.3.js"></script>*@
+@*    <script src="~/Scripts/ddaccordion.js"></script> 
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>*@
+@*    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>*@
+  @*  <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />*@
+   @* <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <link href="~/Content/css/menu.css" rel="stylesheet" />
+     
+       
+          <div data-ng-controller="CtrlFilter" data-ng-app="NewAcc">  
+          @using (Html.BeginForm())
+          {
+            @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+   <!----compex_heading---->
+   <div class="compex_head">
+        <div class="container"><h2>Report Viewer</h2></div>
+   </div>
+    <!----compex_heading end---->
+  
+   <!----compex_form---->
+  
+   <div class="compex_form">
+       <div class="container-fluid">
+            <div class="Personal_form">
+            	<fieldset>
+            		<legend>Define Filters:</legend>
+	                <div class="col-sm-12">
+	                	<div class="row">
+	                	 	<div class="col-sm-4 padd_l padd_5">
+			                    <!-----Price List---->
+				                <fieldset class="primary_CLS">
+							        <legend>Primary</legend>
+							        <div class="multi_list">
+						                <ul style="height: 150px" class="option"> 
+                                            <li><label class="radio-inline"><input type="radio" id="Sale" name="gender" value="m"  title ="Sale" onclick="OpenSale();" />Sale</label></li>
+                                            <li><label class="radio-inline"><input type="radio" id="Purchase" name="gender" value="p" onclick="OpenPur();" />Purchase</label></li>  
+                                            <li><label class="radio-inline"><input type="radio" id="Ledger" name="gender" value="p" onclick="OpenLedger();" />Ledger</label></li>
+                                             <li><label class="radio-inline"><input type="radio" id="GST" name="gender" value="p" onclick="OpenGST();" />GST</label></li>
+                                          @*  <li><label class="radio-inline"><input type="radio" id="Overall" name="gender" value="p" onclick="OpenOverall();" />Overall</label></li> 
+                                            <li><label class="radio-inline"><input type="radio" id="CRM" name="gender" value="p" onclick="OpenCRM();" />CRM</label></li> 
+                                            <li><label class="radio-inline"><input type="radio" id="Account" name="gender" value="p" onclick="OpenAccount();" />Account</label></li> 
+                                            <li><label class="radio-inline"><input type="radio" id="CashBankBook" name="gender" value="p" onclick="OpenCash();" />Cash /bank book</label></li> 
+                                            <li><label class="radio-inline"><input type="radio" id="Outstanding" name="gender" value="p" onclick="OpenOutstand();" />Outstanding</label></li> 
+                                            <li><label class="radio-inline"><input type="radio" id="Stock" name="gender" value="p" onclick="OpenStock();" />Stock</label></li> 
+                                            <li><label class="radio-inline"><input type="radio" id="Employee" name="gender" value="p" onclick="OpenEmployee();" />Employee</label></li> 
+                                            <li><label class="radio-inline"><input type="radio" id="Barcode" name="gender" value="p" onclick="OpenBarcode();" />Barcode</label></li> *@
+                                            <li><label class="radio-inline"><input type="radio" id="voucher" name="gender" value="p" onclick="OpenVouture();" />Voucher</label></li>  
+						                </ul>
+						            </div>
+			                    </fieldset>
+			                </div>
+			                <div class="col-sm-4 padd_l padd_5">
+			                    <!-----Price List---->
+				                <fieldset style="min-height: 188px;" class="primary_CLS">
+							        <legend>Secondary</legend>
+							           <div class="tab-content">
+								        	<div id="SalesSub" class="multi_list" style="display:none;">
+											     <ul style="height: 150px" class="option">
+                                           @* <li><label class="radio-inline"><input type="radio" id="SalesOrder" name="gender1" value="a" onclick="OpenDueList_3();" />Sales Order</label></li>  *@
+                                            <li><label class="radio-inline"><input type="radio" id="SalesBook" name="gender1" value="a" onclick="OpenDueList_3();" />Sales Book</label></li>  
+                                            <li><label class="radio-inline"><input type="radio" id="SalesSummary" name="gender1" value="a" onclick="OpenDueList_3();" />Sales  summary</label></li>                                                                                                             
+                                            <li><label class="radio-inline"><input type="radio" id="SalesReturn" name="gender1" value="a" onclick="OpenDueList_3();" />Sales  Return</label></li>  
+                                            <li><label class="radio-inline"><input type="radio" id="S_SalesOrderLedger" name="gender1" value="a" onclick="OpenDueList_3();" />Sales Order Ledger</label></li>  
+                                            <li><label class="radio-inline"><input type="radio" id ="SalesBookGST" name="gender1" value="a" onclick="OpenDueList_3();" />Sales Book GST</label></li>    
+                            
+								                </ul>
+										    </div>
+									     <div id="PurchaseSub" class="multi_list" style="display:none;">
+										    <ul style="height: 150px" class="option">
+                                           @* <li><label class="radio-inline"><input type="radio" id="PurchaseOrder" name="gender2" value="b" onclick="OpenDueList_3();" />Purchase Order</label></li>  *@
+                                            <li><label class="radio-inline"><input type="radio" id="PurchaseBook" name="gender2" value="b" onclick="OpenDueList_3();" />Purchase Book</label></li>  
+                                           @* <li><label class="radio-inline"><input type="radio" id="Purchasesummary" name="gender2" value="b" onclick="OpenDueList_3();" />Purchase  summary
+
+                                                </label></li>                                                                                                          
+                                            <li><label class="radio-inline"><input type="radio" id="PurchaseReturn" name="gender2" value="b" onclick="OpenDueList_3();" />Purchase  Return</label></li>                                                                                                             
+                                            <li><label class="radio-inline"><input type="radio" id="PurchaseBookLedger1" name="gender2" value="b" onclick="OpenDueList_3();" />Purchase Book Ledger</label></li>  *@
+                                            <li><label class="radio-inline"><input type="radio" id="PurchaseBookGST" name="gender2" value="b" onclick="OpenDueList_3();" />Purchase Book GST</label></li>  
+								            </ul>
+									    </div>
+									    <div id="cashSub" class="multi_list" style="display:none;">
+										     <ul style="height: 150px" class="option">
+										     	<li><a data-toggle="tab" href="#CashBook">Cash Book</a></li>
+										     	<li><a data-toggle="tab" href="#BankBook">Bank Book</a></li>
+										    </ul>
+									    </div>
+									    <div id="OutstandingSub" class="multi_list" style="display:none;">
+										    <ul style="height: 150px" class="option">
+										     	<li><a data-toggle="tab" href="#DueList">Due List</a></li>
+										     	<li><a data-toggle="tab" href="#DueList">Ageing Analysis</a></li>
+										     	<li><a data-toggle="tab" href="#DueList">Interest Report</a></li>
+										    </ul>
+									    </div>
+									    <div id="BarcodeSub" class="multi_list" style="display:none;">
+										     <ul style="height: 150px" class="option">
+										     	<li><a data-toggle="tab" href="#BarCodeRegister">Bar Code Register </a></li>
+										     	
+										    </ul>
+									    </div>
+                                           <div id="GSTSub" class="multi_list" style="display:none;">
+										     <ul style="height: 150px" class="option">
+										     	 <li><label class="radio-inline"><input type="radio" id ="GSTR1" name="gender1" value="a" />GST R1 Summary</label></li>  
+                            <li><label class="radio-inline"><input type="radio" id ="GSTR2" name="gender1" value="a" />GST R2 Summary</label></li>  
+                            <li><label class="radio-inline"><input type="radio" id ="GSTR3B" name="gender1" value="a" />GST R3B</label></li>   
+										    </ul>
+									    </div>
+									    <div id="VoutureSub" class="multi_list" style="display:none;">
+										     <ul style="height: 150px" class="option">
+										     	<li><a data-toggle="tab" href="#">Receipt</a></li>
+										     	<li><a data-toggle="tab" href="#">Payment </a></li>
+										     	<li><a data-toggle="tab" href="#">Jv</a></li>
+										     	<li><a data-toggle="tab" href="#"> Contra</a></li>
+										     	<li><a data-toggle="tab" href="#">Memo </a></li>
+										     	
+										    </ul>
+									    </div>
+							        </div>
+			                    </fieldset>
+			                </div>
+			                <div class="col-sm-4 padd_l padd_5">
+			                    <!-----Price List---->
+				                <fieldset style="min-height: 188px;" class="primary_CLS">
+							        <legend>Third </legend>
+							       <div class="tab-content">
+								        	<div id="DueList" class="multi_list" style="display:none;">
+								               <ul style="height: 150px">
+								                  <li class="checkbox-inline"> 
+								                     <label class="radio-inline"> <input  name="chk1" class="check_box" type="checkbox" data-ptag="sb1" id="chk1" value="">Party Wise</label>
+								                  </li>
+								                  <li class="checkbox-inline"> 
+								                     <label class="radio-inline"><input name="chk2"  class="check_box" type="checkbox" data-ptag="sb2" id="chk2" value="">Area Wise </label>
+								                  </li>
+								                  <li class="checkbox-inline"> 
+								                   <label class="radio-inline"> <input name="chk3"  class="check_box" type="checkbox" data-ptag="sb3" id="chk3" value="">Employee Wise </label></li>
+								                  <li class="checkbox-inline"> 
+								                    <label class="radio-inline"><input name="chk4"  class="check_box" type="checkbox" data-ptag="sb4" id="chk4" value="">Agent Wise </label>
+								                </li>
+								                 <li class="checkbox-inline"> 
+								                   <label class="radio-inline"> <input name="chk5"  class="check_box" type="checkbox" data-ptag="sb5" id="chk5" value="">City Wise
+								               </label>  </li>
+								                 
+								                  
+								                  
+								                </ul>
+								            </div>
+								            <div id="CashBook" class="multi_list" style="display:none;">
+								               <ul style="height: 150px">
+								                  
+								                   <li class="checkbox-inline"> <label class="radio-inline"> <input value="" type="checkbox">Cash in hand </label></li>
+								                 
+								                   <li class="checkbox-inline"> <label class="radio-inline"> <input value="" type="checkbox">Cash Register </label></li>
+								                 
+								                  
+								                </ul>
+								            </div>
+								            <div id="BarCodeRegister" class="multi_list" style="display:none;">
+								               <ul style="height: 150px">
+								                   <li class="checkbox-inline"> <label class="radio-inline"> <input value="" type="checkbox">Item Category Wise </label></li>
+								                   <li class="checkbox-inline"> <label class="radio-inline"> <input value="" type="checkbox">Item Group Wise </label></li>
+								               </ul>
+								            </div>
+								            <div id="PurchaseBookLedger" class="multi_list" style="display:none;">
+								               <ul style="height: 150px">
+								                  <li class="checkbox-inline"> <label class="radio-inline"> <input value="" type="checkbox">MRN Register </label></li>
+								                  
+								               </ul>
+								            </div>
+								            <div id="SalesOrderLedger" class="multi_list" style="display:none;">
+								               <ul style="height: 150px">
+								                   <li class="checkbox-inline"><label class="radio-inline">  <input value="" type="checkbox">Party Wise </label> </li>
+								                   <li class="checkbox-inline"><label class="radio-inline">  <input value="" type="checkbox">Area Wise </label></li>
+								                  <li class="checkbox-inline"> <label class="radio-inline"> <input value="" type="checkbox">Employee Wise </label></li>
+								                  <li class="checkbox-inline"> <label class="radio-inline"> <input value="" type="checkbox">Agent Wise </label></li>
+								                 
+								                  
+								               </ul>
+								            </div>
+						            </div>
+			                    </fieldset>
+			                </div>
+			             </div>
+	                </div>
+                </fieldset>
+
+                <div class="col-sm-12 padd_l padd_5">
+                    <!-----Price List---->
+	                <fieldset>
+				        <legend>Sr.No. list(details)</legend>
+				           <div class="form-group">
+								<label class="control-label col-sm-1 padd_l padd_5" >Date From </label>
+							    <div class="col-sm-1 padd_l padd_5">
+							      @Html.TextBoxFor(model => model.dFrom, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date", @style = "width:90px;" }) 
+							    </div>
+							    <label class="control-label col-sm-1" >TO</label>
+							    <div class="col-sm-1 padd_l padd_5">
+							       @Html.TextBoxFor(model => model.dTo, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date", @style = "width:90px;" }) 
+							    </div>
+							    <div class="col-sm-6 padd_l padd_5"> 
+								  @*  <button type="submit" class="btn-default" style="margin-top: 0px;">Print</button>
+								    <button type="submit" class="btn-default" style="margin-top: 0px;">Export</button>
+								    <button type="button"  id="btnReset"   class="btn-default" style="margin-top: 0px;">Reset</button>*@
+                                     <input type="button" id="btnFilter" value="View Report"  class="btn-default"  style="margin-top: 0px;" />
+                                  
+							    </div>
+						    </div>
+						    
+						    
+						   
+				   </fieldset>
+				   <!-----Price List end---->
+				</div>
+				<div class="col-sm-12 filterWiseDv">
+                    <div class="row">
+                    	 
+				       <div class="col-sm-3 padd_l padd_5 p_element" id="sb1"  style="display: none;">
+						   <fieldset>
+						        <legend>Parties</legend>
+                                <div id="example1" class="multi_list drop_down"  > 
+				               <ul style="height: 250px"> 
+                                    <li class="checkbox-inline"> <label> <input type="checkbox" name="chkSelectAll" id="chkSelectAll" /> Select All</label></li>
+                                   
+
+				                   @for (var i = 0; i < Model.lstFilter.Count; i++)
+                                    {  
+                                 <li class="checkbox-inline">  
+                                     <label>  <input type="checkbox" data-dispatch-entry-id="@Model.lstFilter[i].PartyID" class="chkSelect" /> 
+                                        @Model.lstFilter[i].PartyName </label>
+                                 </li> 
+                                    } 
+				                </ul>
+                               </div>
+				         
+						   </fieldset>
+				       </div>
+				       <div class="col-sm-3 padd_l padd_5 p_element" id="sb2" style="display: none;">
+						   <fieldset>
+						        <legend>Areas</legend>
+						           <div class="multi_list drop_down">
+						               <ul style="height: 250px">
+						                  <li class="checkbox-inline">  <input value="" type="checkbox">Select All</li>
+                                     @*  @foreach (var Prt in ViewBag.PartyList)
+                                    { 
+                                   <li class="checkbox-inline"> 
+                                       <input type="checkbox" data-dispatch-entry-id="@Prt.acctCode" class="chkSelect" /> 
+                                         @Prt.acctname
+                                   </li>
+                                         }*@
+						                
+						                </ul>
+						           </div>
+						   </fieldset>
+				       </div>
+				        <div class="col-sm-3 padd_l padd_5 p_element" id="sb3"  style="display: none;">
+						   <fieldset>
+						        <legend>Employee</legend>
+						          @* <div class="multi_list drop_down">*@
+                                    <div id="dvEmployee" class="multi_list drop_down"  > 
+						               <ul style="height: 250px">
+                                              <li class="checkbox-inline"> <label> <input type="checkbox" name="chkSelectAll_Emp" id="chkSelectAll_Emp" /> Select All</label></li> 
+						                @for (var i = 0; i < Model.lstEmployee.Count; i++)
+                      { 
+                                   <li class="checkbox-inline"> 
+                                      <label> <input type="checkbox" data-dispatch-entry-id="@Model.lstEmployee[i].PartyID" class="chkSelect1" /> 
+                                        @Model.lstEmployee[i].PartyName </label>
+                                   </li> 
+                      } 
+						                </ul>
+						           </div>
+						   </fieldset>
+				       </div>
+				        <div class="col-sm-3 padd_l padd_5 p_element" id="sb4"  style="display: none;">
+						   <fieldset>
+						        <legend>Agent</legend>
+						           <div id ="dvAgent" class="multi_list drop_down">
+						               <ul style="height: 250px">
+                                            <li class="checkbox-inline"> <label> <input type="checkbox" name="chkSelectAll_Emp" id="chkSelectAll_Agent" /> Select All</label></li> 
+						                @for (var i = 0; i < Model.lstAgent.Count; i++)
+                      {  
+                                   <li class="checkbox-inline"> 
+                                       <input type="checkbox" data-dispatch-entry-id="@Model.lstAgent[i].PartyID" class="chkSelectAgent" /> 
+                                           @Model.lstAgent[i].PartyName 
+                                   </li> 
+                      }
+						                
+						                </ul>
+						           </div>
+						   </fieldset>
+				       </div>
+				        @* <div class="col-sm-3 padd_l padd_5 p_element" id="sb5"  style="display: none;">
+						   <fieldset>
+						        <legend>Cities</legend>
+						           <div id ="dvCity1" class="multi_list drop_down">
+						               <ul style="height: 250px">
+						                   <li class="checkbox-inline"><label>  <input type="checkbox" name="chkSelectAll_City" id="chkSelectAll_City" /> Select All</label></li> 
+						                 @for (var i = 0; i < Model.lstCity.Count; i++)
+                       {  
+                                   <li class="checkbox-inline"> 
+                                    <label>   <input type="checkbox" data-dispatch-entry-id="@Model.lstCity[i].PartyID" class="chkSelect_City" /> 
+                                        @Model.lstCity[i].PartyName </label>
+                                   </li>
+                                        
+                                     
+                       }
+						                </ul>
+						           </div>
+						   </fieldset>
+				       </div>*@
+				    
+                           <div class="col-sm-3 padd_l padd_5 p_element" id="sb5" style="display: none;" >
+						   <fieldset>
+						        <legend>Cities</legend> 
+                                <div id ="dvCity"  class="multi_list drop_down">
+                                <ul style="height: 250px">
+						                   <li class="checkbox-inline" ><label>  <input type="checkbox" name="chkSelectAll_City" id="chkSelectAll1_City" /> Select All</label></li> 
+						              
+                                  <li class="checkbox-inline" ng-repeat=" opt in items" ng-bind-html-unsafe="opt.text" > 
+                                       <label>   <input type="checkbox" checklist-value="opt.CityID" data-dispatch-entry-id="{{ opt.CityID }}" class="chkSelect1_City" /> 
+                                         {{ opt.CityNm }} </label>
+
+    </li> 
+                                   </ul>
+</div>
+                            
+                                
+						   </fieldset>
+				       </div>
+
+			       </div>
+				</div>
+			     
+								
+			</div>
+       </div>
+   </div>
+              
+   <!----compex_form end---->
+
+         
+
+  <!-----bootstrap script --> 
+              
+  <!-- charts --> 
+          }
+           </div> 
+</body>
+
+ <script type="text/javascript">
+     $('.check_box').change(function () {
+         if ($('.check_box:checked').length == 0) {
+             $('.p_element').show();
+         } else {
+             $('.p_element').hide();
+             $('.check_box:checked').each(function () {
+                 $('#' + $(this).attr('data-ptag')).show();
+             });
+         }
+
+     });
+</script>
+</html>
+ 

@@ -1,0 +1,256 @@
+﻿@model IEnumerable<CompxERP.Models.tblComplaint>
+<link type="text/javascript" href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+<script type="text/javascript" src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery-ui-1.8.20.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#txtC_Date').val(today);
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+</script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetComplaintDetail", "Service")',
+            data: { ComplID: '@ViewBag.ComplID' },
+            success: function (data) {
+                debugger;
+                $("#hdnCD_CompID").val(data[0].CompID);
+                $("#lblCompNo").text(data[0].CompNo);
+                $("#lblCompDt").text(data[0].CompDt);
+                $("#lblDealerID").text(data[0].DealerID);
+                $("#lblCustID").text(data[0].CustID);
+                $("#lblCustNM").text(data[0].CustNM);
+                $("#lblModelNo").text(data[0].ModelNo);
+                $("#lblSrvType").text(data[0].SrvType);
+                $("#lblItemID").text(data[0].ItemID);
+                $("#lblInvNo").text(data[0].InvNo);
+
+                $("#lblRemark_Cust").text(data[0].Remark_Cust);
+                $("#lblStatusID").text(data[0].StatusID);
+                $("#lblCreatedOn").text(data[0].CreatedOn);
+                $("#lblUserID").text(data[0].UserID);
+                $("#lblcmCategory").text(data[0].cmCategory);
+                $("#lblcmIsPaid").text(data[0].cmIsPaid);
+                $("#lblcmSrvcMode").text(data[0].cmSrvcMode);
+                $("#lblcmIsRead").text(data[0].cmIsRead);
+
+                $("#lblWarrantyLeft").text(data[0].WarrantyLeft);
+                $("#lblMobile").text(data[0].Mobile);
+                $("#lblInvDt").text(data[0].InvDt);
+                $("#lblItemNm").text(data[0].ItemNm);
+            }
+        });
+    });
+
+</script>
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div id="DivPFReceipt" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                @* <button type="button" class="close" onclick="ClosePopUpRec()">&times;</button>*@
+                <h4 class="modal-title">Complaint Detail</h4>
+            </div>
+            <div class="modal-body input_popup">
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2 plr5">
+                                    Complaint No :
+                                </label>
+                                <label class="control-label col-sm-4 plr5" id="lblCompNo"></label>
+
+                                <label class="control-label col-sm-2 plr5">Complaint Dt.:</label>
+                                <label class="control-label col-sm-4 plr5" id="lblCompDt"></label>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2 plr5">Customer Name :</label>
+
+                                <label class="control-label col-sm-4 plr5" id="lblCustNM"></label>
+
+                                <label class="control-label col-sm-2 plr5">Mobile :</label>
+                                <label class="control-label col-sm-4 plr5" id="lblMobile"></label>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2 plr5">Invoice No. :</label>
+                                <label class="control-label col-sm-4 plr5" id="lblInvNo"></label>
+                                <label class="control-label col-sm-2 plr5">Invoice Date :</label>
+                                <label class="control-label col-sm-4 plr5" id="lblInvDt"></label>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2 plr5">Warranty Left :</label>
+                                <label class="control-label col-sm-4 plr5" id="lblWarrantyLeft"></label>
+                                <label class="control-label col-sm-2 plr5">Complain For :</label>
+                                <label class="control-label col-sm-4 plr5" id="lblItemNm"></label>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Complain Detail</legend>
+                            <div class="marg-top">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 plr5">Wish To Take Paid Service :</label>
+                                    <div class="col-sm-3 plr5">
+                                        <label class="radio-inline font-s">
+                                            <input id="C_rbYes" name="New1" type="radio">Yes</label>
+                                        <label class="radio-inline font-s">
+                                            <input id="C_rbNo" name="New1" checked type="radio">No</label>
+                                    </div>
+                                    <label class="control-label col-sm-2 plr5">Service Mode :</label>
+                                    <div class="col-sm-3 plr5">
+                                        <label class="radio-inline font-s">
+                                            <input id="C_rbFree" name="New" type="radio" checked="checked">Free Of Cost</label>
+                                        <label class="radio-inline font-s">
+                                            <input id="C_rbPaid" name="New" checked type="radio">Paid</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label class="control-label col-sm-3 plr5">Problem :</label>
+
+                                    <label class="col-sm-9 plr5" id="lblRemark_Cust"></label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 plr5">Description</label>
+                                    <div class="col-sm-9 plr5">
+                                        <textarea class="form-control" id="txtC_Description" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 plr5">Tentetive Time</label>
+                                    <div class="col-sm-3 plr5">
+                                        <input type="text" placeholder="in Days" class="form-control" id="txtC_Tentetive" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                                        <input type="hidden" id="hdnCD_CompID" value="0" />
+                                    </div>
+                                    <label class="control-label col-sm-3 plr5">Diagnosis/Visit  Charge</label>
+                                    <div class="col-sm-3 plr5">
+                                        <input type="text" class="form-control" id="txtC_Charge" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    @if (CompxERP.Models.SessionMaster.UserType == 0 || CompxERP.Models.SessionMaster.UserType == 1 || CompxERP.Models.SessionMaster.UserType == 6)
+                                    {
+                                        <label class="control-label col-sm-3 plr5">Allot To</label>
+                                        <div class="col-sm-3 plr5">
+                                            @Html.DropDownList("ddlC_Employee", ViewBag.Executive as SelectList, "--Select--", new { @class = "form-control" })
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                    </div>
+
+                    </fieldset>
+
+                        <div class="form-group">
+                            <div class="col-sm-12 btn-div-c">
+                                @*<a href="#" id="btnComplaint" > <img src="/img/floppy-disk.png" /></a>*@
+                                <input type="button" value="Save" id="btnComplaint" class="btn btn-default" />
+                                @*    <a href="#" onclick="ClearDvData();"> <img src="/img/cancel.png" /></a> *@
+                                <button type="button" onclick="ClearDvData();" class="btn btn-default">Close</button>
+                            </div>
+                        </div>
+
+                </div>
+                <div id="dvComplaintDet"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+    $('#btnComplaint').click(function () {
+        debugger;
+        ShowHideLoader('show');
+        var data = new FormData();
+        if (C_rbYes.checked) data.append("cmIsPaid", 1); else data.append("cmIsPaid", 0);
+        if (C_rbFree.checked) data.append("cmSrvcMode", 1); else data.append("cmSrvcMode", 0);
+        data.append("EmpID", $("#ddlC_Employee").val());
+        data.append("TentetiveTm", $("#txtC_Tentetive").val());
+        data.append("Charge", $("#txtC_Charge").val());
+        data.append("Remark_Eng", $("#txtC_Description").val());
+        data.append("CompID", $("#hdnCD_CompID").val());
+
+        $.ajax
+        ({
+            url: "@Url.Action("ComplaintAllotToEmp", "Service")",
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    ShowHideLoader('hide');
+                    if (response.sMsg.MsgID == "1") {
+                        alert(response.sMsg.Message);
+                        $("#divPayFollowUp").hide();
+                        $('#btnComplaint_List').click();
+                        $("#hdnCD_CompID").val('');
+                        $("#lblCompNo").text('');
+                        $("#lblCompDt").text('');
+                        $("#lblDealerID").text('');
+                        $("#lblCustID").text('');
+                        $("#lblCustNM").text('');
+                        $("#lblModelNo").text('');
+                        $("#lblSrvType").text('');
+                        $("#lblItemID").text('');
+                        $("#lblInvNo").text('');
+                        $("#lblRemark_Cust").text('');
+                        $("#lblStatusID").text('');
+                        $("#lblCreatedOn").text('');
+                        $("#lblUserID").text('');
+                        $("#lblcmCategory").text('');
+                        $("#lblcmIsPaid").text('');
+                        $("#lblcmSrvcMode").text('');
+                        $("#lblcmIsRead").text('');
+                        $("#lblWarrantyLeft").text('');
+                        $("#lblMobile").text('');
+                        $("#lblInvDt").text('');
+                        $("#lblItemNm").text('');
+                    }
+                    else {
+                        alert('Not Saved Successfully ...');
+                        alert(response.sMsg.Message);
+                        ShowHideLoader('hide');
+                    }
+                }
+                ShowHideLoader('hide');
+            }
+        });
+    });
+</script>

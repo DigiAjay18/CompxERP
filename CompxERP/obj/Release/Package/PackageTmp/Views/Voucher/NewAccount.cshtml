@@ -1,0 +1,65 @@
+﻿@model CompxERP.Models.clsOrder
+@using System.Web.Optimization
+
+@{
+    ViewBag.Title = "New Account";
+}
+@Styles.Render("~/Content/angularcss")
+
+<script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+<script src="~/Scripts/Angular/NewAccount.js"></script>
+
+<div class="md-padding dialogdemoBasicUsage" data-ng-controller="ctrlNewAcc" id="popupContainer" data-ng-cloak="" data-ng-app="NewAcc">
+    <h2>New Account</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <fieldset>
+            <legend> New Account</legend>
+             
+             <div class="modal-body">
+                                      <div class="form-group">
+                      <label class="control-label col-sm-2 padd_l padd_5">Name</label>
+                      <div class="col-sm-8 padd_l padd_5">
+                      @Html.TextBoxFor(model => model.NewName, new { data_ng_model="NewName", @class = "form-control capital_let"})
+                      </div>
+                      </div>
+                                       <div class="form-group">
+                      <label class="control-label col-sm-2 padd_l padd_5">Address</label>
+                      <div class="col-sm-8 padd_l padd_5">
+                      @Html.TextBoxFor(model => model.NewAddress, new { data_ng_model="NewAddress" , @maxlength = "200", @class = "form-control capital_let" })
+                      </div>
+                      </div> 
+                                       <div class="form-group">
+                      <label class="control-label col-sm-2 padd_l padd_5">Mobile</label>
+                      <div class="col-sm-4 padd_l padd_5">
+                    @Html.TextBoxFor(model => model.NewMobile, new  { data_ng_model ="NewMobile" , @maxlength = "11",  @class = "form-control digit"})
+                      </div>
+                                          <label class="control-label col-sm-2 padd_l padd_5">GSTIN</label>
+                      <div class="col-sm-2 padd_l padd_5">
+                     @Html.TextBoxFor(model => model.NewGSTIN, new { data_ng_model = "NewGSTIN", @class = "form-control"})
+                      </div>
+                      </div>
+                                  </div>
+                                  <div class="modal-footer text-left">
+                                     <input type="button"  value="Create" ng-click="SaveAcc()"  /> 
+                                      <input type="button"  value="Close" ng-click ="hide()"  class="btn-default pull-left" />
+
+                                  </div>
+
+        </fieldset>
+    }
+
+  
+    
+            
+    
+</div>

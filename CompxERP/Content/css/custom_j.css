@@ -1,0 +1,317 @@
+/* css*/
+body{margin: 0;padding:0;font-family:Roboto;font-weight:bold;}
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Oswald|Raleway');
+h3{font-size:16px;margin:0;font-family:Oswald;}
+.padd_l{padding-left:0;}
+.padd_R{padding-right:0;}
+.padd_5{padding-right:5px;}
+select {width:100% !important;}
+input,  select {background: rgba(163, 44, 43, 0.10)  none repeat scroll 0 0 !important;  border: 1px  solid #ccc;height:25px !important;padding:2px 6x!important;}
+textarea { width:100%;background: #b32c2b1a none repeat scroll 0 0 !important;  border: 0 none;padding:2px 6px!important;}
+select{padding:3px !important;}
+/*item Setup*/
+.top_head {
+  background: #b32c2b none repeat scroll 0 0;
+  color: white;
+  padding: 2px 0;
+  text-align: center;
+}
+fieldset {
+  border: 1px solid silver !important;
+  margin: 0 2px !important;
+  padding: 0.35em 0.625em 0.75em !important;
+}
+legend {
+  border-bottom: 0 none;
+  font-size: 14px;
+  margin: 0;
+  width: auto;
+  font-family:Oswald;
+}
+.item_setup .form-group {
+  float: left;
+  margin-bottom: 0;
+  width: 100%;
+}
+.item_setup .checkbox {
+  margin: 0;
+}
+.item_setup .checkbox input {
+  margin-top: 0;
+}
+.id_num {
+  float: left;
+  height: 52px;
+  margin-top: 10px !important;
+  width: 100%;
+}
+.btn {
+  background: #b32c2b none repeat scroll 0 0;
+  border: medium none;
+  color: white;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+.j_table_new th {
+  background: #eee none repeat scroll 0 0;
+  border: 2px outset #fff !important;
+  font-size: 12px !important;
+  padding: 0!important;
+  text-align: center!important;
+}
+.buttons_dv {
+  margin-top: 10px;
+}
+.btn-default{
+  background: #b32c2b none repeat scroll 0 0 !important;
+  border: medium none;
+  border-radius: 3px;
+  color: white;
+  margin-right: 10px;
+  margin-top: 8px;
+  padding: 3px 18px;
+  text-align:center !important;
+}
+.input_feild.flexselect{width:100%;border:1px solid #ccc;}
+.margin_t{margin-top:0px !important;}
+.mar_5{margin-bottom:5px;}
+.defalt_btn {  margin-top: 10px;}
+/*account form*/
+.main_dv {  border: 2px outset #ccc;}
+.flexselect_dropdown {  display: none;  position: absolute; z-index: 999999;  margin: 0;	padding: 0;	border: 1px solid WindowFrame;  max-height: 200px;  overflow-x: hidden;  overflow-y: auto;	background-color: Window; color: WindowText; text-align: left; box-shadow: 0 6px 12px #ccc; -webkit-box-shadow: 0 6px 12px #ccc;}
+.flexselect_dropdown ul {	width: 100%;	list-style-position: outside;	list-style: none;	padding: 0;	margin: 0;}
+.flexselect_dropdown li {	margin: 0px;	padding: 2px 5px;	cursor: pointer;	display: block;	width: 100%;	font: Menu;	overflow: hidden;}
+.flexselect_dropdown li.disabled {  cursor: not-allowed; color: GrayText;}
+.flexselect_selected {	background-color: Highlight;	color: HighlightText;}
+.per_info .form-group { margin-bottom: 5px;}
+.buttons_dv {  float: left; width: 100%;}
+hr {  border: 1px solid #ccc;  float: left;  margin: 2px 0;  width: 100%;}
+.buttons_dv.text-right {margin-bottom:10px;}
+.per_info_j {  min-height: 459px;}
+.option-dv {  float: left;  width: 100%;margin-top:20px;}
+.option-dv .form-group{margin-bottom:5px;}
+.new_text { height: 25px !important;}
+.update_btn button {  background: #ddd none repeat scroll 0 0;  border: 2px outset #ccc;  border-radius: 0; color: black;}
+
+/*popup*/
+.modal-content > fieldset { border: 2px outset #ccc;}
+.acount_set_tab th {  background: #eee none repeat scroll 0 0;  border: 1px outset #fff;  padding: 3px !important;  text-align: center;}
+.modal-content{border-radius:0px !important;}
+.acount_set_tab .table-fixed thead { width: 100%;}
+.acount_set_tab .table-fixed tbody {  height: 150px;  overflow-y: auto;  width: 100%;}
+.acount_set_tab .table-fixed thead, .acount_set_tab .table-fixed tbody, .acount_set_tab .table-fixed tr, .acount_set_tab .table-fixed td, .acount_set_tab .table-fixed th {  display: block;}
+.acount_set_tab .table-fixed tbody td, .acount_set_tab .table-fixed thead > tr> th {  float: left;  border-bottom-width: 0;}
+.acount_set_tab .table tr td {  border-left: 1px solid #ccc;}
+.acount_set_tab .table tr {width:100%;float:left;}
+.acount_set_tab tr:last-child { border-bottom: 1px solid #ccc;}
+.acc_rele .checkbox {  font-size: 12px;  line-height: 14px;  margin: 0;}
+.form-group.acc_det_pop {  height: 120px;}
+.flexselect_dropdown {  max-height: 95px; overflow-y: scroll;}
+.update_btn {text-align: right;}
+.mutual_relation { min-height: 222px;}
+.mutual_relation .pull-right { margin-top: 25px;}
+
+/*opening informtaion*/
+.opening_stock .form-group {  margin-bottom: 5px !important;}
+.opening_stock fieldset .form-group:last-child {  margin-bottom: 0 !important;}
+.opening_stock {  float: left;  margin-top: 5px; width: 100%;}
+.godown { min-height: 102px;}
+.item_table .table-fixed th {  background: #eee none repeat scroll 0 0 ;  border: 1px outset #fff;  padding: 3px !important;text-align:center;}
+.item_table .table-fixed thead { width: 100%;}
+.item_table .table-fixed tbody {  overflow-y: auto;  width: 100%;}
+.item_table .table-fixed thead, .item_table .table-fixed tbody, .item_table .table-fixed tr, .item_table .table-fixed td, .item_table .table-fixed th {  display: block;}
+.item_table .table-fixed tbody td, .item_table .table-fixed thead > tr> th {  float: left;  border-bottom-width: 0;}
+.item_table .table tr td { border-left: 1px solid #ccc !important; padding: 3px !important;font-size:14px;font-weight:bold;}
+.item_table .table tr {width:100%;float:left;}
+.item_table tr:last-child { border-bottom: 1px solid #ccc;}
+.input_dv .form-control {  height: 30px !important;margin: 5px 0;}
+.input_dv button {  margin: 9px 0;}
+.item_table {  float: left;  margin-top: 10px;  width: 100%;}
+.exc { height: 78px;}
+.Vat_drop li {  border: 1px solid #ccc;  list-style: outside none none;  padding: 2px 8px;}
+.user {  color: #b32c2b;  float: right;}
+.Vat_drop {  padding: 0 0 0 8px; width: 30%;float:left;}
+
+
+.total_rupes table{  border-bottom: 5px double #222;  border-top: 2px solid black;  float: left;  font-weight: bold;  margin-bottom: 0;  padding: 3px 0;  width: 100%;}
+.user_cls {  float: left;  padding-left: 22px;  width: 68%;}
+.find_btn {  height: 155px;}
+.find_btn .update_btn .btn-default {  margin-top: 30px;  padding: 6px 60px;  text-align:center !important;}
+.text-center.update_btn {  float: left;  text-align: center;  width: 100%;}
+.total_rupes {  float: left;  margin-bottom: 52px;  width: 100%;}
+.input_dv input{ height: 30px !!important; margin: 5px 0;}
+.total_amount {  margin-top: 20px;}
+.input_dv .input_feild.flexselect {  height: 30px !important;  margin: 5px 0!important;}
+ .item_buttons {  float: left;  width: 100%;}
+.opening_stock input { width: 100%;}
+
+.item_buttons .btn-default {
+  height: 40px !important;
+  width: 100px;
+  text-align:center !important;
+}
+.btn-default:hover {
+    color: white;
+}
+.ui-widget.ui-widget-content {
+  border: 1px solid #c5c5c5;
+  font-size: 12px;
+  max-height: 138px;
+  overflow-y: scroll;
+  width: 326px;
+}
+.btn_add a {
+ 
+  color: #B32C2B;
+ 
+}
+.ui-menu-item:hover {
+  background: #f6e9e9 none repeat scroll 0 0;
+}
+.pull-right.btn_add {
+  background: white none repeat scroll 0 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 0.5px 8px 8px 0.5px rgba(0, 0, 0, 0.15);
+  margin-right: 22px;
+  margin-top: 10px;
+  padding: 6px 14px;
+}
+#BalAmt {
+  background: #ddd none repeat scroll 0 0 !important;
+} 
+.total_rupes td {
+  padding: 6px 0;
+}
+.total_rupes input {
+  border-radius:0px;
+  
+}
+.deleteContact {
+  background: transparent none repeat scroll 0 0;
+  border: medium none;
+}
+.deleteContact img {
+  width: 23px;
+}
+.OpenMst tbody {
+  height: 297px;
+}
+.open_stock tbody {
+  height: 250px;
+}
+.OpenMst {
+  float: left;
+  height: 350px;
+  width: 100%;
+}
+.panel.panel-default {
+  float: left;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.submit_btn_j {
+  padding: 15px 0;
+}
+.open_stock {
+  height: 300px;
+}
+.full_width {
+  float: left;
+  width: 100%;
+}
+
+
+
+.j_table_new .table-fixed thead {
+  width: 100%;
+}
+.table-fixed tbody {
+
+  overflow-y: auto;
+  width: 100%;
+}
+.item_tab_r .table-fixed thead, .item_tab_r .table-fixed tbody, .item_tab_r .table-fixed tr, .item_tab_r .table-fixed td, .item_tab_r .table-fixed th {
+  display: block;
+}
+.item_tab_r .table-fixed tbody td, .item_tab_r .table-fixed thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
+}
+.new_tab input, .new_tab select {
+    width:100%;
+}
+.item_tab_r {
+  height: 200px;
+}
+
+
+.item_tab_r th {
+  background: #eee none repeat scroll 0 0;
+  border: 2px outset #fff;
+  font-size: 12px;
+  padding: 2px !important;
+  text-align: center;
+}
+.item_tab_r td {
+ 
+  font-size: 12px;
+  padding: 2px !important;
+ 
+}
+#aEdit {
+  margin-left: 12px;
+}
+#add {
+  margin-top: 0;
+}
+.editImage {
+  float: left;
+  width: 100%;
+}
+.item_tab_r tbody {
+  height: 176px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*responsive media Query*/
+@media only screen and (max-width : 992px) 
+{
+	.panel.panel-default {  float: left;width: 100%;}
+	.acount_set_tab {  float: left; width: 100%;}
+	.panel.panel-default {  overflow-x: scroll;  width: 100%;}
+	
+}
+@media only screen and (max-width : 767px) 
+{
+.per_info_j .form-group { margin-bottom: 0 !important; }
+.per_info_j input { margin-bottom: 5px;  margin-top: 2px;
+}
+@media only screen and (max-width : 480px) 
+{
+.per_info_j .form-group { margin-bottom: 0 !important; }
+.per_info_j input { margin-bottom: 5px;  margin-top: 2px;}
+.btn-default.margin_t {  display: block;  margin-bottom: 10px;}
+.update_btn button { padding: 10px !important;}
+}
+@media only screen and (max-width : 400px) {
+	#Personal_Info .form-group {  float: left;  margin-bottom: 0; width: 100%;}
+    #Personal_Info input {  margin-bottom: 10px;}
+}
+
+

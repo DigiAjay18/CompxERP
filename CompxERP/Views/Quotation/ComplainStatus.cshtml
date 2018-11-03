@@ -1,0 +1,88 @@
+﻿@model IEnumerable<CompxERP.Models.tblComplaint>
+<div class="modal-dialog modal-md">
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h4 class="modal-title">Complaint Status</h4>
+    </div>
+    <div class="modal-body input_popup orderPoup">
+        <div class="form-group">
+            <div class="col-sm-6">
+                Status
+                @Html.DropDownList("hdnCompID", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control" })
+                <input type="hidden" value="0" id="hdnStatus" />
+            </div>
+            <div class="col-sm-6 text-right" id="btnSet">
+                <br />
+                <input type="button" value="Resolve" id="btnResolve" class="btn-default mt0" />
+                <input type="button" value="Halt" id="btnHalt" class="btn-default mt0" />
+                <input type="button" value="Reject" id="btnReject" class="btn-default mt0" />
+                
+            </div>
+        </div>
+
+        <div class="form-group">            
+            <div>
+                <div id="dvSetRem" style="display: none;">
+                    <div class="form-group">                      
+                         <div class="col-sm-12">
+                           <span>Remark</span>   
+                              <textarea id="txtRemark" class="form-control"></textarea>
+                        </div>
+                          <div class="col-sm-12">
+                           <input type="button" value="Submit" id="btnSubmit" class="btn-default" />
+                    <input type="button" value="Cancel" id="btnCancel" class="btn-default" />
+                        </div>
+                    </div>                 
+
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    function fnsubmit(x) {
+        ShowHideLoader('show');
+        var data = new FormData();
+        data.append("StatusID", $("#hdnStatus").val());
+        data.append("cmStatusRemark", $("#txtRemark").val());
+        data.append("CompID", $("#hdnCompID").val());
+        $.ajax
+        ({
+            url: "@Url.Action("UpdComplaintStatus", "Quotation")",
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    ShowHideLoader('hide');
+                    if (response.sMsg.MsgID == "1") {
+                        alert(response.sMsg.Message);
+                        $("#divPayFollowUp").hide();
+                        $('#btnComplaint_List').click();
+                        $("#txtRemark").val('');
+                        $("#hdnStatus").val('');
+                        $("#hdnCompID").val('');
+                    }
+                    else {
+                        alert('Not Saved Successfully ...');
+                        alert(response.sMsg.Message);
+                        ShowHideLoader('hide');
+                    }
+                }
+                ShowHideLoader('hide');
+            }
+        });
+    }
+    $('#btnSubmit').click(function () {
+        fnsubmit(); $('#dvSetRem').hide();
+    });
+    $('#btnResolve').click(function () { $("#txtRemark").val(''); $("#hdnStatus").val('2'); fnsubmit(); });
+    $('#btnHalt').click(function () { $("#txtRemark").val(''); $("#hdnStatus").val('4'); $('#dvSetRem').show(); $('#btnSet').hide(); });
+    $('#btnReject').click(function () { $("#txtRemark").val(''); $("#hdnStatus").val('3'); $('#dvSetRem').show(); $('#btnSet').hide(); });
+    $('#btnCancel').click(function () { $("#txtRemark").val(''); $("#hdnStatus").val(''); $("#hdnCompID").val(''); $('#dvSetRem').hide(); $('#btnSet').show(); });
+</script>

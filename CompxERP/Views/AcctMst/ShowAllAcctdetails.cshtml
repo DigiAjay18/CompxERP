@@ -1,0 +1,158 @@
+﻿@model IEnumerable<CompxERP.Models.account>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Account details";
+                    //WebGrid grid = new WebGrid(Model, selectionFieldName: "SelectedRow");  
+}
+<meta name="viewport" content="width=device-width"/>
+
+@*<link href="~/Content/css/owl.carousel.css" rel="stylesheet" />
+    <script type="text/javascript" src="~/Scripts/js/owl.carousel.min.js"></script>*@
+@*<script type="text/javascript" src="~/Scripts/js/dropdown.js"></script>*@
+@*<link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />*@
+@*<script src="~/Scripts/js/jquery.min.js"></script>*@
+@*<script src="~/Scripts/js/bootstrap.min.js"></script>*@
+
+@*<script src="~/Scripts/js/jquery.min.js"></script>
+<script src="~/Scripts/js/jquery-latest.min.js"></script>*@
+
+
+@*<link href="~/Content/css/my-style.css" rel="stylesheet" type="text/css">*@
+@*<link href="~/Content/css/font-awesome.css" rel="stylesheet" type="text/css">*@
+
+<!-- menu -->
+<link href="~/Content/css/menu.css" rel="stylesheet" />
+@*<script type="text/javascript" src="~/Scripts/js/menu.js"></script>*@
+
+<link href="~/Content/Gridmvc.css" rel="stylesheet" />
+
+<!-- slider -->
+
+   @*j_css*@
+   
+ <!-----font---->
+ <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+ 
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,500,500i,700,700i,800,800i,900,900i|Open+Sans:400,400i,600,600i,700,700i,800,800i'">
+  <!------custom css---->
+ <link rel="stylesheet" href="~/css/bootstrap.min.css">
+ <link rel="stylesheet" href="~/css/font-awesome.min.css">
+ <link rel="stylesheet" href="~/css/custom.css">
+ <link rel="stylesheet" href="~/css/responsive.css">
+@*<link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />*@
+<script src="~/Scripts/jquery-1.9.1.min.js"></script>
+<script src="~/Scripts/gridmvc.min.js"></script>
+
+ <style>
+      body {
+           background-color:#fff;
+       }
+     table {
+         background-color:#fff;
+     }
+
+     table tbody tr td {
+         background-color:transparent;
+     }
+
+
+       table tbody tr
+{
+    background-color: #f5f5f5;
+}
+
+      table tbody tr:hover
+{
+    background-color: #ddd;
+}
+       div.table_styl table tr td:nth-child(1), th:nth-child(1) {min-height: 27px;width: 8%; }
+		div.table_styl table tr td:nth-child(2), th:nth-child(2) {min-height: 27px;width: 30%;} 
+        div.table_styl table tr td:nth-child(3), th:nth-child(3) {min-height: 27px;width: 8%; text-indent:7px;} 
+        div.table_styl table tr td:nth-child(4), th:nth-child(4) {min-height: 27px;width: 8%; text-indent:5px;}
+        div.table_styl table tr td:nth-child(5), th:nth-child(5) {min-height: 27px;width: 8%; text-indent:5px} 
+      div.table_styl table tr td:nth-child(6), th:nth-child(6) {min-height: 27px;text-indent: 5px;width: 38%;} 
+
+   tbody {height: 500px;}
+
+    table thead tr {
+         background-color: brown;
+         background-image:none;         
+     }
+     table thead tr th {
+         color:#fff;
+     }
+        </style>
+
+<body>
+    <div class="compx">
+        <div class="compex_head">
+            <div class="container-fluid">
+                <div class="col-md-3 col-sm-3 col-xs-12"></div>
+                <div class="col-md-6 col-sm-6 col-xs-12"><h2> Account Master</h2></div>
+                <div class="col-md-3 col-sm-3 col-xs-12 account_setup">
+                    <div class="btn_right">
+                    <a href="/Home/menuNew"> <img src="~/Images/home.png" width="22" height="22" /></a>
+                    @Html.ActionLink("Account Master", "Insert", new { id = 0 }, new { style = "background-image:url('/Images/new.png');background-size: 35px 24px;background-position:center; background-repeat:no-repeat; color:transparent; text-align:right;padding: 13px 0;", title = "Create New" })
+                    <a href='/Home/LogOff' style="border: none; font-size: 14px;"><img src="~/Images/logout.png" width="22" height="22" /></a>
+               </div>
+             </div>
+            </div>
+        </div>
+        <div class="compex_form">
+           <div class="container-fluid">
+               <div class="Personal_form table_styl">
+                         @Html.Grid(Model).Columns(columns =>
+                    {
+                        columns.Add(c => c.acctcode).Titled("A/C Code");
+                        columns.Add(c => c.acctname).Titled("A/C Name").Filterable(true);
+                        columns.Add(c => c.acctgrou).Titled("A/C Type").Filterable(true);
+                        columns.Add(c => c.acctalia).Titled("Alia").Filterable(true);
+                        //columns.Add(c => c.acctPhone).Titled("Phone").Filterable(true);
+                        //columns.Add(c => c.PIN).Titled("PIN").Filterable(true);
+                        //columns.Add(c => c.PAN).Titled("PAN").Filterable(true);
+                        //columns.Add(c => c.TinNo).Titled("Tin No").Filterable(true);
+                        columns.Add()
+                        .Encoded(false)
+                        .Sanitized(false)
+
+                         .Encoded(false)
+        .Sanitized(false)
+
+        .RenderValueAs(o => Html.ActionLink("Edit", "Insert", new { id = o.acctcode }, new { style = "background-image:url('/Images/edit.svg');background-position:left -3px; background-repeat:no-repeat; color:transparent; background-size:100%; height:25px; text-align:right;", title = "Edit" })).Titled("Action").Css("edi");
+                        columns.Add()
+   .Encoded(false)
+   .Sanitized(false)
+   .RenderValueAs(o => Html.ActionLink("Delete", "delete", new { id = o.acctcode }, new { style = "background-image:url('/Images/remove.svg');background-position:left -3px; background-repeat:no-repeat;color:transparent; background-size:85% 136%; height:25px; ", title = "Delete", onclick = "return confirm('Are you sure you wish to delete this Record ?');" })).Titled("").Css("del");
+   //.RenderValueAs(o => Html.ActionLink("Delete", "delete", new { id = o.acctcode }, new { style = "background-image:url('/Images/remove.svg');background-position:left -3px; background-repeat:no-repeat;color:transparent; background-size:25px 25px; height:25px; ", title = "Delete" })).Titled("").Css("del");
+                    }).WithPaging(14).Sortable(true)
+
+       
+               </div>
+            </div>
+        </div>
+    </div>
+ 
+
+     
+    <!----popup-->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog" style="width: 400px; height: auto; margin-top: 100px;">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    @*<h4 class="modal-title">Sign In</h4>*@
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+
+
+

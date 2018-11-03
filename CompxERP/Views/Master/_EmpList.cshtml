@@ -1,0 +1,155 @@
+﻿@model IEnumerable<CompxERP.Models.EmployeeSetup>
+
+
+  <style>
+       .table-bordered.listTable > tbody > tr > td, .table-bordered.listTable > tfoot > tr > td, .table-bordered.listTable > thead > tr > td {  border: 1px solid #ccc !important;}
+      
+    </style>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Employee List</h4>
+                </div>
+                <div class="modal-body input_popup">
+                     <table class="table table-fixed table-bordered j_table_new table-striped">
+    <thead>
+    <tr>  
+         <th style="width:20%;">Name</th>
+         <th style="width:10%;">User </th>
+         <th style="width:10%;">PAN </th>
+         <th style="width:5%;">Gender </th>
+         <th style="width:10%;">ProofNo </th>
+         <th style="width:5%;">AcNo </th>
+         <th style="width:10%;">Official_No </th>
+         <th style="width:10%;">Residential_No </th>
+         <th style="width:10%;">ReferenceNo </th> 
+         <th style="width:10%;"> Edit  </th> 
+
+    </tr>
+    </thead>
+ <tbody style="height:430px;">
+@foreach (var item in Model)
+{
+    <tr> 
+        <td  style="width:20%;"> @item.sEmp_empname</td>
+        <td  style="width:10%;">@item.sEmpUser </td>
+        <td  style="width:10%;">@item.sEmp_PAN </td>
+       @if(item.iEmp_Gender ==1)
+       { <td  style="width:5%;"> Male</td>}
+       else
+       {<td  style="width:5%;"> Female</td>}
+
+        <td  style="width:10%;"> @item.sEmp_ProofNo</td>
+        <td  style="width:5%;">@item.sEmp_AcNo </td>
+        <td  style="width:10%;">@item.sOfficial_No </td>
+        <td  style="width:10%;">@item.sResidential_No </td> 
+        <td  style="width:10%;">@item.sReferenceNo </td>
+        <td  style="width:10%;">  <a  onclick="FillEmployeeDet('@item.iEmp_empcode','@item.sEmp_empname','@item.sEmp_PAN','@item.iEmp_Gender','@item.sEmp_ProofNo','@item.sEmp_AcNo','@item.sOfficial_No','@item.sResidential_No','@item.sReferenceNm','@item.sReferenceNo','@item.sFatherNo','@item.sTemporaryAdd','@item.sPermanentAdd','@item.sEmailID','@item.dEAcc_BirthDts','@item.Father','@item.Aadhar','@item.IFSC','@item.DegreeNM','@item.DegreeID','@item.iEmp_empcity','@item.sEmp_empstat','@item.sBloodGroup','@item.PfAcNo','@item.BankID','@item.mstDept','@item.iEAcc_empodesg','@item.sPath','@item.IMG_Path','@item.AadharCard','@item.VoterId','@item.Licence','@item.Passport','@item.Statement','@item.Degree','@item.empUserType');" style="cursor: pointer;">
+            <img src="~/Img/edit1.png" /></a> </td> 
+    </tr>
+} 
+     </tbody> 
+</table>
+                </div>
+
+
+<script type ="text/javascript">
+   @* function  FillEmployeeDet(empcode)
+    { 
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("employeesetup", "Master")",
+            data: { empCode: empcode },
+         success: function (data) {
+             $("#divEmpList").html(data); 
+         },
+         error: function () {
+             alert('Error');
+         }
+         });
+    }*@
+
+    function FillEmployeeDet(iEmp_empcode, sEmp_empname, sEmp_PAN, iEmp_Gender, sEmp_ProofNo, sEmp_AcNo, sOfficial_No, sResidential_No, sReferenceNm, sReferenceNo, sFatherNo, sTemporaryAdd, sPermanentAdd, sEmailID, dEAcc_BirthDts, Father, Aadhar, IFSC, DegreeNM, DegreeID, iEmp_empcity, sEmp_empstat, sBloodGroup, PfAcNo, BankID, mstDept, iEAcc_empodesg, sPath, IMG_Path, AadharCard, VoterId, Licence, Passport, Statement, Degree, empUserType) {
+        debugger;
+        $('#empUserType').val(empUserType);
+        $('#iEmp_empcode').val(iEmp_empcode);
+        $('#sEmp_empname').val(sEmp_empname);
+        $('#sEmp_PAN').val(sEmp_PAN);
+        $('#iEmp_Gender').val(iEmp_Gender);
+        $('#sEmp_ProofNo').val(sEmp_ProofNo);
+        $('#sEmp_AcNo').val(sEmp_AcNo);
+        $('#sOfficial_No').val(sOfficial_No);
+        $('#isEdit').val(true);
+        
+        $('#sResidential_No').val(sResidential_No);
+        $('#sReferenceNm').val(sReferenceNm);
+        $('#sReferenceNo').val(sReferenceNo);
+        $('#sFatherNo').val(sFatherNo);
+        $('#sTemporaryAdd').val(sTemporaryAdd);
+        $('#sPermanentAdd').val(sPermanentAdd);
+        $('#sEmailID').val(sEmailID);
+        $('#dEAcc_BirthDts').val(dEAcc_BirthDts);
+        $('#Father').val(Father);
+        $('#Aadhar').val(Aadhar);
+        $('#IFSC').val(IFSC);
+        $('#DegreeNM').val(DegreeNM);
+        $('#DegreeID').val(DegreeID);
+        $('#mstDept').val(mstDept);
+        $('#sEmp_empstat').val(sEmp_empstat);
+
+        $('#iEmp_empcity').empty(); 
+        $.get("../Master/GetCityList", { iState: $("#sEmp_empstat").val() }, function (data) {
+            if (data != null) {
+                var opt = new Option('--Select--', 0);
+                $("#iEmp_empcity").append(opt);
+
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].cityname, data[i].citycode);
+                    $("#iEmp_empcity").append(opt);
+                }
+  $('#iEmp_empcity').val(iEmp_empcity);
+            }
+        });
+
+        $.get("FillDegignationList", { iDept: $("#mstDept").val() }, function (data) {
+            if (data != null) {
+                $('#iEAcc_empodesg').empty();
+
+                var opt = new Option('--Select--', 0);
+                $("#iEAcc_empodesg").append(opt);
+
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].StudName, data[i].studCode);
+                    $("#iEAcc_empodesg").append(opt);
+                }
+                $('#iEAcc_empodesg').val(iEAcc_empodesg);
+            }
+        });
+
+        $('#sBloodGroup').val(sBloodGroup);
+        $('#PfAcNo').val(PfAcNo);
+        $('#BankID').val(BankID);
+       
+          $('#iEmp_empcity').val(iEmp_empcity);
+        
+        $('#sPath').val(sPath);
+        
+        $('#AadharCard').val(AadharCard);
+        $('#VoterId').val(VoterId);
+        $('#Licence').val(Licence);
+        $('#Passport').val(Passport);
+        $('#Statement').val(Statement);
+        $('#Degree').val(Degree); 
+       
+       //$('#EmpImg').attr("src",sPath);
+       //document.getElementById("EmpImg").src = "~/UploadImg/Penguins.jpg";
+
+       var image = document.getElementById('EmpImg');
+       image.src = sPath;
+    }
+</script>
+ 

@@ -1,0 +1,96 @@
+﻿@model CompxERP.Models.clsVisitSchMst
+<link href="~/css/bootstrap.min.css" rel="Stylesheet" />
+<link rel="Stylesheet" href="~/css/font-awesome.min.css"/>
+<link rel="Stylesheet" href="~/css/custom.css"/>
+<link href="~/Scripts/bootstrap.min.css" rel="stylesheet" />
+<link rel="Stylesheet" href="~/css/responsive.css"/>
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+<link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="Stylesheet" type="text/css" />
+ <link href="~/css/Sub.css" rel="stylesheet" />
+<link href="~/Scripts/bootstrap.min.css" rel="stylesheet" />
+
+
+<!--popup-model js-->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+
+
+
+<div class="dialogdemoBasicUsage  modal_mid popuptxt">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Inward Entry</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="hide()">
+                        <md-icon  aria-label="Close dialog"><i class="fa fa-times" aria-hidden="true"></i></md-icon>
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <div class="modal_mid md-dialog-content from-grp input_popup">
+
+                    <fieldset>
+                <div class="form-group top-mrg">
+                       
+                        
+                        <label class="control-label col-sm-4 padd_l padd_5"> Date</label>
+                        <div class="col-sm-8 padd_l mrgin-btm "><input type="text" id="txtSchDate"  class="form-control" onblur="dtCheck()" data-inputmask="'alias': 'mm/dd/yyyy'" data-mask /></div>
+
+                     <label class="control-label col-sm-4 padd_l padd_5"> Select Visit Date</label>
+                        <div class="col-sm-8 padd_l mrgin-btm "><select>
+                            <option>10-8-18</option>
+                            <option>15-5-18</option>
+                            <option>11-10-18</option>
+
+                                                                </select></div>
+                    <div class="col-sm-12">
+                         <table id="tblSubCategory" class="table table-fixed table-striped table-bordered j_table_new dataTable">
+                            <thead class="thead-default">
+                                <tr style="color:white;">
+                                    <th style="width:10%">V ID</th> 
+                                    <th style="width:12%">Employee Name</th> 
+                                    <th style="width:14%">Party Name</th>
+                                    <th style="width:14%">Visit Status</th>
+                                    <th style="width:12%">Est. Cost</th> 
+                                    <th style="width:15%">Tentative Return/Repair Dt. </th> 
+                                    <th style="width:14%">Engineer remark</th>
+                                    <th style="width:9%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody style="min-height:150px;">
+                             <tr>
+                               <td style="width:10%"> Voo 1 </td> 
+                                <td style="width:12%"> Mradul Shukla</td>  
+                                 <td style="width:14%"> Abc Computer</td>                                 
+                                 <td style="width:14%"> <input type="textarea" class="form-control" /></td>
+                                   <td style="width:12%"> <input type="text" class="form-control" /></td>
+                                 <td style="width:15%"> <input type="text" class="form-control" /></td>
+                                   <td style="width:14%">  <input type="textarea" class="form-control" /></td>
+                                 <td style="width:9%"><a href="#"   id="btnAdd"  ><img src="/img/inword.png" /></a> <br />  Inword</td>   
+                                
+                              </tr>
+                                <tr>
+                                    <td colspan="4" style="width:100%">
+                                       
+                                    </td>
+                                </tr>
+                            </tbody>
+                         </table>
+                    </div>
+                    <div class="col-sm-12 top-mrg">
+                        <div class="col-sm-6" style="text-align:right;"><a href="#" id="btnSave"><img src="/img/floppy-disk.png" /></a><br /> Save</div>
+                    <div class="col-sm-6"><a href="#" id="btnSave"><img src="/img/cancel.png" /></a><br /> Cancel </div>
+
+                        </div>
+                </div>
+
+                                </fieldset>
+
+        <!-- Modal -->
+        
+             </div>
+
+               </div>

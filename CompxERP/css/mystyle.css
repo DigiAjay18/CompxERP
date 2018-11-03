@@ -1,0 +1,128 @@
+@font-face {font-family: BubblegumSans-Regular;  src: url(../fonts/BubblegumSans-Regular.ttf);}
+@font-face {font-family: fira;  src: url(../fonts/fira-sans.regular.ttf);}
+.modealClassWidth {width: 100%;}
+.md-dialog-content {width: 80%;margin: 0 auto;}
+md-toolbar {min-height:40px !important;}
+.md-toolbar-tools {background: #dc4348;height:40px !important;}
+.md-toolbar-tools h2 {
+    text-align: center !important;
+    display: block;
+    width: 100%;
+}
+.modealClassWidth .md-dialog-content label.control-label {
+    width: 100%;
+}
+md-toolbar {min-height:40px !important;}
+.md-toolbar-tools {background: #dc4348;height:40px !important;}
+.md-toolbar-tools h2 { color: white;}
+.modealClassWidth, .md-dialog-container  {max-height:auto !important;}
+
+.modealClassWidth .md-dialog-content .form-group {
+    margin-bottom: 5px;
+    width: 100%;
+    float: left;
+}
+.modealClassWidth .md-dialog-content label {
+    color: #3d403d;
+    font-family: fira;
+    font-size: 13px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+ .md-dialog-content .form-control {
+    padding: 0px 3px !important;
+    font-weight: normal !important;
+    background: #F6E9E9;
+    border: 1px solid #f5baba;
+    border-radius: 3px;
+    height: 26px;
+}
+.modealClassWidth .md-dialog-content label.control-label { width: 100%;}
+.closeBtnBlack {background: #333; padding: 6px 21px!important; border-radius: 2px;}
+.modealClassWidth .md-dialog-content .btn.btn-default { padding: 6px 21px!important; border-radius: 2px;}
+.md-padding {padding:0px !important;}
+.modal_mid {
+    width: 600px;
+    font-family: fira;
+    margin: 0 auto;
+}
+.modealClassWidth._md.md-transition-in {
+    overflow: visible !important;
+}
+.md-padding {padding:0px;}
+md-dialog-content#dialogContent_3 {width: 100%;float: left;}
+.popuptxt .form-control {
+    padding: 0px 3px !important;
+    font-weight: normal !important;
+    background: #F6E9E9;
+    border: 1px solid #f5baba;
+    border-radius:3px;
+}
+ .popuptxt .form-group {
+    width: 100%;
+    float: left;
+    margin-bottom:5px;
+}
+
+.popuptxt .md-dialog-content .btn.btn-default {
+    padding: 6px 21px!important;
+    border-radius: 2px;
+}
+.closeBtnBlack {
+    background: #333 !important;
+    padding: 6px 21px !important;
+    border-radius: 2px;
+    color:white !important; 
+}
+.md-dialog-content .btn-default {
+    background: #b32c2b none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 3px;
+    color: white !important;
+    margin-right: 10px;
+    margin-top: 8px;
+    padding: 3px 18px !important;
+    height: auto !important;
+}
+.md-dialog-content .btn-default:hover { background: #b32c2b none repeat scroll 0 0;}
+.table .btn-default{margin: 0px;}
+.table{border: 1px solid #ccc;margin-bottom: 0px;}
+thead, tbody, tr, td, th, tfoot {  display: block;font-size: 12px;font-family:fira;}
+tbody { overflow-y: auto;}
+tbody td, thead th, tfoot td {   float: left;}
+thead th {  float: left; border-right:1px solid #ccc;}
+tr:after {  clear: both;   content: ' ';  display: block;   visibility: hidden;}
+thead { background: rgb(244, 249, 243) none repeat scroll 0 0; border: 0px solid #ccc;}
+.table > thead > tr > th {  background: #F5F5F5 none repeat scroll 0 0;vertical-align: bottom;border-top: 0px;padding: 4px 10px;color:black;}
+.table_j {float: left;width: 100%;margin-top: 10px;}
+.table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td, .table-bordered > thead > tr > td {
+    border: 0px !important;
+}
+tfoot th {
+  float: left;
+  border:0px !important;
+}
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #fbebf1;
+}
+.form-control {
+    padding:0px 3px !important;
+    font-weight:normal !important;
+}
+.table_dv_create {
+  float: left;
+  width: 100%;
+}
+.pagination {
+  border-radius: 4px;
+  display: inline-block;
+  margin: 13px 0 ;
+  padding-left: 0;
+}
+table.grid-table {
+  margin-left: 0 !important;
+}
+.modal_mid .md-dialog-content { width: 100%; margin: 0 auto;}
+.padd_5 {padding-right: 5px;}
+.padd_l {padding-left: 0;}
+.width_100 {width:100%;float:left;}

@@ -1,0 +1,65 @@
+﻿@model List<CompxERP.Models.Jourmaster> 
+ 
+    <table id="example1" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr><th style="width:5%;">SrNo</th>
+            <th style="width:12%;">City</th>
+            <th style="width:10%;">Lead Date</th>
+            <th style="width:7%;">Lead ID</th>   
+            <th style="width:15%;">Lead For</th>  
+           <th style="width:22%;">Party / Inquiry Name</th>  
+          <th style="width:15%;"> Contact Person</th> 
+            <th style="width:8%;">Mobile</th> 
+            <th style="width:6%;">View</th> 
+        </tr>
+    </thead>
+    <tbody style="height:460px;">
+        @{
+               var iIndex = 0;
+       if (Model != null && Model.Count > 0)
+        {
+            foreach (var item in Model)
+            {
+                iIndex = iIndex + 1;
+                <tr> 
+                     <td  style="width:5%;">@iIndex</td>  
+                    <td  style="width:12%;">@item.Cityname</td>
+                    <td  style="width:10%;">@item.mstdate.ToString("dd-MM-yyyy")</td>   @*@item.Statename*@
+                     <td  style="width:7%;">@item.mstchnV</td>  
+                    <td style="width:15%;">@item.ItemNm_Fini</td>  
+                    <td style="width:22%;">@item.acctname</td>
+                    <td  style="width:15%;">@item.mstContactPerson</td> 
+                    <td style="width:8%;">@item.NewMobile</td>   
+                    <td  style="width:6%;"><a class="fa fa-fw" id="@item.mstcode" style="cursor: pointer;text-decoration:underline" onclick="FillLeadDet('@item.mstcode');"  >View</a></td> 
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+
+
+<script type ="text/javascript">
+    function  FillLeadDet(Mstcode)
+    { 
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ParkLead", "Quotation")",
+            data: { MstCode: Mstcode ,MstType: 1147 ,comp:62 },
+         success: function (data) {
+             //$("#divDispatchEntries_Lead").html(data); 
+             $("#divDispatchEntries").html(data);
+         },
+         error: function () {
+             alert('Error');
+         }
+         });
+    }
+</script>
+
+             

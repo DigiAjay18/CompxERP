@@ -1,0 +1,350 @@
+﻿@model CompxERP.Models.clsVisitSchMst
+<link href="~/css/bootstrap.min.css" rel="Stylesheet" />
+<link rel="Stylesheet" href="~/css/font-awesome.min.css" />
+<link rel="Stylesheet" href="~/css/custom.css" />
+<link href="~/Scripts/bootstrap.min.css" rel="stylesheet" />
+<link rel="Stylesheet" href="~/css/responsive.css" />
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+<link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="Stylesheet" type="text/css" />
+<link href="~/css/Sub.css" rel="stylesheet" />
+<link href="~/Scripts/bootstrap.min.css" rel="stylesheet" />
+
+
+<!--popup-model js-->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="~/Scripts/jquery-2.2.3.js"></script>
+<script type="text/javascript" src="~/Scripts/ddaccordion.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.extensions.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery-ui-1.8.20.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.validate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.inputmask.extensions.js"></script>
+
+
+<script src="@Url.Content("~/Scripts/jquery-1.4.4.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery-ui-1.8.24.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    function fetchPartyMData(vtPartyName, vtMobile) {
+        $.ajax({
+            cache: false, async: false, type: "POST",
+            url: "@(Url.Action("/GetVisitPartyMobData", "Service"))",
+            data: { "vtPartyName": vtPartyName, "vtMobile": vtMobile },
+            success: function (data) {
+                $("#vtPartyName1").val(data[0].vtPartyName);
+                $("#vtArea1").val(data[0].vtArea);
+                $("#vtMobile").val(data[0].vtMobile);
+                $("#vtAddress").val(data[0].vtAddress);
+
+                var $table = $('<table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0"/>');
+                $table.append('<thead class="thead-default"><tr><th width="11%">Model No.</th><th width="11%">Machine No.</th><th width="11%">Weight</th><th width="11%">Valid For</th><th width="11%">Machine Type</th><th width="11%">Due Year</th><th width="11%">Due Months</th><th width="11%">Valid Date</th><th width="11%">Vc Type</th></tr></thead>');
+                var $tbody = $('<tbody style="height:100px;"/>');
+                $.each(data, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td width="11%"/>').html(val.vtModelNo));
+                    $row.append($('<td width="11%"/>').html(val.vtMachineNo));
+                    $row.append($('<td width="11%"/>').html(val.vtWeightName));
+                    $row.append($('<td width="11%"/>').html(val.vtValidFor));
+                    $row.append($('<td width="11%"/>').html(val.vtMachineType));
+                    $row.append($('<td width="11%"/>').html(val.vtDueYear));
+                    $row.append($('<td width="11%"/>').html(val.vtDueMonths));
+                    $row.append($('<td width="11%"/>').html(val.ValidUpToDate));
+                    $row.append($('<td width="11%"/>').html(val.vtVcType));
+                    $tbody.append($row);
+                });
+                $table.append($tbody);
+                $('#PartyMData').html($table);
+            }
+        });
+    }
+    $(document).ready(function () {
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) { dd = '0' + dd; }
+        if (mm < 10) { mm = '0' + mm; }
+        var today = mm + '/' + dd + '/' + yyyy;
+        $('#txtDate').val(today);
+        $(function () {
+            $("#datemask").inputmask("mm/dd/yyyy", { "placeholder": "mm/dd/yyyy" });
+            $("[data-mask]").inputmask();
+        });
+
+        var itmData = [];
+
+        $('#vtPartyName').change(function () {
+            $.ajax({
+                cache: false, async: false, type: "POST",
+                url: "@(Url.Action("/GetVisitPartyData", "Service"))",
+                data: { "vtPartyName": $('#vtPartyName').val() },
+                success: function (data) {
+                    $("#vtArea").val(data[0].vtArea);
+                    $("#txtMobNo").val(data[0].vtMobile);
+                }
+            });
+        });
+        $('#btnAdd').click(function () {
+            itmData.push({
+                vtPartyName: $("#vtPartyName").val(),
+                vtArea: $("#vtArea").val(),
+                vtMobile: $("#txtMobNo").val()
+            });
+            $("#vtPartyName").val('');
+            $("#vtArea").val('');
+            $("#txtMobNo").val('');
+            trnItemTable(itmData);
+            $("#vtPartyName").focus();
+        });
+        function trnItemTable(trn) {
+            if (trn.length > 0) {
+                var $table = $('<table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0" style="border:none;"/>');
+                $table.append('');
+                var $tbody = $('<tbody style="height:100px;"/>');
+                $.each(trn, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td width="60%"/>').html(val.vtPartyName));
+                    $row.append($('<td width="20%"/>').html(val.vtArea));
+                    $row.append($('<td width="10%"/>').html(val.vtMobile));
+                    $row.append($('<td width="10%"/>').html('<button type="button" id="btnDetail" class="deleteContact btn-color" onclick="fetchPartyMData(\'' + val.vtPartyName + '\', \'' + val.vtMobile + '\')" data-toggle="modal" data-target="#myModal">Detail</button>'));
+                    $tbody.append($row);
+                });
+                $table.append($tbody);
+                $('#TrnTable').html($table);
+                $('#sTrnDet').val('{"LstItem":' + JSON.stringify(trn) + '}');
+            }
+        }
+        
+        $('#btnCancel').click(function () {
+            $('#vsEmpID').val('');
+            $('#txtSchDate').val('');
+            $('#sTrnDet').val('');
+            $('#TrnTable').html('');
+            itmData = [];
+            GetGroupUser();
+        });
+        $('#btnSave').click(function () {
+            if ($('#txtDate').val() != "") {
+                if ($('#vsEmpID').val() != "") {
+                    if ($('#txtSchDate').val() != "") {
+                        if ($('#sTrnDet').val() != "") {
+                            $.ajax({
+                                cache: false, async: false, type: "POST",
+                                url: "@(Url.Action("/VisitScheduleMst", "Service"))",
+                                data: { "txtDate": $('#txtDate').val(), "vsEmpID": $('#vsEmpID').val(), "txtSchDate": $('#txtSchDate').val(), "sTrnDet": $('#sTrnDet').val() },
+                                success: function (data) {
+                                    //$('#txtDate').val('');
+                                    alert('Record Saved Successfully...');//181017
+                                    $('#vsEmpID').val('');
+                                    $('#txtSchDate').val('');
+                                    $('#sTrnDet').val('');
+                                    $('#TrnTable').html('');
+                                    itmData = [];
+                                    GetGroupUser();
+                                }
+                            });
+                        }
+                        else {
+                            alert('Please Add Atleast One Visit..');
+                            $('#sTrnDet').focus();
+                        }
+                    }
+                    else {
+                        alert('Please Feed Schedule Date..');
+                        $('#txtSchDate').focus();
+                    }
+                }
+                else {
+                    alert('Please Select Employee..');
+                    $('#vsEmpID').focus();
+                }
+            }
+            else {
+                alert('Please Feed Date..');
+                $('#txtDate').focus();
+            }
+        });
+        /*start 181013 %temp%*/
+        $.ajax({
+            cache: false, async: false, type: "POST",
+            url: "@(Url.Action("/GetVisitSchForList", "Service"))",
+            data: {},
+            success: function (data) {
+                $("#vsEmpID").empty();
+                if (data.lstSchEmp.length > 0) {
+                    { $.each(data.lstSchEmp, function () { $("#vsEmpID").append($("<option />").val(this.Value).text(this.Text)); }); }
+                }
+            }
+        });
+
+        function GetGroupUser() {
+            $.ajax({
+                cache: false, async: false, type: "POST",
+                url: "@(Url.Action("/GetVisitPartyList", "Service"))",
+                data: {},
+                success: function (data) {
+                    $("#vtPartyName").empty();
+                    if (data.lstPartyName.length > 0) {
+                        { $.each(data.lstPartyName, function () { $("#vtPartyName").append($("<option />").val(this.Value).text(this.Text)); }); }
+                    }
+                }
+            });
+            @*$.ajax({
+                cache: false, async: false, type: "POST",
+                url: "@(Url.Action("/GetVisitPartyAreaList", "Service"))",
+                data: {},
+                success: function (data) {
+                    $("#vtArea").empty();
+                    if (data.lstArea.length > 0) {
+                        { $.each(data.lstArea, function () { $("#vtArea").append($("<option />").val(this.Value).text(this.Text)); }); }
+                    }
+                }
+            });*@
+
+        }
+
+        GetGroupUser();
+        /*end 181013 %temp%*/
+
+    });
+    function dtCheck() {
+        if (new Date($("#txtSchDate").val()) < new Date($("#txtDate").val())) {
+            $("#txtSchDate").val('');
+            alert('Schedule Date Should be max or current date.');
+            $("#txtSchDate").focus();
+        }
+
+    }
+</script>
+<style type="text/css">
+    body {
+        background-color: #fff;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    {
+    <div class="dialogdemoBasicUsage  modal_mid popuptxt">
+        <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Visit Schedule Entry</h2>
+                    <span flex></span>
+                    <md-button class="md-icon-button" ng-click="hide()">
+                       <a href="/Home/superDash"> <md-icon  aria-label="Close dialog"><i class="fa fa-times" aria-hidden="true"></i></md-icon></a>
+                    </md-button>
+                </div>
+            </md-toolbar>
+        <div class="modal_mid md-dialog-content from-grp input_popup">
+            <div class="form-group top-mrg">
+                <label class="control-label col-sm-4 padd_l padd_5">Date</label>
+                <div class="col-sm-8 padd_l mrgin-btm ">
+                    <input type="text" id="txtDate" class="form-control" data-inputmask="'alias': 'mm/dd/yyyy'" data-mask disabled />
+                </div>
+                <label class="control-label col-sm-4 padd_l padd_5">Schedule For </label>
+                <div class="col-sm-8 padd_l mrgin-btm ">@Html.DropDownList("vsEmpID", new List<SelectListItem> { new SelectListItem { Text = "--Select--", Value = "-1" } })</div>
+                <label class="control-label col-sm-4 padd_l padd_5">Schedule Date </label>
+                <div class="col-sm-8 padd_l mrgin-btm ">
+                    <input type="text" id="txtSchDate" class="form-control" onblur="dtCheck()" data-inputmask="'alias': 'mm/dd/yyyy'" data-mask />
+                </div>
+                <table id="tblSubCategory" class="table table-fixed table-striped table-bordered j_table_new dataTable">
+                    <thead class="thead-default">
+                        <tr style="color: white;">
+                            <th style="width: 40%">Trader/Party Name</th>
+                            <th style="width: 30%">Area</th>
+                            <th style="width: 20%">Mobile No.</th>
+                            <th style="width: 10%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody style="min-height: 150px;">
+                        <tr ng-repeat="x in getSubCategory">
+                            <td style="width: 40%">
+                                @Html.DropDownList("vtPartyName", new List<SelectListItem> { new SelectListItem { Text = "--Select--", Value = "-1" } })
+                                <input type="hidden" class="form-control" id="sTrnDet" />
+                            </td>
+                            <td style="width: 30%">
+                                @*@Html.DropDownListFor(model => model.vtArea, Model.lstArea, "--Select--", new { @class = "text-box single-line" })
+	@Html.DropDownList("vtArea", new List<SelectListItem> { new SelectListItem { Text = "--Select--", Value = "-1" }})*@
+                                <input type="text" class="form-control" id="vtArea" /></td>
+                            <td style="width: 20%">
+                                <input type="text" class="form-control" id="txtMobNo" />
+                            </td>
+                            <td style="width: 10%"><a href="#" id="btnAdd">
+                                <img src="/img/add-icon.png" /></a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="width: 100%">
+                                <div id="TrnTable" class="btn transaction_styl clearfix tablecontainer table table-fixed table-bordered j_table_new table-striped"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="col-sm-12 top-mrg">
+                    <div class="col-sm-6" style="text-align: right;">
+                        <a href="#" id="btnSave">
+                            <img src="/img/floppy-disk.png" /></a><br />
+                        Save
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="#" id="btnCancel">
+                            <img src="/img/cancel.png" /></a><br />
+                        Cancel
+                    </div>
+
+                </div>
+            </div>
+            <!-- Modal -->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Party Detail</h4>
+                        </div>
+                        <div class="modal-body input_popup">
+                            <label class="control-label col-sm-4 padd_l padd_5">Party name</label>
+                            <div class="col-sm-8 mrgin-btm">
+                                <input type="text" class="form-control" id="vtPartyName1"></input>
+                            </div>
+
+                            <label class="control-label col-sm-4 padd_l padd_5">Area</label>
+                            <div class="col-sm-8 mrgin-btm">
+                                <input type="text" class="form-control" id="vtArea1"></input>
+                            </div>
+
+                            <label class="control-label col-sm-4 padd_l padd_5">Mobile</label>
+                            <div class="col-sm-8 mrgin-btm">
+                                <input type="text" class="form-control" id="vtMobile"></input>
+                            </div>
+
+                            <label class="control-label col-sm-4 padd_l padd_5">Address</label>
+                            <div class="col-sm-8 mrgin-btm">
+                                <input type="text" class="form-control" id="vtAddress"></input>
+                            </div>
+
+                            <div id="PartyMData" class="btn transaction_styl clearfix tablecontainer table table-fixed table-bordered j_table_new table-striped"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+}

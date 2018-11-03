@@ -1,0 +1,119 @@
+﻿ 
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div id="DivPFReceipt" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="ClosePopUpRec()">&times;</button>
+                <h4 class="modal-title">Offer Acceptance </h4>
+            </div>
+
+            <div class="modal-body input_popup">
+                    <div class="form-group">
+
+                    <div class="form-group marg-top">
+<fieldset>
+                        <legend>Scheme</legend>
+                                   <label class="radio-inline">
+                            <input type="checkbox" name="chkAllScheme" id="chkAllScheme" />
+                            Select All</label>
+                          <div id="dvOffer"> 
+
+                        @foreach (var Sch in ViewBag.vbSchemeList)
+                        {
+                            if (@Sch.SchName != "")
+                            {
+                                 <label class='checkbox-inline f-s'><input type='checkbox' data-Scheme-id="@Sch.MstCode" class='chkSelectDealer_Scheme' />@Sch.SchName</label>
+                            }
+                       }
+                             </div>    
+
+</fieldset>
+
+
+                     @*   @foreach (var Sch in ViewBag.vbSchemeList)
+                        {
+                            if (@Sch.SchName != "")
+                            {
+                                    <label class='checkbox-inline f-s'><input type='checkbox' data-Scheme-id="@Sch.MstCode" class='chkSelectDealer_Scheme' />@Sch.SchName</label>
+                             } 
+                            }*@
+                    </div>
+                        </div>
+                <div class="form-group">
+
+                    <div class="form-group marg-top">
+                        <label class="control-label col-sm-2 padd_l padd_5">Dealer</label>
+                        <div class="col-sm-4 padd_l">
+                            @Html.DropDownList("ddlDealerID", ViewBag.vwDealerNm as SelectList, "--Select--", new { @class = "form-control" })
+                        </div>
+                        
+                    </div>
+
+
+                </div>
+                 
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-12 btn-div-c">
+                    <input type="button" id="btnSetOfferAccept" value="Save" class="btn btn-search" />
+                    <input type="button" value="Cancel " id="btnClosePFRec_I" onclick="ClosePopUpRec()" class="btn btn-search" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    
+    $("#btnSetOfferAccept").click(function () {
+
+        debugger;
+      
+        if ($("#ddlDealerID").val() == "0") {
+            $('#ddlDealerID').focus();
+            alert('Please Select Dealer ...');
+            return;
+        }
+
+        var OfferIds = $.map($("#dvOffer .chkSelectDealer_Scheme:checked"), function (n, i) {
+            return $(n).attr("data-Scheme-id");
+        }).join(',');
+
+        ShowHideLoader('show');
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("OfferAccept", "Service")",
+            data: { iDealer: $("#ddlDealerID").val(), sScheme: OfferIds },
+            success: function (response) {
+                if (response != null) {
+                    ShowHideLoader('hide');
+                    if (response.MsgID == "1") {
+                        alert(response.Message);
+                        $("#dvOffer .chkSelectDealer_Scheme").prop('checked', false);
+
+                        $("#ddlDealerID").val(0);  $("#dvFloatDealer").html("");
+                    }
+                    else {
+                        alert('Not Saved Successfully ...');
+                        alert(response.Message);
+                        ShowHideLoader('hide');
+                    }
+                }
+                ShowHideLoader('hide');
+            }
+        });
+         
+    });
+
+    $("#chkAllScheme").change(function () { 
+        debugger;
+        $("#dvOffer .chkSelectDealer_Scheme").prop('checked', $(this).prop("checked"));
+    });
+
+
+</script>

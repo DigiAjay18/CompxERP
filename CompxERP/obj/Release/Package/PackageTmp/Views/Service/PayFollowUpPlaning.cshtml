@@ -1,0 +1,111 @@
+﻿   
+@model List<CompxERP.Models.clsEmpAllotMst> 
+
+
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+<script>
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#txtPlanningDt').val(today);
+            
+            $(function () { 
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" }); 
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+</script>
+
+
+ <div class="col-sm-12">
+    <table id="tblPaymentPlanning" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr>
+            <th style="width:5%;">S.No</th>
+             
+           <th style="width:20%;">Company / Dealer Name</th>
+         <th style="width:12%;">Action</th>
+          @*   <th style="width:10%;">Status</th>   
+            <th style="width:8%;">Count</th>     
+          <th style="width:35%;">Remark</th>   *@
+        </tr>
+    </thead>
+    <tbody style="height:430px;">
+           @{ 
+               var iIndex = 0;
+        if (Model != null && Model.Count > 0)
+        { 
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1; 
+               <tr>  
+                     <td  style="width:5%;">@iIndex</td>  
+    <td style="width:10%;">@item.DealerNm <input type="hidden" id="hdnPFP_DealerID" value="@item.DealerID"  /></td>  
+                   @if(  @item.StatusID >0){
+                    <td style="width:20%;"><input type="checkbox" data-id="@item.DealerID" disabled class="chkDealerSelect" /> </td>}
+                   else
+                   {
+                    <td style="width:20%;"><input type="checkbox" data-id="@item.DealerID" class="chkDealerSelect" /> </td>}
+                  
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }} 
+    </tbody>
+</table>
+
+</div>
+             
+ <div class="modal-body input_popup"> 
+     Planning Date : <input type="text" class="form-control" id="txtPlanningDt" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+    <button type="button" id="btnPaymentPlanning" name="Save" class="btn btn-default" onclick="SetPaymentPlanning();">Save </button> 
+</div>
+
+
+<script type ="text/javascript">
+
+    function SetPaymentPlanning() {
+        debugger;
+        var sPlanning = "";
+        $('#tblPaymentPlanning').find('tr').each(function () {
+            var row = $(this);
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                sPlanning += row.find(hdnPFP_DealerID).val() + ',';
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("PayFollowUpPlaning", "Service")",
+            data: { sDealer: sPlanning, PlanningDt: $("#txtPlanningDt").val() },
+            success: function (data) { 
+                alert(data.Message);
+                ClearDvData(); 
+            },
+            error: function () {
+                alert(error);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,29 @@
+﻿@{
+    Layout = null;
+}
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Print</title>
+
+@*<script>
+    $(function () {
+        alert('aaa');
+            var w = 940;
+            var h = 800;
+            var left = (screen.width / 2) - (w / 2);
+            var top = (screen.height / 2) - (h / 2);
+
+            window.open('~/Views/Shared/Report.aspx', '', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+        
+    });
+    </script>*@
+</head>
+<body>
+    <div>
+       @Html.Partial("~/Views/Shared/ReportViewer.aspx")  @* <a href="~/Views/Shared/Report.aspx">~/Views/Shared/Report.aspx</a>*@
+    </div>
+</body>
+</html>

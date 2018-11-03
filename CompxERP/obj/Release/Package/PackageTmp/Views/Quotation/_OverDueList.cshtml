@@ -1,0 +1,107 @@
+﻿   
+@model List<CompxERP.Models.DueList> 
+ 
+
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+ 
+
+<script >
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#F_Date').val(today);
+            $('#From_Date').val(today);  
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+    </script>
+         
+
+
+ <div class="col-sm-12">
+     
+     
+
+    <table id="tblPlanning" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+  
+      <tr>
+            <th style="width:5%;">No@*<input type="checkbox" class="btn btn-default" name="chkSelectAll" id="chkSelectAll" />*@</th> 
+           <th style="width:10%;">  Company</th>  
+           <th style="width:20%;">  Dealer Name</th>   
+          <th style="width:10%;">Cl.Bal</th>     
+          <th style="width:10%;">Dues</th>    
+          <th style="width:10%;">Order Value</th>    
+          <th style="width:10%;">OverDue Days</th>    
+          <th style="width:10%;">OverDue Value</th>    
+          <th style="width:10%;">Demanding Pay </th>    
+          
+        </tr>
+    </thead>
+    <tbody style="height:500px;">
+           @{
+                 var iIndex = 0;
+        if (Model != null && Model.Count > 0)
+        { 
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1; 
+               <tr>  
+                     <td  style="width:5%;">  @iIndex <input type="checkbox" data-id="@item.acctcode" value ="@item.acctcode" id="hdnPln_DealerID" class="chkPlnSelect" /> </td>   
+                    <td style="width:10%;">@item.CompName</td> 
+                    <td style="width:20%;">@item.acctdesc</td> 
+                    
+                    <td  style="width:10%;color:black">@string.Format("{0:N}",@item.sumbala)</td>     
+                    <td  style="width:10%;color:black">@string.Format("{0:N}",@item.Dues)</td>   
+                    <td  style="width:10%;color:black">@string.Format("{0:N}", @item.OrdValue)   </td>  
+                    <td  style="width:10%;color:black">  @item.DueDays   </td>  
+                    <td  style="width:10%;color:black">@string.Format("{0:N}",  @item.MaxDues ) </td>  
+                    <td  style="width:10%;color:black">@string.Format("{0:N}",  @item.Commited)  </td>  
+                        
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody> 
+</table> 
+      
+                   @*  <div class="form-group">   
+                        <div class="col-sm-3 padd_l padd_5">
+ <input type="button" id="btnSavePlanning" value="Save Planning" onclick="SetPlanning()" class="btn btn-search" /> 
+
+                        </div>
+                      <div class="col-sm-3 padd_l padd_5"> 
+                            <button type="button" class="btn btn-search" onclick="ClearDvData();"> Close</button>
+
+                        </div>
+                </div>*@
+
+
+</div>
+     
+

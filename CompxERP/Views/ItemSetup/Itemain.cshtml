@@ -1,0 +1,288 @@
+﻿@model CompxERP.Models.clsItemain 
+@using System.Web.Optimization
+@{
+    ViewBag.Title = "Item";
+   // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/Content/angularcss")
+ @*@Scripts.Render("~/Scripts/js") *@
+@if (ViewBag.MenCode != null)
+{      
+    <!------custom css---->
+     
+    
+<link href="~/Content/css/angular-material.css" rel="stylesheet" />
+    <link href="~/Content/css/menu.css" rel="stylesheet" />
+
+      <script src="~/Scripts/jquery-1.7.1.min.js"></script> 
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+     
+<script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+      <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+      <link rel="stylesheet" href="~/css/font-awesome.min.css">
+      <link rel="stylesheet" href="~/css/responsive.css">
+      <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/mystyle.css" rel="stylesheet" />
+    <style>
+        .trasnparent_img {
+    background: transparent;
+    border: 0px;
+    float: left;
+    padding: 0px;
+}
+    </style>
+}
+
+
+<div class="padd_0 dialogdemoBasicUsage modal-lg modealClassWidth" data-ng-controller="cntrlSetItem" id="popupContainer" data-ng-cloak="" data-ng-app="CompXApp">
+
+     <md-toolbar>
+      <div class="md-toolbar-tools">
+         <h2>Add New Item</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="hide()">
+          <md-icon  aria-label="Close dialog"><i class="fa fa-times" aria-hidden="true"></i></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+  <md-dialog-content>
+      <div class="md-dialog-content">
+           <div class="form-group"> 
+                <div class="col-sm-4 padd_l padd_5">
+                    <label class="control-label">Category</label>
+                     <input type ="hidden" id ="itemcode" value="0" />
+                      @Html.DropDownList("CatID", (SelectList)ViewBag.vwCategory, "--Select--", new { @class = "form-control", ng_model = "CatID", required = "required", @onchange = "FillSubCategory()" }) 
+                </div>
+               <div class="col-sm-4 padd_l padd_5">
+                    <label class="control-label"> Sub Category <a href="" data-ng-click="OpenAddSubCat($event)"><img src="~/Images/add.svg" width="20"/></a></label>
+                     
+                     @Html.DropDownList("SubCatID", new List<SelectListItem> { new SelectListItem { Text = "--Select--", Value = "0" }, }, new { @onchange = "FillData();", @ng_model = "SubCatID", @class = "form-control", required = "required" })
+                </div>
+                <div class="col-sm-4 padd_l padd_5">
+                     <label class="control-label" style="height:15px;">&nbsp;</label>
+                   
+                </div>
+            </div>
+         
+            <div class="form-group">
+                 <div class="col-sm-4 padd_l padd_5">
+                       <label class="control-label">Item Name</label>
+                       <input class="form-control" id="itemname" name="Category" maxlength="100" type="text" ng-model="itemname">
+                 </div>
+                 <div class="col-sm-4 padd_l padd_5">
+                      <label class="control-label">  Alias</label>
+                      <input class="form-control" id="itemalia" name="Alias" maxlength="30" type="text" ng-model="itemalia">
+                 </div>
+                 <div class="col-sm-4 padd_l padd_5">
+                       <label class="control-label">  Sort</label>
+                       <input class="form-control" id="itemsort" name="itemsort" maxlength="2" type="number" ng-model="itemsort">
+                 </div>
+            </div>
+            <div class="form-group">
+                 <div class="col-sm-2 padd_l padd_5">
+                       <label class="control-label">    Act.Wt. </label>
+                       <input class="form-control" id="itempart" name="itempart" type="number" maxlength="12"  ng-model="itempart">
+                 </div>
+                 <div class="col-sm-10 padd_l padd_5">
+                       <label class="control-label">  Exp Remark</label>
+                       <input class="form-control" id="itemtext" name="itemtext" maxlength="500" type="text" ng-model="itemtext">
+                 </div>
+            </div>
+           <div class="form-group">
+                 <div class="col-sm-3 padd_l padd_5">
+                       <label class="control-label">    Vat </label>
+                       <input class="form-control" id="itemvatr" name="itemvatr" type="number" maxlength="10"  onblur="chkIsGST();" ng-model="itemvatr">
+                 </div>
+                <div class="col-sm-3 padd_l padd_5">
+                       <label class="control-label">     HSN   </label>
+                       <input class="form-control" id="itemhsnc" name="itemhsnc" type="text" maxlength="20" onblur="chkIsGST();" ng-model="itemhsnc">
+                 </div>
+                <div class="col-sm-6 padd_l padd_5">
+                       <label class="control-label">Ingre. Info. </label>
+                      <input class="form-control" id="itemrefn" name="itemrefn" type="text" maxlength="200"  ng-model="itemrefn">
+                </div>
+               
+            </div>
+            <div class="form-group">
+                 <div class="col-sm-3 padd_l padd_5">
+                       <label class="control-label">GST %</label>
+                         <input class="form-control" id="itemgstr" name="Alias" type="number" maxlength="2" onblur="chkIsGST();" ng-model="itemgstr">
+                 </div>
+                <div class="col-sm-3 padd_l padd_5">
+                       <label class="control-label">Cess </label>
+                     <input class="form-control" id="itemcess" name="itemcess" type="number" maxlength="3" ng-model="itemcess">
+                 </div>
+                <div class="col-sm-6 padd_l padd_5">
+                       <label class="control-label">    Brand <a href="" data-ng-click="OpenAddBrand($event)"><img src="~/Images/add.svg" width="20"/></a></label>
+                      @Html.DropDownList("itemnumb", (SelectList)ViewBag.vwItemnumb, "--Select--", new { @class = "form-control", ng_model = "itemnumb", required = "required" }) 
+                     <div class="col-sm-4 padd_l padd_5">
+                     <label class="control-label" style="height:15px;">&nbsp;</label>
+                    
+                </div>
+                </div>
+            </div>
+           <div class="form-group">
+                <div class="col-sm-12 padd_l padd_5">
+
+                    <input type="button" value="Save" id="btnAddItem" class="btn btn-default" data-dismiss="modal" ng-click="SetItem()"/>
+
+                    @if (ViewBag.MenCode != null)
+                    { 
+                  <input type="button" value="New" id="btnNewItem" class="btn btn-default"  onclick="ClearData()"  />
+                    <input type="button" value="Show Item" id="btnShowCate" class="btn btn-default" data-dismiss="modal" ng-click="ShowItemList()"/>      
+                    }
+
+             @if (ViewBag.MenCode == null)
+             { 
+            <button type="button" class="closeBtnBlack btn btn-default" data-dismiss="modal" ng-click="hide()">Close</button>
+             }
+             
+          @*  @if (ViewBag.MenCode != null)
+            { 
+                <input type="button" value="Show Item" id="btnShowCate" class="btn btn-default" data-dismiss="modal" ng-click="ShowItemList()"/> 
+            }*@
+  
+                    </div>
+           </div>
+        
+     
+             </div>
+   </md-dialog-content>
+
+ 
+    <script type="text/javascript">
+        
+        function chkIsGST()
+        {
+            if(parseFloat($('#itemvatr').val()) > 0) {
+                $('#itemhsnc').val(''); $('#itemgstr').val(0);}
+        else{$('#itemvatr').val(0);}
+        }
+        
+
+function ClearData() {
+            debugger;
+            $('#itemname').val('');
+            $('#itemalia').val('');
+            $('#itemsort').val(0);
+            $('#itemtext').val('');
+            $('#itemvatr').val(0); 
+            $('#itemhsnc').val('');
+            $('#itemrefn').val('');
+            $('#itemgstr').val(0);
+            $('#itemcess').val(0);
+            $('#itemnumb').val(0);
+            $('#itemcode').val(0);
+            $('#itempart').val(0);
+}
+
+        function FillItem() {
+            debugger;
+             
+            $.get("/ItemSetup/Index", { SubCatID: $("#SubCatID").val() }, function (data) {
+                if (data != null) {
+                    $("#dvShowItem").html(data);
+                }
+            });
+        }
+
+        function FillSubCategory() {
+            debugger;
+            
+            $('#SubCatID').empty();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetSubCategoryInfo", "ItemSetup")',
+                data: { "query": "", 'catcode': $('#CatID').val() },
+            success: function (data) {
+                var opt = new Option('--Select--', 0);
+                $("#SubCatID").append(opt);
+
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].Value, data[i].Key);
+                    $("#SubCatID").append(opt);
+                } 
+            }
+        });
+        }
+
+       
+    </script> 
+    
+    
+}
+
+    
+     @if (ViewBag.MenCode != null)
+     {                      
+                             <div class="width_100">
+                               <div class="md-dialog-content">
+                                    <table id="tblCategory" class="table table-fixed table-striped table-bordered j_table_new">
+                                        <thead class="thead-default">
+                                            <tr style="color:white;">
+                                                <th style="width:3%">No</th> 
+                                                <th style="width:4%">Code </th>  
+                                                <th style="width:33%">Item Name </th> 
+                                               @* <th style="width:15%">Unit Name </th> *@
+                                             <th style="width:5%">Alias </th>      
+                                                <th style="width:5%">Act.Wt </th>  
+                                                <th style="width:5%">HSN  </th>
+                                                <th style="width:10%">Ingre. Info.  </th>
+                                                <th style="width:5%">Vat  </th>
+                                                <th style="width:5%">GST  </th>
+                                                <th style="width:5%">Cess  </th>
+                                                <th style="width:5%">Sort  </th>
+                                                <th style="width:10%">Exp Remark  </th>
+                                                <th style="width:5%"> Edit  </th>
+                                            </tr>   </thead>
+                                        <tbody style="height:240px;">
+                                              <tr ng-repeat="x in GetItemList">
+                                                <td style="width:3%">{{$index+1}}</td> 
+                                                <td style="width:4%">{{x.itemcode}}</td>  
+                                                <td style="width:33%">{{x.itemname}}</td>  
+                                                @*<td style="width:15%">{{x.UnitName}}</td> *@ 
+                                                <td style="width:5%">{{x.itemalia}}</td>   
+  <td style="width:5%">{{x.itempart}}</td>   
+                                                <td style="width:5%">{{x.itemhsnc}}</td>        
+                                                  <td style="width:10%">{{x.itemrefn}}</td>    
+                                                  <td style="width:5%">{{x.itemvatr}}</td>   
+                                                <td style="width:5%">{{x.itemgstr}}</td>    
+                                                <td style="width:5%">{{x.itemcess}}</td>    
+                                                <td style="width:5%">{{x.itemsort}}</td>    
+                                                <td style="width:10%">{{x.itemtext}}</td>     
+                                                         <td style="width:5%"><input type ="hidden" value ="{{x.itemnumb}}" />
+                                                             <button ng-click="FillItemValue(x)" class="trasnparent_img"><img src="../../Img/edit1.png" width="15"/></button>
+                                                              <button   ng-click="DelItem(x)" class="trasnparent_img" ><img src="../../Img/remove11.gif" width="15"/></button> 
+                                                         </td> 
+                                            </tr>
+                                      </tbody>
+                                        </table>
+                           </div>
+                                 </div> 
+    }
+
+    <script type ="text/javascript">
+
+        function FillData() {
+            angular.element(document.getElementById('SubCatID')).scope().ShowItemList();
+        }
+
+</script>
+ </div>
+ 
+

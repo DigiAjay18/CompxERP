@@ -1,0 +1,1106 @@
+﻿@model CompxERP.Models.Jourmaster
+@{
+    Layout = null;
+    //Layout = "~/Views/Shared/_CRMLayout.cshtml";
+}
+
+<style>
+.modal-content .form-group { margin-bottom: 2px;}
+</style>           
+   
+ <meta name="viewport" content="width=device-width" /> 
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+ 
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+<script> 
+        $(function () {
+            //GetPartyid();
+            $("#sMstdate").focus();
+          
+              debugger;
+            if ($('#mstcode').val() > 0 && $('#IsEdit').val() =='True') {
+                  
+                $('#IsEdit').val('true');
+               
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetInquiryDet", "Quotation")',
+                    data: { "iMstcode": $('#mstcode').val(), "iCompcode": $('#compcode').val(), "iType": 174 },
+                    success: function (data) { 
+                        GenratedItemTable_Q(data);
+                        //trnItemTable(data.oList);
+                        debugger;
+                        if (data.length > 0) {
+                            $("#Q_ContactPerson").val($("#mstContactPerson").val());
+                            $("#Party_Inquiry_Name").val($("#mstDrawNo").val());
+                            $("#O_Dealer").val($("#mstcust").val());//$("#mstrefc").val()
+                            itm = data;
+                            
+                            $('#compcode').prop('disabled', true);
+
+                            if ($("#mstfinc").val() == "2") {
+                                var rbDealer = document.getElementById("Q_rbDealer");
+                                rbDealer.checked = true; ShowDealerOrd();
+                            }
+                            else {
+                                var rbLead = document.getElementById("Q_rbLead");
+                                rbLead.checked = true; ShowLead();
+                            }
+
+                            if ($("#mstpofs").val() != "") {
+                                var arr = $("#mstpofs").val().toString().split(',');
+                                for (var i = 0; i < arr.length; i++) {
+                                    if ($("#ExFinancialTerms #chk_" + arr[i]).attr('data-val') == arr[i])
+                                        $("#ExFinancialTerms #chk_" + arr[i]).prop('checked', true);
+                                }
+                            }
+
+                            if ($("#msternv").val() != "") {
+                                var arr = $("#msternv").val().toString().split(',');
+                                for (var i = 0; i < arr.length; i++) {
+                                    if ($("#ExOtherTerms #chk_" + arr[i]).attr('data-val') == arr[i])
+                                        $("#ExOtherTerms #chk_" + arr[i]).prop('checked', true);
+                                }
+                            }
+
+                        }
+                    }
+                });
+
+            }
+              
+        });
+        var itm = [];
+        //var vTaxData = [];
+        var a;
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+            
+            $('.pickdate').each(function () {
+                if ($(this).val() == '') {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    $(this).val(today);
+                }
+            });
+              
+            $('#add').click(function () {
+                var i = 0;
+                debugger;
+
+                //if (itm.length > 0) { 
+                //    alert(itm.find(Item).ItemID);
+                //}
+                 
+                for (var i = 0; i < itm.length ; i++) {
+                    if (itm[i]["itditem"] === $('#Q_ItemNm').val()) {
+                        alert("Item Already Added In List ...");
+                        return;
+                    }
+                }
+                
+
+                if ($('#Q_ItemNm').val() == 0) { alert('Please Select Item !'); $('#ItemNm').focus(); return; }
+                if ($('#itdmill').val() == 0) { alert('Please Select Brand !'); $('#itdmill').focus(); return; }
+                if (parseInt($('#Rate').val()) == 0 || $('#Rate').val() == ""  ) { alert('Please Enter Rate !'); $('#Rate').focus(); return; }
+                if (parseInt($('#Qty').val()) <= 0) { alert('Please Enter Qty !'); $('#Qty').focus(); return; }
+
+
+                if ($('#Q_ItemNm').val() == '') { $('#Q_ItemNm').siblings('span.error').css('visibility', 'visible'); }
+                else { $('#Q_ItemNm').siblings('span.error').css('visibility', 'hidden'); i++; }
+                if ($('#Qty').val() == '') { $('#Qty').siblings('span.error').css('visibility', 'visible'); }
+                else { $('#Qty').siblings('span.error').css('visibility', 'hidden'); i++; }
+                if ($('#Rate').val() == '') { $('#Rate').siblings('span.error').css('visibility', 'visible'); }
+                else { $('#Rate').siblings('span.error').css('visibility', 'hidden'); i++; }
+                if ($('#Amt').val() == '') { $('#Amt').siblings('span.error').css('visibility', 'visible'); }
+                else {
+                    $('#Amt').siblings('span.error').css('visibility', 'hidden');
+                    i++;
+                }
+                if ($('#Remark').val() == '') {
+                    //$('#Remark').siblings('span.error').css('visibility', 'visible');
+                    $('#Remark').siblings('span.error').css('visibility', 'hidden');
+                    i++;
+                } else {
+                    $('#Remark').siblings('span.error').css('visibility', 'hidden');
+                    i++;
+                }
+
+                //GetItemTax($('#ItemID').val(), $('#TaxPer').val());
+                var iAcctCode = 0; iUnitID = 0; iTaxPer = 0; DisPer = 0; DisAmt = 0; mill = 0;
+                var Color = ""; var ColorVl = 0;
+                debugger;
+                if ($('#DisPer').val() != '') DisPer = $('#DisPer').val();
+                if ($('#DisAmt').val() != '') DisAmt = $('#DisAmt').val();
+                if ($('#DisWT').val() != '') DisWT = $('#DisWT').val();
+                if ($('#DisQtyAmt').val() != '') DisQtyAmt = $('#DisQtyAmt').val();
+                if ($('#itddime').val() > 0) { Color = $('#itddime :selected').text(); ColorVl = $('#itddime').val(); };
+                if ($('#itdmill').val() > 0) mill = $('#itdmill').val();
+                 
+                if ($('#TaxPer').val() != '') { iTaxPer = $('#TaxPer').val() }
+               
+                    itm.push({
+                        SrNo: itm.length + 1,
+                        itditem: $('#Q_ItemNm').val(),
+                        ddlItem: $('#Q_ItemNm :selected').text(),// $('#Q_ItemNm').val(),
+                        itdrema: Color ,//$('#itddime :selected').text(),// $('#Q_ItemNm').val(),
+                        itdquan: $('#Qty').val(), 
+                        itdactprc: $('#Rate').val(),
+                        itdrate: $('#ExclRate').val(), 
+                        itdvate: $('#InclRate').val(),
+                        Amt: $('#Amt').val(),    
+                        TaxPer: iTaxPer ,//$('#TaxPer').val(),
+                        Tax_Amt: $('#Tax_Amt').val(),
+                        ItemNetAmt: $('#ItemNetAmt').val(),
+                        itdmill: mill ,//$('#itdmill').val(),
+                        itddime: ColorVl , //$('#itddime').val(),
+                        //ItemRemark: getItemRemark(),
+                        //ListArea: null,
+                        //GSTStateVal: $('#GSTStateVal').val(),//170830
+                        //GSTStateVal:1,
+                        DisPer: DisPer,// $('#DisPer').val(),
+                        DisAmt: DisAmt ,//$('#DisAmt').val(),
+                        //DisWT: DisWT,
+                        //DisQtyAmt: DisQtyAmt,
+                        //TRate: TRate,
+                        //PerDisTota: PerDisTota,
+                        //FQty: FQty,
+                        //QtyDis: QtyDis,
+                        //BilledQty: BilledQty,
+                        //itemdisc: itemdisc
+                    });
+                    $('#Q_ItemNm').val('').focus();
+                    $('#Qty').val('0'); $('#Q_ItemNm').val('');   $('#TaxPer').val('0');  
+                    $('#Rate').val('0');
+                    $('#Amt').val('0');
+               
+                    //$('#Tax_S').val('');
+                    //$('#Tax_C').val('');
+                    //$('#Tax_I').val('');
+                    $('#TaxPer').val('0');
+                    $('#Tax_Amt').val('0');
+                    $('#ItemNetAmt').val('0');
+
+                    $('#DisAmt').val('0'); $('#DisAmt').val('0'); 
+                // }
+                   // getTrnItem();
+                    GenratedItemTable_Q(itm);
+               // getTrnItem();
+                $('#TaxPer').val('0');
+               
+            });
+
+            function Item(Item) {
+                return Item.itditem === $('#Q_ItemNm').val();
+            }
+
+            $(document).on("click", ".delete_QT", function () {
+                  try {
+                if (itm.length > 0) {
+                    debugger;
+                    var i = $(this).closest("tr").index();
+                     
+                    debugger;
+                    if (i >= 0) {
+                        $('#Q_ItemNm').val(itm[i]["itditem"]);
+                        $('#Qty').val(itm[i]["itdquan"]);
+                        $('#ExclRate').val(itm[i]["itdrate"]);
+                        $('#InclRate').val(itm[i]["itdvate"]);
+                        $('#Rate').val(itm[i]["itdactprc"]); 
+                        $('#Amt').val(itm[i]["Amt"]);
+                        $('#DisPer').val(itm[i]["DisPer"]);
+                        $('#DisAmt').val(itm[i]["DisAmt"]);
+                        $('#TaxPer').val(itm[i]["TaxPer"]);
+                        $('#Tax_Amt').val(itm[i]["Tax_Amt"]);
+                        $('#ItemNetAmt').val(itm[i]["ItemNetAmt"]);
+                        $('#itdmill').val(itm[i]["itdmill"]);
+                        $('#itddime').val(itm[i]["itddime"]);
+                        $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                        itm.splice(i, 1);
+
+                        $('#sItemDet').val('{"LstItem":' + JSON.stringify(itm) + '}');
+                    }
+                }
+                }
+                catch (err) {
+                    alert(err.message);
+                }
+                  GenratedItemTable_Q(itm);
+                  //getTrnItem();
+            });
+             
+            function setGSTApply() {
+                debugger;
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GSTApply", "PuSL")",
+                data: { SaleType: $("#mstsale").val() },
+                success: function (response) {
+                    $('#GSTAppl').val(response);
+                    $('#mstappl').val(response);
+                    getTrnItem();
+                },
+                error: function () {
+                    $('#GSTAppl').val(0);
+                }
+            });
+            }
+             
+            var iPack = 0;
+              
+        });
+      
+        var trn = [];
+      
+        // Function For Show Added Items in Table
+        function GenratedItemTable_Q(itm) {
+           
+            if (itm.length > 0) {
+                var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+            
+                var $tbody = $('<tbody style="height:190px;"/>');
+                var iTotal = 0;
+                var iTax = 0;
+
+                $.each(itm, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td width=2%"/>').html(i + 1)); 
+                    $row.append($('<td width="25%"/>').html(val.ddlItem)); 
+                    $row.append($('<td width="7%"/>').html(val.itdrema));
+                    $row.append($('<td width="6%"/>').html(val.itdquan));
+                    $row.append($('<td width="8%"/>').html(val.itdvate)); //val.itdrate 31/07/2018
+                    $row.append($('<td width="7%"/>').html(val.Amt));
+                    $row.append($('<td width="6%"/>').html(val.DisPer));
+                    $row.append($('<td width="6%"/>').html(val.DisAmt));
+                     
+                    $row.append($('<td width="6%"/>').html(val.TaxPer));
+                   
+                    $row.append($('<td width="7%"/>').html(val.Tax_Amt));
+                    $row.append($('<td width="7%"/>').html(val.ItemNetAmt));
+                    
+                            $row.append($('<td width="5%"/>').html('<button type="button" id="btnDelete" class="delete_QT btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Img/remove11.gif" /></button>'));
+                    $tbody.append($row);
+                    //iTotal = iTotal + parseFloat(val.ItemNetAmt);
+                    iTotal = iTotal + parseFloat(val.ItemNetAmt) + parseFloat(val.Tax_Amt); //+ parseFloat(val.DisAmt); //For Inclusive
+                    iTax = iTax + parseFloat(val.Tax_Amt);
+                });
+                $table.append($tbody);
+                //alert($table);
+                $('#ShowTable_Q').html($table);
+                //$('#ItemTax').val((iTax).toFixed(2));
+                $('#msttota').val(Math.round(iTotal));
+
+                //getTaxAmt();
+                $('#sItemDet').val('{"LstItem":' + JSON.stringify(itm) + '}');
+            }
+        }
+      
+
+        function GetInquiryDet() {
+            debugger; 
+            var iLeadID = 0;
+            if (Q_rbLead.checked) {
+                iLeadID = $('#Q_LeadNo').val();
+            }
+            else { 
+                iLeadID =   $('#O_Dealer').val();
+            }
+
+            $('#ShowTable_Q').html("");
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetInquiryDet", "Quotation")', 
+                data: { "iMstcode": +iLeadID, "iCompcode": $('#compcode').val(), "iType": 1163 },
+                success: function (data) {
+                    itm = data;
+                    GenratedItemTable_Q(data);
+                } 
+            });
+        }
+
+          
+    </script>
+     
+    <style>
+        body {
+            background-color: #e6e4e4;
+        }
+
+        .btn-color {
+            background-color: transparent;
+            background-image: url("/Img/remove.svg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            border: medium none;
+            height: 18px;
+            width: 16px;
+        }
+
+        th {
+            padding: 5px;
+            color: #fff;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .table.table-fixed.table-bordered.j_table_new.table-striped td {
+            padding: 5px !important;
+        }
+    </style>
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+        <!----compex_heading---->
+       <div class="compex_head">
+            <div class="container-fluid">
+            
+                <div class="col-md-12 col-sm-12 col-xs-12"><h2>Order Entry <button type="button" onclick="ClearDvData();" class="close" >&times;</button></h2></div>@*data-dismiss="modal"*@
+              
+            </div>
+        </div>
+        <!----compex_heading end---->
+        <!----compex_BODY---->
+        <div class="compex_form">
+            <div class="container-fluid">
+                <div id ="dvPuSL" class="Personal_form">
+                   
+                    <div style="width: 100%; float: left; margin-bottom: 5px;">
+                        <div class="col-sm-3 padd_l padd_5">
+                            <fieldset>
+                                  
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2 padd_l padd_5">Code</label>
+                                    <div class="col-sm-5 padd_l padd_5">
+                                      @*  @Html.HiddenFor(model => model.acctcode)*@
+                                        @Html.HiddenFor(model => model.acctledg)@*170830*@
+                                        @Html.HiddenFor(model => model.ItemID)
+                                        @Html.HiddenFor(model => model.mstptcode) 
+                                        @Html.HiddenFor(model => model.mstcode_Print)    
+                                        @Html.HiddenFor(model => model.msttype)@Html.HiddenFor(model => model.msternv)
+                                        @Html.HiddenFor(model => model.mstrefc)@Html.HiddenFor(model => model.mstpofs)
+                                        @*@Html.HiddenFor(model => model.compcode)*@
+                                         @Html.HiddenFor(model => model.mstfinc)
+                                        @Html.HiddenFor(model => model.PU_Qty2)  @Html.HiddenFor(model => model.mstContactPerson)
+                                        @Html.HiddenFor(model => model.sItemDet) @Html.HiddenFor(model => model.mstDrawNo)
+                                        @Html.HiddenFor(model => model.ItemRemark)@Html.HiddenFor(model => model.IsEdit) 
+                                        @Html.HiddenFor(model => model.sTrnDet)
+  @Html.HiddenFor(model => model.hdnAcGroup)@Html.HiddenFor(model => model.mstcust)
+                                          @Html.HiddenFor(model => model.acctcity)
+                                         @Html.HiddenFor(model => model.acctstat)
+
+ <input type="hidden" id="O_Dealer" value="0" /> 
+                                        <input type="hidden" id="hdnIsComposistion" value="0" />
+                                        <input type="hidden" id="GSTStateVal" value="0" />@*170830*@
+                                     @*   @Html.ValidationMessageFor(a => a.mstptcode)*@
+
+                                          @Html.HiddenFor(model => model.mstcode ,new {   @Value = ViewBag.MstCode  }) 
+                                        @* @Html.TextBoxFor(model => model.mstprtc, new { @class = "form-control",   @readonly = true })*@
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2 padd_l padd_5">Date</label>
+                                    <div class="col-sm-4 padd_l padd_5">
+                                        @Html.TextBoxFor(m => m.sMstdate, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" })
+                                    </div>
+                                 @*   <div class="col-sm-5 padd_l padd_5">
+                                        @Html.TextBoxFor(a => a.msttimes, new { @class = "form-control t1", @readonly = true })
+                                    </div>*@
+                                     <label class="control-label col-sm-2 padd_l padd_5">Ref</label>
+                                     @* <div class="col-sm-5 padd_l padd_5 C42">
+                                        @Html.TextBoxFor(model => model.mstchnH, new { @maxlength = "10", @class = "form-control" , @readonly = true })
+                                    </div>*@
+                                    <div class="col-sm-4 padd_l padd_5 C42">
+                                        @Html.TextBoxFor(model => model.mstchno, new { @maxlength = "12", @class = "form-control" })
+                                    </div>
+                                </div>
+                            
+                                  <div class="form-group">
+                                       <div class="col-sm-3 padd_l padd_5"> Company
+                            </div>
+                        <div class="col-sm-9 padd_l padd_5"> 
+ @Html.DropDownList("compcode", (SelectList)ViewBag.Company, "--Select--", new { @class = "form-control" ,  required = "required" }) 
+                        </div>
+                                      </div>
+                              
+                            </fieldset>
+                        </div>
+
+                        <div class="col-sm-4 padd_l padd_5">
+                            <fieldset >
+                              @*  @Html.ValidationMessageFor(model => model.Broker, "", new { style = "color:red;" })*@
+
+                                <div class="form-group">   
+                         <div class="col-sm-5 padd_l padd_5">   <label class="radio-inline"><input type="radio" id="Q_rbLead" name="optradio" checked  onclick ="ShowLead();" >Lead</label>
+<label class="radio-inline"><input type="radio" id="Q_rbDealer" name="optradio" onclick ="ShowDealerOrd();"  >Dealer</label>
+                               </div> 
+                        </div>
+
+                                     <div class="form-group">
+
+                       <div class="col-sm-5 padd_l padd_5"> Lead No/Dealer Name 
+                            </div>
+                        <div class="col-sm-7 padd_l padd_5">@Html.DropDownList("Q_LeadNo", (SelectList)ViewBag.F_LeadNo, "--Select--", new { @class = "form-control", @onchange = "FillCity_Q()", required = "required" })
+   @* @Html.DropDownList("O_Dealer", (SelectList)ViewBag.F_Dealer, "--Select--", new { @class = "form-control" , @onchange = "GetOpening()", @style = "display:none", required = "required" }) *@ 
+                     @Html.TextBoxFor(a => a.partyname, new {   @style = "display:none", required = "required" })   
+                        </div>
+                     
+                    </div>
+                       <div class="form-group">
+ <div class="col-sm-5 padd_l padd_5">Opening</div>
+                                     <div class="col-sm-7 padd_l padd_5">
+                                          <input class="form-control" id="lblOpening" style ="font:20;font-family:'Times New Roman';color:red" value=""  type="text" /> 
+                                     </div> 
+                     
+                    </div>
+                               
+                            </fieldset>
+
+                        </div> 
+                        <div class="col-sm-5 padd_l padd_5">
+                            <fieldset>  
+                               <div class="form-group">
+                                 
+                          <div class="col-sm-3 padd_l padd_5">Contact Person </div>
+                            <div class="col-sm-9 padd_l padd_5">
+                                  
+                            <input class="form-control" id="Q_ContactPerson" value=""  type="text"></div> 
+                    </div>
+                                
+                                 <div class="form-group">
+                                   @* <div class="col-sm-3 padd_l padd_5">Lead/Dealer No</div>
+                                    <div class="col-sm-3 padd_l padd_5">
+                                        <input class="form-control" id="Q_LeadDealer_No" value="" disabled type="text">
+                                    </div>*@
+                                     <div class="col-sm-3 padd_l padd_5" style="line-height: 12px;">Party / Inquiry Name</div>
+                                     <div class="col-sm-9 padd_l padd_5">
+                                          <input class="form-control" id="Party_Inquiry_Name" value="" type="text">
+                                     </div> 
+                                </div>
+                                 
+                                   <div class="form-group"> 
+                                     <div class="col-sm-3 padd_l padd_5">Brand</div>
+                                     <div class="col-sm-3 padd_l padd_5"> 
+                                         @Html.DropDownList("itdmill", (SelectList)ViewBag.Brand , "--Select--" , new { @class = "form-control"  } )
+                                     </div> 
+
+<div class="col-sm-3 padd_l padd_5">Sub Category</div>
+                                     <div class="col-sm-3 padd_l padd_5">
+                                         @Html.DropDownList("subCategory", ViewBag.SubCategory as SelectList, "--Select--" , new { @class = "form-control" ,@onchange="getItems()"} )
+                                     </div> 
+                                </div>
+
+                            </fieldset>
+                        </div>
+                    </div>
+                     
+                    <fieldset class="mrg_bottom">
+                       
+                        <table class="table table-fixed table-bordered j_table_new" id="example" width="100%" cellspacing="0">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th width="30%">Item @*<a data-ng-click="OpenItem($event)"><img src="~/Images/add.svg" /></a>
+                                             <a href="" data-ng-click="OpenItem($event)"><img src="~/Images/add.svg" /></a>*@</th>
+                                        @* <th width="7%">Cases</th>*@
+                                        <th width="11%">Color</th>
+                                        <th width="6%">Qty</th>
+                                        <th width="8%">Rate <input type="number" id="ExclRate" style="width:80px" class="form-control text-right no-spinners" disabled />  
+                                            <input type="number" id="InclRate" style="width:80px" class="form-control text-right no-spinners" disabled /> 
+                                        </th>
+                                       
+                                        <th width="6%">Dis %</th>
+                                        <th width="6%">Dis Amt</th>
+                                        <th width="6%">Tax</th>
+                                        <th width="7%">Tax_Amt</th> 
+                                        <th width="7%">Amount</th> 
+                                        <th width="7%">Taxable Amt</th>
+                                        <th width="6%">&nbsp;</th>
+                                    </tr>
+                                    <tr>
+                                           @*<th width="34%">
+ @Html.DropDownList("CategoryId", (MultiSelectList)ViewBag.ItemNm, new { multiple = "multiple"})
+                                           </th>*@
+                                        <th width="30%">
+                                           
+                                            @Html.DropDownList("Q_ItemNm", ViewBag.ItemNm as SelectList, "--Select--" , new { @class = "form-control" ,@onblur="getGstTrnOrd();"} ) @*@Html.TextBoxFor(model => model.ItemNm, new { @class = "form-control capital_let", ng_model = "ItemNm" })</th>
+                                      onblur = "ChkNewItem()"*@
+                                        @*   <th width="7%">@Html.TextBoxFor(model => model.Cases, new { @class = "form-control", @type = "number", @style = "width:60px;" })</th>*@
+                                        <th width="11%">@Html.DropDownList("itddime", new List<SelectListItem> {  
+          new SelectListItem { Text="-- Select --", Value="0"},      
+          new SelectListItem { Text="Red", Value="1"},   
+           new SelectListItem { Text="Green", Value="2"},   
+           new SelectListItem { Text="Big Digit", Value="3"},    
+           }, new { @class = "form-control"})</th>
+                                        <th width="6%"> 
+                                            <input type="number" id="Qty"  onblur = "getNetAmt();" class="form-control text-right no-spinners">
+                                        </th>
+                                        <th width="8%"> 
+                                            <input type="number" id="Rate"  onblur = "getNetAmt();" class="form-control text-right no-spinners">
+                                        </th> 
+                                         <th width="6%"><input type="number" id="DisPer"  onblur = "getNetAmt();"  class="form-control text-right no-spinners"></th>   
+                                        <th width="6%"><input type="text" id="DisAmt" onblur = "getNetAmt();" disabled class="form-control"></th> 
+                                         <th width="6%">@Html.TextBoxFor(model => model.TaxPer, new { @type = "number", @class = " form-control text-right no-spinners", placeholder = "%", onblur = "getNetAmt()" })</th>
+                                       
+                                        <th width="7%">@Html.TextBoxFor(model => model.Tax_Amt, new { @type = "number", @class = " form-control text-right", onblur = "getNetAmt()", disabled = true, @readonly = true })</th>
+                                         <th width="7%">@Html.TextBoxFor(model => model.Amt, new { @type = "number", @class = " form-control text-right", disabled = true, @readonly = true })</th>
+                                        <th width="7%">@Html.TextBoxFor(model => model.ItemNetAmt, new { @type = "number", @class = " form-control text-right", disabled = true, @readonly = true })</th>
+                                         
+                                        <th width="6%">
+                                            <input type="button" id="add" value="add" class="btn btn-default" /></th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        <div id="ShowTable_Q" class="item_styl clearfix tablecontainer" style="height: 200px;"></div>
+                         
+                    </fieldset>
+                    
+                          <div class="col-sm-6 padd_l padd_5">
+                             <fieldset>
+						        <legend>Financial Terms </legend>
+                                <div id="ExFinancialTerms" class="multi_list drop_down"  > 
+				               <ul style="height: 90px"> 
+                                  
+				                   @for (var i = 0; i < Model.lstFTerm.Count; i++)
+                                    {  
+                                 <li class="checkbox-inline">  
+                                     <label class="checkbox-inline">  <input type="checkbox" data-val="@Model.lstFTerm[i].Value" id ="chk_@Model.lstFTerm[i].Value" data-dispatch-entry-id="@Model.lstFTerm[i].Value" class="chkSelect" /> 
+                                        @Model.lstFTerm[i].Text </label>
+                                 </li> 
+                                    } 
+				                </ul>
+                               </div>
+				         
+						   </fieldset>
+                        </div>  
+                          <div class="col-sm-6 padd_l padd_5">
+                             <fieldset>
+						        <legend> Other Terms</legend>
+                                <div id="ExOtherTerms" class="multi_list drop_down"  > 
+                                    <div id="TrnTable" class="transaction_styl clearfix tablecontainer"></div>
+                                       <div class="form-group"> 
+                                         <div class="col-sm-1 padd_l padd_5">Days</div>
+                                         <div class="col-sm-2 padd_l padd_5">
+                                              <input class="form-control"  id="mstdued" value="" type="number">
+                                        </div> 
+                                           
+                           <label class="control-label col-sm-1 padd_l padd_5">Amount                         </label>
+                        <div class="col-sm-3 padd_l padd_5"> 
+                             @Html.TextBoxFor(model => model.msttota, new {   @readonly = true, @class = "form-control" })
+                            @*<input class="form-control" id="msttota" value=""  type="text">*@
+                        </div>
+                                    </div>
+                                       <div class="form-group" style="margin-top: 10px;">
+                         
+
+                        <label class="control-label col-sm-1 padd_l padd_5">Remark                         </label>
+                        <div class="col-sm-6 padd_l padd_5">
+                            @Html.TextAreaFor(model => model.mstrema, new { @class = "form-control" })
+                        </div>
+
+
+                        <div class="col-sm-5  padd_l padd_5 text-right">
+                              <input type="button" id="InsQuotation" value="Save" class="btn btn-default" /> 
+                              <button type="button" class="btn btn-default" onclick="ClearDvData();">Close</button> 
+                        </div>
+
+                    </div>
+				      @*         <ul style="height: 130px">  
+				                   @for (var i = 0; i < Model.lstOTerm.Count; i++)
+                                    {  
+                                 <li class="checkbox-inline">  
+                                     <label class="checkbox-inline">  <input type="checkbox" data-val="@Model.lstOTerm[i].Value" id ="chk_@Model.lstOTerm[i].Value"  data-dispatch-entry-id="@Model.lstOTerm[i].Value" class="chkSelect_O" /> 
+                                        @Model.lstOTerm[i].Text </label>
+                                 </li> 
+                                    } 
+				                </ul>*@
+                               </div>
+				         
+						   </fieldset>
+                        </div>  
+                       
+                </div>
+
+    
+            </div>
+      
+        
+               </div>
+         
+    }
+    
+
+   @* @{
+        if (TempData["message"] != null && TempData["message"] == "Saved Successfully ...")
+        { 
+    <script type="text/javascript">
+        alert(TempData["message"]);
+        // alert(@Html.Raw(Json.Encode(TempData["message"])));
+    </script>
+        }
+}*@
+ 
+<script type="text/javascript">
+
+    FillLead_DDL();
+    $('#sMstdate').blur(function () {
+        $('#acctname').focus();
+    });
+
+    //$('#mstsale').change(function () {
+
+    //    if ($('#mstsale').val == 0) {
+    //        $('#mstsale').focus();
+
+    //    }
+    //    else {
+    //        //GetPartyid(); 
+    //    }
+    //});
+
+    $('#InsQuotation').click(function () {
+        debugger;
+
+        if ($('#acctname').val() == "") {
+            $('#acctname').focus();
+            alert('Please Enter Party Name ...');
+            return
+        }
+        if ($('#compcode').val() == "") {
+            $('#compcode').focus();
+            alert('Please Select Company ...');
+            return
+        }
+        if ($("#sItemDet").val() == "" || $("#sItemDet").val().length < 20 ) { 
+            alert('Please Enter Atleast One Item ...');
+            return
+        }
+
+        debugger;
+        var FTerms = "";
+        var OTerms = "";
+
+        if ($("#ExFinancialTerms .chkSelect:checked").length > 0) {
+            FTerms = $.map($("#ExFinancialTerms .chkSelect:checked"), function (n, i) {
+                return $(n).attr("data-dispatch-entry-id");
+            }).join(',');
+        }
+
+        if ($("#ExOtherTerms .chkSelect_O:checked").length > 0) {
+            OTerms = $.map($("#ExOtherTerms .chkSelect_O:checked"), function (n, i) {
+                return $(n).attr("data-dispatch-entry-id");
+            }).join(',');
+        }
+
+         var isLead = 0;    var RefC = 0;    var RefNo = 0;   
+            var rbLead = document.getElementById("Q_rbLead");
+            if (rbLead.checked)
+            { isLead = 1; RefC = $("#Q_LeadNo").val(); RefNo = $('#Q_LeadNo :selected').text(); }
+            else 
+            { isLead = 2; RefC = $("#O_Dealer").val(); RefNo = $('#O_Dealer :selected').text(); }
+
+            if (RefC > 0) {}else{
+                $('#O_Dealer').focus();
+                alert('Please Select Lead No/Dealer Name ...');
+                return
+            }
+         
+        var data = new FormData();
+        data.append("acctname", RefNo);
+        data.append("mstprtc", RefC);//$("#mstprtc").val());
+        data.append("mstContactPerson", $("#Q_ContactPerson").val());
+        data.append("mstcode", $("#mstcode").val());
+        data.append("mstdate", $("#mstdate").val());
+        data.append("sItemDet", $("#sItemDet").val());
+        data.append("mstpofs", FTerms);
+        data.append("msternv", OTerms);
+        data.append("mstfinc", isLead);
+        data.append("GSTStateVal",$("#GSTStateVal").val() );
+
+        data.append("mstrefno", RefNo );
+        data.append("mstrefc", RefC );
+        data.append("msttota", $('#msttota').val());
+        data.append("msttype", "174");
+        data.append("sMstdate", $("#sMstdate").val()); 
+        data.append("compcode", $('#compcode').val());
+        data.append("ChallanDate", $("#ChallanDate").val());
+        data.append("mstdued", $("#mstdued").val());
+        //data.append("mstchnH", $("#mstchnH").val());
+        data.append("PartyID", RefC );//$("#PartyID").val());
+        data.append("mstchno", $("#mstchno").val());
+        data.append("acctledg", $("#acctledg").val());
+        data.append("EMail", $("#EMail").val());
+        data.append("NewMobile", $("#NewMobile").val());
+        data.append("mstrema", $("#mstrema").val());
+        data.append("mstContactType", $("#mstContactType").val());
+        data.append("mstrvsc", $("#mstrvsc").val());
+        data.append("acctstat", $("#acctstat").val());
+        data.append("mstJobNo", $("#mstJobNo").val()); 
+        data.append("mstDrawNo", $("#Party_Inquiry_Name").val());
+        data.append("ItemNm", $('#Q_ItemNm :selected').text());
+        data.append("ItemID", $("#Q_ItemNm").val());
+         
+        data.append("mstpdc", $("#mstrfvc").val());
+        data.append("mstactpay", $("#mstrfvt").val());
+
+        data.append("mstrfvc", $("#mstrfvc").val());
+        data.append("mstrfvt", $("#mstrfvt").val());
+        data.append("mstexec", $("#mstexec").val());
+        data.append("IsEdit", $("#IsEdit").val());
+
+
+        if ($('#hdnIsComposistion').val() == 0)
+            data.append("mstsale", 115);
+        else
+            data.append("mstsale", 2594);
+
+        console.log(typeof data);
+
+        $.ajax
+        ({
+            url: "/Quotation/Order",
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    if (response.IsSave == "1") {
+                        alert('Saved Successfully ...');
+                        $("#mstchno").val(response.mstchno); 
+                        $("#mstprtc").val(response.mstprtc);
+                        $("#mstcode").val(response.mstcode);
+                        $("#acctname").val(''); $("#mstContactPerson").val(''); $("#mstrvsc").val('');
+                        $("#mstdate").val(''); $("#sItemDet").val(''); $("#mstdued").val(''); $("#mstchnH").val(''); $("#PartyID").val('');
+                         $("#acctledg").val(''); $("#EMail").val(''); $("#NewMobile").val(''); $("#Remark").val('');
+                         $('#ShowTable_Q').html(''); $("#Party_Inquiry_Name").val(''); $("#mstJobNo").val(''); $("#acctstat").val(''); $("#mstrvsc").val('');
+                        $("#mstContactType").val(''); $("#mstrema").val(''); $("#Q_ItemNm").val(''); $("#ItemID").val('');
+                        $("#mstrfvt").val(''); $("#mstrfvc").val(''); $("#mstexec").val(''); $("#O_Dealer").val(''); $("#IsEdit").val('false');
+                        $("#mstcode").val('0'); $("#partyname").val('');
+                        $("#ExFinancialTerms .chkSelect").prop('checked', $(this).prop("checked"));
+                        $("#ExOtherTerms .chkSelect_O").prop('checked', $(this).prop("checked")); 
+                        
+                        $('#compcode').prop('disabled', false);
+                        //$('#dvFilters').find('input[type=checkbox]:checked').removeAttr('checked');
+                        //$('.selectall').removeAttr('checked');
+
+                        FillLead_DDL();
+                        itm = [];
+                        //SetVoucherNo();
+                    }
+                    else {
+                        alert('Not Saved Successfully ...');
+                    }
+                }
+            }
+        });
+    });
+
+     
+
+    function ShowLead() {
+        debugger;
+        $('#Q_LeadNo').show();
+        //$('#O_Dealer').hide();  
+        $('#partyname').hide();
+       $('#lblOpening').hide();
+    }
+    function ShowDealerOrd() {
+        debugger;
+        $('#Q_LeadNo').hide();
+       //$('#O_Dealer').show();
+          $('#partyname').show();
+      $('#lblOpening').show();
+    }
+     
+
+    FillLead_DDL();
+    function FillLead_DDL() {
+         
+        try {
+            debugger;
+            $('#Q_LeadNo').empty();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetOrderNo", "Quotation")',
+            data: {  },
+            success: function (data) {
+                $('#Q_LeadNo').empty();
+
+                var opt = new Option('--Select--', 0);
+                $("#Q_LeadNo").append(opt);
+
+                for (var i = 0; i < data.length; i++) { 
+                    opt = new Option(data[i].Text, data[i].Value);
+                    $("#Q_LeadNo").append(opt);
+                }
+            }
+        });
+    }
+    catch (err) {
+        alert(err.message);
+    }
+}
+
+    function getItems() {
+        try {
+            debugger;
+            var SubCate = 0;var Brand = 0;
+            if ($("#subCategory").val()>0)SubCate = $("#subCategory").val(); 
+            //if ($("#Brand").val()>0)Brand =$("#Brand").val() ; 
+
+            $('#Q_ItemNm').empty();
+            if ($("#subCategory").val() != null) {
+                $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: "@Url.Action("GetItem", "Quotation")",
+                    data: { "subcat": SubCate, "Brand": Brand },
+                    success: function (data) {
+                        var opt = new Option('--Select--', 0);
+                        $("#Q_ItemNm").append(opt);
+
+                        for (var i = 0; i < data.length; i++) {
+                            opt = new Option(data[i]["itemname"], data[i]["itemcode"]);
+                            $("#Q_ItemNm").append(opt);
+                        }
+
+                        //itemnumb
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to Retrieve Status.');
+                    }
+                });
+            }
+        }
+        catch (err) {
+            alert(err.message);
+        }
+    }
+
+
+    function FillLeadNo() {
+        debugger;
+        $('#Q_LeadNo').empty();
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FillLeadNo", "Home")',
+                data: { 'EmpCode': $('#F_FollowBy').val() },
+                success: function (data) {
+                    //var opt = new Option('--Select--', 0);
+                    //$("#F_LeadNo").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].itgpname, data[i].itgpcode);
+                        $("#Q_LeadNo").append(opt);
+                    }
+
+                }
+            });
+    }
+
+    function getNetAmt() {
+        var Qty = 0; Rate = 0; Amt = 0; DisPer = 0; DisAmt = 0; Tax = 0; TaxAmt = 0; NetAmt = 0;Divied = 100;InclRate = 0;
+        debugger;
+        if ($('#Qty').val() != "") Qty = $('#Qty').val(); else Qty = 0;
+        if ($('#Rate').val() != "") Rate = $('#Rate').val(); else Rate = 0;
+        if ($('#DisPer').val() != "") DisPer = $('#DisPer').val(); else DisPer = 0;
+        //if ($('#DisAmt').val() != "") DisAmt = $('#DisAmt').val(); else DisAmt = 0;
+        if ($('#TaxPer').val() != "") Tax = $('#TaxPer').val(); else Tax = 0;
+        //if ($('#Tax_Amt').val() != "") TaxAmt = $('#Tax_Amt').val(); else TaxAmt = 0;
+
+        NetAmt = Amt = (Qty * Rate).toFixed(2);
+       
+
+        DisAmt = ((Amt * DisPer) / 100).toFixed(2);
+        if (DisAmt > 0) { 
+            $('#DisAmt').val(DisAmt); 
+            NetAmt = parseFloat(parseFloat(Amt) - parseFloat(DisAmt)).toFixed(2) 
+            InclRate = Rate-DisAmt ;
+        } else { InclRate =0 ; NetAmt = (Amt); }
+
+        if (Tax > 0) { 
+            //TaxAmt = (((Amt - DisAmt) * Tax) / (100 + parseFloat(Tax))).toFixed(2);
+            TaxAmt = (((Qty * InclRate) * Tax) / 100 ).toFixed(2);
+            $('#ExclRate').val((Rate - (((Rate * Tax) / (100 + parseFloat(Tax))))).toFixed(2));
+        }
+        else { $('#ExclRate').val(Rate); }
+
+        $('#InclRate').val(InclRate);
+        $('#Amt').val(Qty * InclRate);
+        $('#DisAmt').val( (($('#ExclRate').val()*DisPer) / 100) );
+
+        if (TaxAmt > 0)
+        { 
+            $('#Tax_Amt').val(TaxAmt);
+            //NetAmt = parseFloat(parseFloat(NetAmt) + parseFloat(TaxAmt)).toFixed(2);
+            NetAmt = parseFloat(parseFloat(NetAmt) - parseFloat(TaxAmt)).toFixed(2);
+        } else { $('#Tax_Amt').val(0);
+            //NetAmt = (Amt - DisAmt);
+        }
+
+        //NetAmt = (Amt * TaxAmt).toFixed(2);
+        $('#ItemNetAmt').val(Qty * InclRate); //NetAmt
+
+    };
+
+    function getGstTrnOrd() {
+        debugger;
+        setComposition();
+
+        var AcctCode = 0;
+        var rbLead = document.getElementById("Q_rbLead");
+        if (rbLead.checked)
+        { isLead = 1; RefC = $("#Q_LeadNo").val(); RefNo = $('#Q_LeadNo :selected').text(); }
+        else
+        { isLead = 2; RefC = $("#O_Dealer").val(); RefNo = $('#O_Dealer :selected').text(); }
+
+        if (RefC > 0) { } else {
+            $('#O_Dealer').focus();
+            alert('Please Select Lead No/Dealer Name ...');
+            return
+        }
+
+        debugger;
+        $.ajax({
+            cache: false,
+            async: false,
+            type: "GET",
+            url: "@(Url.Action("getItemRate", "api/API"))",
+            data: { "Compcode": 66, "ItemCode": $('#Q_ItemNm').val(), AcctCode: $('#Q_ItemNm').val() },//170829
+            success: function (data) { ;
+                if (data.Data.Data.Tax != null && data.Data.Data.Tax.Tax > 0 && $('#hdnIsComposistion').val()==0 ) $('#TaxPer').val(data.Data.Data.Tax.Tax); else $('#TaxPer').val(0);
+                if (data.Data.Data.Rate != null && data.Data.Data.Rate.Rate > 0) $('#Rate').val(data.Data.Data.Rate.Rate); else $('#Rate').val(0);
+
+                if (data.Data.Data.Brand != null && data.Data.Data.Brand.Brand > 0) {
+                    if ($('#itdmill').val() != data.Data.Data.Brand.Brand)
+                        if (confirm("Brand Not Match ! Do You Want To Continue With Item Brand ?") == true) {//$('#itdmill').val(data.Data.Data.Brand.Brand);
+                        }
+                } else { //$('#itdmill').val(0);
+                }
+
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#TaxPer').val(0);
+                $('#Rate').val(0);
+            }
+        });
+    };
+      
+    function setComposition() {
+        if ($('#compcode').val() == 71 || $('#compcode').val() == 72)
+            $('#hdnIsComposistion').val(1);
+        else
+            $('#hdnIsComposistion').val(0);
+    }
+
+    function FillCity_Q() {
+        debugger;
+        $('#ShowTable_Q').html("");
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetLeadNoDet", "Quotation")',
+            data: { "sLeadNO": +$('#Q_LeadNo').val() },
+            success: function (data) {
+                $('#Q_ContactPerson').val(data.Person);
+                $('#Q_F_Date').val(data.LDate); $('#Q_LeadDealer_No').val(data.LeadNo); $('#Party_Inquiry_Name').val(data.InqName);
+                GetInquiryDet();
+                }
+            });
+        }
+
+    function GetOpening() {
+        debugger; 
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetOpening", "Quotation")',
+            data: { "DealerID": $('#O_Dealer').val(), iMstcode: $('#mstcode').val(), sDate: $('#sMstdate').val() },
+            success: function (data) {
+                $('#lblOpening').val(data.Opening);
+                $('#GSTStateVal').val(data.GSTStateVal);
+                $('#Party_Inquiry_Name').val($('#O_Dealer :selected').text());
+            }
+        });
+    } 
+     
+</script>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+         
+        $("#partyname").autocomplete({
+            source: function (request, response) {
+                debugger;
+                var customer = new Array();
+                //  alert(document.getElementById("compcode").value);
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    type: "POST",
+                    url: "@(Url.Action("/GetDealer", "Master"))",
+
+                    data: { "sName": request.term },
+                    success: function (data) {
+                        for (var i = 0; i < data.length ; i++) {
+                            customer[i] = { label: data[i].Value, Id: data[i].Key };
+                        }
+                    }
+                });
+                response(customer);
+            },
+            select: function (event, ui) {
+                debugger;
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetOpening", "Quotation")',
+                    data: { "DealerID": ui.item.Id, iMstcode: $('#mstcode').val(), sDate: $('#sMstdate').val() },
+                    success: function (data) {
+                        $('#O_Dealer').val(ui.item.Id);
+                        $('#lblOpening').val(data.Opening);
+                        $('#GSTStateVal').val(data.GSTStateVal);
+                        $('#Party_Inquiry_Name').val($('#O_Dealer :selected').text());
+                    }
+                });
+            }
+        });
+
+        
+
+    });
+
+    </script>
+
+
+<style>
+.capital_let {
+    text-transform:capitalize;
+}
+</style>
+
+
+
+      
+      

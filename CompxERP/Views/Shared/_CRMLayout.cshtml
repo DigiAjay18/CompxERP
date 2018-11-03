@@ -1,0 +1,471 @@
+﻿<!DOCTYPE html>
+
+<html>
+    <head>
+    <title>CRM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!----bootstrap css---->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <!-----favicon.ico---->
+
+    <!------custom css---->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/css/responsive.css" />    
+    <link href="~/css/jquery.smartmenus.bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/ddaccordion.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+     
+  
+
+    <style>
+        header .header_bottom .nav.navbar-nav a {
+            padding: 10px 24px !important;
+        }
+
+        .right_sidebar .Quick_view.ClientDashboard li .risK_img {
+            float: left;
+            background: #CC1A57;
+            margin-top: 0;
+            padding: 4px;
+            width: 37%;
+            min-height: 76px;
+        }
+
+        .right_sidebar .Quick_view.ClientDashboard li .risK_imgTxt {
+            min-height: 76px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f2eded;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .btn.btn-default {
+            font-size: 16px;
+        }
+
+        .panel {
+            margin-bottom: 10px;
+        }
+
+        .right_sidebar .Quick_view > li {
+            padding: 5px;
+        }
+
+        .dealerList .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+            padding: 3px 8px !important;
+        }
+
+        #btnDelete {
+            background: #e31e25 !important;
+            border: medium none !important;
+        }
+         
+    </style>
+
+
+</head>
+<body>
+     <header class="main_header">
+        <!----top header---->
+        <div class="top_header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3 col-sm-3 col-xs-12 logo">
+                        <a href="#" class="logo_dv logo_marg">
+                            <img src="~/img/CRMLogo.png" /></a>
+                    </div>
+                    <div class="col-md-9 col-sm-9">
+                        <div class="top_head NewTopHead">
+                            <span class="Crm_name">Customer Relationship Management </span>
+                            <ul class="nav navbar-nav pull-right">
+                                <li><a href=""><span id="output" style="margin-right: 10px;"></span><span id="time"></span></a></li>
+                                  
+                                <li><a href="#"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="label label-success">4</span></a></li>
+                                @*<li><a href="#"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>*@
+                                <li><a href="/Home/partnerlogin"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!----top header end---->
+
+        <!----bottom header---->
+        <div class="header_bottom">
+            <!-- Navbar -->
+            <div class="navbar navbar-inverse" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <!-- Left nav -->
+                    <ul class="nav navbar-nav">
+                        @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                        {  
+                            <li class="active"><a href="#">Masters <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#MapDealer" id="MnDealer" value="Dealer Master" /></a></li>
+                                    <li><a href="#">Item Setup <span class="caret"></span></a>
+                                        <ul class="dropdown-menu menu-sub">
+                                            <li><a target="_blank" href=" /itemsetup/createtype?MenCode=1">Category</a>@*<input type="button" class="btn_map" data-toggle="modal" data-target="#Category" id="MnCategory" value="Category" />*@</li>
+                                            <li><a target="_blank" href=" /itemsetup/createsubtype?MenCode=1">Sub Category</a>@*<input type="button" class="btn_map" data-toggle="modal" data-target="#SubCategory" id="MnSubCategory" value="Sub Category" />*@</li>
+                                            <li><a target="_blank" href=" /itemsetup/itemain?MenCode=1">Item Setup</a>@*<input type="button" class="btn_map" data-toggle="modal" data-target="#CreateItem" id="MnCreateItem" value="Create Item" />*@</li>
+                                     @*<li><a target="_blank" href=" /ItemSetup/SalePriceList">Sale Price List</a></li>*@
+
+                                        </ul>
+                                    </li>
+                                    <li><a target="_blank" href=" /User/Rights?MenCode=1">User Setup</a></li>
+                                    @* <li> <a target="_blank" href=" /itemsetup/itemain?MenCode=1">Item Setup</a></li>
+                                        <li><a href="#" data-toggle="modal" data-target="#UserSetup">User Setup</a></li> *@
+                                    @*<li><a href="#">Scheme Setup</a></li>*@
+                                    @* <li><a href="#" data-toggle="modal" data-target="#SourceMaster">Source Master</a></li> *@
+                                    <li>
+                                        @* <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnSourceMaster" value="Source Master" />
+      <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnFinancialTerms" value="Financial Terms" />
+      <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnOtherTerms" value="Other Terms" />
+      <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnNotification" value="Notification Master" />*@
+
+                                        <a>
+                                            <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnBrand" value="Brand Master" /></a></li>
+
+<li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnFinancialTerms" value="Financial Terms" /></a></li>
+ <li><a>     <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnOtherTerms" value="Other Terms" /></a></li>
+
+                                  @*  <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnCallingStatus" value="Calling Status" /></a></li>*@
+                                    
+                                     <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnRegion" value="Bank Master" /></a>
+                                    </li>
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#SourceMaster" id="btnDept" value="Department Master" /></a></li>
+
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnApproveDealer" value="Dealer Approve" /></a>
+                                    </li>
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#EmployeeMaster" id="btnEmployeeMaster" value="Employee Setup" /></a>
+                                    </li>
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#departmentSetup" id="btnDepartmentSetup" value="Designation Setup" /></a>
+                                    </li>
+                                     <li><a target="_blank" href=" /Master/City">City Master</a></li>
+                                      
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#CityMaster" id="btnCityMaster" value="Route Map" /></a>
+                                    </li>
+                                  
+                                    <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerAllotment" id="btnDealerAllotment" value="Dealer Allocation" /></a>
+                                    </li>
+                                    <li>
+                                     <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdApprove" value="Pending Order"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        <li><a href="#">Transactions <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                @* <li><a href="/Quotation/ParkLead?MstType=1147">Park Lead</a></li>*@
+   <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#Calling" id="btnCalling" value="Calling" data-backdrop="static" data-keyboard="true"  /></a>
+                                </li>
+                                <li>
+                                   <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnParkLead" value="Park Lead"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                             <li><a>
+                                        <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="MnFollow" value="Follow Up Entry"  data-backdrop="static" data-keyboard="true" /></a></li>
+
+                                @*   <li> <a href='/itemsetup/create' style="border: none; font-size: 14px;">Item Setup</a> QuotationOut </li>*@
+
+                                <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnQuotation" value="Quotation Entry"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                                 <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnOrder" value="Order Entry"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                                   <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnPlanDispatch" value="Plan Dispatch"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                                
+                                   <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnPayFollowUp" value="Payment FollowUp List"  data-backdrop="static" data-keyboard="true" /></a></li> 
+
+                                @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                                {  
+@*<li><a href="#" data-toggle="modal" data-target="#KeyIssue">Key Issue</a></li>
+                                       <li><a href="#" data-toggle="modal" data-target="#TargetEntry">Target Entry</a></li>
+                                        <li><a href="/Customer/Indextracklist">Allot Task</a></li>*@
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#AllotTask" id="btnAllotTask" value="Allot Task" /></a>
+                                    </li>                      
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#ReallotIndextrack" id="btnReallotIndextrack" value="Re Allot Task" /></a>
+                                    </li>
+@*  <li> <input type="button" class="btn_map" data-toggle="modal" data-target="#RaiseTicket" id="btnRaiseTicket"  value="Raise Ticket"   /> </li>
+                                        
+                                         <li><a href="/Home/RaiseTicket">Raise Ticket</a></li>*@
+                                         
+                                }
+                                @if (ViewBag.UserType == "3")
+                                {  
+                                    <li><a href="#" data-toggle="modal" data-target="#MapDealer">Dealer Master</a></li> 
+                                }
+                                @if (ViewBag.UserType == "4")
+                                { 
+                                        
+                                    <li><a href="#">Upload Sales</a></li> 
+                                    <li><a href="/Dealer/Quotation">Quotation</a></li> }
+                                @if (ViewBag.UserType == "9")
+                                { 
+                                    <li><a href="/Home/Rate_Aservice">Rating</a></li>
+                                    <li><a href="#">Ask A Quote </a></li> 
+                                    <li><a href="/Customer/ProductReg">Register A Product</a></li>}
+                                @if (ViewBag.UserType == "8" || ViewBag.UserType == "10" || ViewBag.UserType == "11")
+                                { 
+                                          
+                                    <li><a href="#" data-toggle="modal" data-target="#ConversionEntry">Conversion Entry </a></li>
+                                    <li><a href="#">Quotation Entry</a></li>
+@*<li> <input type="button" class="btn_map" data-toggle="modal" data-target="#AllotTask" id="btnAllotTask"  value="Allot Task"   /> </li>  
+                                         *@<li><a data-toggle="modal" data-target="#Allot_Task_List" id="A_Allot_Task_List">Allot Task List</a></li>
+@*     <li><a href="#" data-toggle="modal" data-target="#TicketStatus">Ticket Status</a></li>
+<li><a href="#" data-toggle="modal" data-target="#TaskList">Allot Task</a></li>*@
+                                        
+                                }
+                                <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#RaiseTicket" id="btnRaiseTicket" value="Raise Ticket" /></a>
+                                </li>
+
+                                
+
+                                <li><a href="#" data-toggle="modal" data-target="#FollowUp"></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Reports <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                @* <li><a href="#" data-toggle="modal"  data-target="#InBoundList">In Bound List</a></li>*@
+                                   
+                                <li>
+                                    <a><input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnCallingList" value="Calling List"  data-backdrop="static" data-keyboard="true" /></a>
+                                </li>
+                                @if (ViewBag.UserType == "0" || ViewBag.UserType == "1"|| ViewBag.UserType == "8")
+                                {
+                                    <li><a href="#" data-toggle="modal" id="btnDealerList" data-target="#ParkLead">Dealer List</a></li>//DealerList
+                                    <li><a href="#" data-toggle="modal" id="btnCallingSummary" data-target="#ParkLead"  data-backdrop="static" data-keyboard="true">Calling Summary </a></li>
+                                   <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#LeadList" id="MnLeadList" value="Park Lead List"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li> 
+                                     <li><input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="FollowUpList" value="Follow Up List"  data-backdrop="static" data-keyboard="true" /> </li>
+                                    
+                                    <li><a href="#" data-toggle="modal" id="bntQuotList" data-target="#QuotList"  data-backdrop="static" data-keyboard="true">Quotation List</a></li>
+                                        <li><a href="#" data-toggle="modal" id="bntOrderList" data-target="#DealerApprove"  data-backdrop="static" data-keyboard="true">Order List</a></li>@*
+                                     <li>
+                                     <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnApproveOrder" value="Order Approve"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li>*@
+                                    
+                                     <li>
+                                     <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnOrdApprove_I" value="Approved Order"  data-backdrop="static" data-keyboard="true" /></a>
+                                    </li>
+                     <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnProductionList" value="Production List"  data-backdrop="static" data-keyboard="true" /></a></li>    
+                     <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#ParkLead" id="btnPendingOrder" value="Pending Order List"  data-backdrop="static" data-keyboard="true" /></a></li>   
+                                     
+                       <li><a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerApprove" id="btnPayFollowUpList" value="Payment FollowUp List"  data-backdrop="static" data-keyboard="true" /></a></li> 
+                                    
+                                    <li><a target="_blank" href="/Report/Filter">Report Viewer</a></li>
+                                        
+@*  <li><a href="#" data-toggle="modal" data-target="#TargetList">Target List</a></li>ParkLead btnParkLead
+                                       <li><a href="/Customer/IndexRaise">Raise Ticket</a></li>
+                                          <li><a href="/Customer/AllEmpHoldTasklist">Ticket Hold List</a></li>*@
+@*  
+                                          <li><a href="/Customer/AllIndextrackticket">Ticket List</a></li>
+                                    
+                                           <li> 
+                                               <input type="button" class="btn_map" data-toggle="modal" data-target="#AllEmpHoldTasklist" id="btnAllEmpHoldTasklist"  value="Ticket Hold List"   />
+                                        </li>   
+                                        
+                                            
+            <li> <input type="button" class="btn_map" data-toggle="modal" data-target="#AllIndextrackticket" id="btnAllIndextrackticket"  value="Ticket List"   /> </li>*@
+            
+           
+@*
+                                         
+                                          *@<li>
+                                             <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#FRegister1" id="UserList" value="User List" /></a>
+                                          </li>
+                                   
+                                    @*<li><a href="#" data-toggle="modal" id="" data-target="#FRegister">Follow Up Register</a></li>*@
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#EmpList" id="btnEmpList" value="Employee List" /></a>
+                                    </li>
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#EmpDealerList" id="btnEmpDealerList" value="Employee-Dealer List" /></a>
+                                    </li>
+                                }
+                                @if (ViewBag.UserType == "3")
+                                { 
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerList" id="DealerSearch" value="Dealer List" /></a>
+                                    </li>
+                                    <li><a href="#">Dealer Performance</a></li>
+                                    <li><a href="#">Target Analysis </a></li>
+                                }
+                                @if (ViewBag.UserType == "4")
+                                {
+                                   <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#LeadList" id="MnLeadList" value="Park Lead List" /></a>
+                                       @* 
+                                      <li><a href="/Customer/Indextrackticket">Raise Ticket List</a></li>  
+                                        *@<li><a href="#">Payout </a></li>
+                                    <li><a> <input type="button" class="btn_map" data-toggle="modal"  data-target="#ParkLead" id="btnLedger" value="Ledger"  data-backdrop="static" data-keyboard="true" /></a></li> 
+                                    <li><a href="#">Sales Summary</a></li>@*
+                                        <li><a href="#">Follow Up Register</a></li>
+                                        <li><a href="#">Quotation Register</a></li>*@
+                                }
+                                @if (ViewBag.UserType == "9")
+                                {
+                                    <li><a href="/Customer/ProdIndex">Product List</a></li>@*
+                                        <li><a href="/Customer/Indextrackticket">Track Ticket</a></li> 
+                                        *@<li><a href="#">Ticket Rating </a></li>
+                                    <li><a href="#">Quotes</a></li>
+                                    <li><a href="#">Downloads </a></li>
+                                }
+                                @if (ViewBag.UserType == "8" || ViewBag.UserType == "10" || ViewBag.UserType == "11")
+                                {
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#LeadList" id="MnLeadList" value="Park Lead List" /></a>
+                                    </li>@*
+                                        <li><a  data-toggle="modal" class="btn_map" data-target="#Raise_Ticket_List" id="A_Raise_Ticket_List" style="margin-bottom:0px;cursor:pointer;">Raise Ticket List</a></li>  
+                                           
+                                           *@<li>
+                                              <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#THoldList" id="btnTicket_Hold_List" value="Ticket Hold List" /></a>
+                                           </li>@*
+                                         <li><a href="/Customer/EmpHoldTasklist">Ticket Hold List</a></li>*@
+                                    <li><a href="/Customer/EmpDoneTasklist">Ticket Done List</a></li>
+@* < <li><a href="#">Follow Up Register</a></li>
+li><a href="#">Quote Register </a></li> 
+                                       <li><a href="#">Conversion Register</a></li>
+                                        
+                                        <li><a href="/Customer/IndexRaise">Raise Ticket</a></li>*@
+                                        
+                                    <li><a href="#" data-toggle="modal" data-target="#FRegister">Follow Up Register</a></li>
+                                          
+                                }
+                                <li>
+                                   <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#AllIndextrackticket" id="btnAllIndextrackticket" value="Ticket List" /></a>
+                                </li>
+                                @*<li><a  data-toggle="modal" class="btn_map" data-target="#Raise_Ticket_List" id="A_Raise_Ticket_List" style="margin-bottom:0px;cursor:pointer;">Raise Ticket List</a></li>*@
+                            </ul>
+                        </li>
+                        <li><a href="#">Utilities <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" data-toggle="modal" data-target="#ChangePassword">Change Password</a></li>
+                                @if (ViewBag.UserType == "9")
+                                {
+                                    <li><a href="/Html/Download">Downloads</a></li>
+                                }
+
+@* <li> <input type="button" class="btn_map"  id="btnImport" value="Import" /> </li> 
+ <li> <input type="button" class="btn_map"  id="btnImportIndustries" value="Import Industries" /> </li> *@
+                                @* @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+                                {
+   <li> <input type="button" class="btn_map"  id="btnImportDataItem" value="Import Item" /> </li>
+                                 <li> <input type="button" class="btn_map"  id="btnInBound" value="In Bound Import" /> </li>*@
+                                    <li>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#InBoundImport" value="Calling Import" /></a>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerImport" value="Dealer Import" /></a>
+                                       <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#OpeingImport" value="Opeing Import" /></a>
+                                        <a> <input type="button" class="btn_map" data-toggle="modal" data-target="#LedgerImport" value="Ledger Import" /></a>
+                                       <a href ="../UploadImg/CallingData.xls" > Download Calling Template </a>
+                                       <a href ="../UploadImg/DealerData.xls" > Download Dealer Template </a>
+                                       <a href ="../UploadImg/DealerOpening.xls" > Download Dealer Opening </a>
+                                       <a href ="../UploadImg/Ledger.xls" > Ledger Template </a>
+                                    </li>
+                                     
+                              @*  }*@
+                            </ul>
+                        </li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="~/pdf/CompXCloud.pdf" target="_blank">Help</a></li>
+                    </ul>
+
+                    <div class="right_head_bottom pull-right">
+                        <h2 class="text-right">
+                            @if (ViewBag.UserType == "0")
+                            { <span>Supper Admin</span>}
+                            @if (ViewBag.UserType == "1")
+                            { <span>Admin</span>}
+                            @if (ViewBag.UserType == "2")
+                            { <span>Partner</span>}
+                            @if (ViewBag.UserType == "3")
+                            { <span>Distributor</span>}
+                            @if (ViewBag.UserType == "4")
+                            { <span>Dealer</span>}
+                            @if (ViewBag.UserType == "5")
+                            { <span>Tele Caller</span>}
+                            @if (ViewBag.UserType == "6")
+                            { <span>Service Mgr</span>}
+                            @if (ViewBag.UserType == "7")
+                            { <span>Service Eng</span>}
+                            @if (ViewBag.UserType == "8")
+                            { <span>Employee</span>}
+                            @if (ViewBag.UserType == "9")
+                            { <span>Client</span>}
+                            @if (ViewBag.UserType == "10")
+                            { <span>Employee ,Sale</span>}
+                            @if (ViewBag.UserType == "11")
+                            { <span>Employee ,Tech Supp</span>}
+
+                            <img src="~/Images/company.png" /></h2>
+                    </div>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+
+    </header>
+    <div>
+        @RenderBody()
+    </div>
+     <footer id="page-footer" class="text-center">
+        <p>
+            <span style="margin-top: 10px; text-align: center;"><strong>CRM</strong> &copy; copyright 2017</span>
+            <img src="~/Img/footer_logoNew.png" class="img-responsive" style="float: right; margin-right: 10px;">
+        </p>
+    </footer>
+       
+    <script src="~/js/chart.min11.js"></script>
+    <script src="~/js/chart-data.js"></script>
+    <!----js for customJ---->
+    <script src="~/js/customJ.js"></script>
+     
+    <script src="~/js/jquery-1.11.3.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/jquery.smartmenus.js"></script>
+    <script src="~/js/jquery.smartmenus.bootstrap.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+﻿  
+  <script src="~/Scripts/jquery.inputmask.js"></script>
+   <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+<style>
+td, th { display: block; font-size: 14px;font-family: fira;  padding: 4px 10px !important;}
+.dealerList .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table  thead > tr > th {padding: 4px 10px !important;border:1px solid #ddd !important; height: 31px;}
+tbody {   border-left: 0px !important;}
+table {border-spacing: 0;border-collapse: collapse;margin-bottom: 20px !important;}
+@@media (max-width:767px){.table { width: 1100px !important;max-width: 1100px !important;}
+                          .summary_list { overflow: scroll;}
+}
+</style>
+
+<script >
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#From_Date').val(today);
+            $('#To_Date').val(today);
+
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+    </script>
+         
+
+
+<div class="modal-content">
+  
+           <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Calling Summary</h4>
+                </div>
+                <div class="modal-body input_popup"> 
+                        <label class="col-sm-1 padd_l padd_3">From</label>
+                        <div class="col-sm-2 padd_l padd_3">
+                            <input type="text" class="form-control" id="From_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                            
+                        </div>
+                        <label class="col-sm-1 padd_l padd_3">To</label>
+                        <div class="col-sm-2 padd_l padd_3">
+                            <input type="text" class="form-control" id="To_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                        </div>
+                 
+                        <span class="input-group-btn">@*ViewBag.UserType, ViewBag.UserCode*@
+                            <input type="button" id="FillCalling" value="Search" onclick="GetCallSummaryData(21, 141)"  class="btn btn-search" />
+                            
+                        </span>
+                    </div>
+     
+                    <div class="col-sm-12 col-md-12"><div id="dvSummaryList" class="summary_list"></div></div>
+                </div>
+     
+<script type="text/javascript">
+
+
+
+    function GetCallSummaryData(UseType, UseCode) {
+        debugger;
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetCallSummaryData", "Report")",
+            data: { From: $('#From_Date').val(), To: $('#To_Date').val(), UseType: UseType, UseCode: UseCode },
+            success: function (data) {
+                CallSummaryList(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+});
+    }
+
+
+    function CallSummaryList(itm) {
+        debugger;
+        if (itm.length > 0) {
+            var $table = $('<table id="example1" class="table table-fixed table-bordered j_table_new table-striped" style="margin-top:10px;width :100%;">');
+            var Total = 0; CallAgain = 0; NotUseful = 0; Done = 0; None = 0; d_25 = 0; d_50 = 0; d_75 = 0; d_100 = 0; d_0 = 0;
+            var $tbody = $('<tbody>');
+             
+            $tbody.append('<thead><tr><th style="width:20%;">Employee Name</th>  <th style="width:8%;">Total</th><th style="width:8%;">CallAgain</th><th style="width:8%;">NotUseful</th><th style="width:8%;">Done</th> <th style="width:8%;">None</th><th style="width:8%;">25%</th><th style="width:8%;">50%</th><th style="width:8%;">75%</th><th style="width:8%;">100%</th><th style="width:8%;">0</th></tr> </thead> ');
+            //$tbody.append('<tbody style="height:526px;"/>');
+
+            var $row;
+            $.each(itm, function (i, val) {
+              $row = $('<tr/>');
+
+                CallAgain += val.CallAgain;
+                Total += val.Total;
+                NotUseful += val.NotUseful;
+                Done += val.Done;
+                None += val.None;
+
+                d_25 += val._25;
+                d_50 += val._50;
+                d_75 += val._75;
+                d_100 += val._100;
+                d_0 += val._0;
+
+                if (val.UseType != "8")
+                    $row.append($('<td width="20%"/>').html('<a href="javascript:GetCallSummaryData(' + val.UseType + ' , ' + val.ParentID + ')">' + val.UseName + '</a>'));
+                else
+                    $row.append($('<td width="20%"/>').html(val.UseName));
+                // $row.append($('<td width="10%"/>').html('<button type="button" id="btnLeadDelete" onclick="GetCallSummaryData(20, ' + val.ParentID + ')" >' + val.UseName + '</button>'));
+
+                $row.append($('<td width="8%"/>').html(val.Total));
+                $row.append($('<td width="8%"/>').html(val.CallAgain));
+                  $row.append($('<td width="8%"/>').html(val.NotUseful));
+                  $row.append($('<td width="8%"/>').html(val.Done));
+                
+                $row.append($('<td width="8%"/>').html(val.None));
+             
+                $row.append($('<td width="8%"/>').html(val._25));
+                $row.append($('<td width="8%"/>').html(val._50));
+                $row.append($('<td width="8%"/>').html(val._75));
+                $row.append($('<td width="8%"/>').html(val._100));
+                $row.append($('<td width="8%"/>').html(val._0));
+
+                $tbody.append($row);
+            });
+
+            $row = $('<tr class =Closing />');
+            $row.append($('<td width="20%"/>').html("Summary")); 
+            $row.append($('<td width="8%"/>').html(Total));
+            $row.append($('<td width="8%"/>').html(CallAgain));
+            $row.append($('<td width="8%"/>').html(NotUseful));
+          $row.append($('<td width="8%"/>').html(Done));
+
+          $row.append($('<td width="8%"/>').html(None));
+
+          $row.append($('<td width="8%"/>').html(d_25));
+          $row.append($('<td width="8%"/>').html(d_50));
+          $row.append($('<td width="8%"/>').html(d_75));
+          $row.append($('<td width="8%"/>').html(d_100));
+          $row.append($('<td width="8%"/>').html(d_0));
+
+            $tbody.append($row);
+
+            $table.append($tbody);
+            $('#dvSummaryList').html($table);
+        }
+    }
+
+
+</script>

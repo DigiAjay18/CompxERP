@@ -1,0 +1,618 @@
+﻿@model CompxERP.Models.Distributor
+
+
+ <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+        $('#DOB').val('');
+        $('#DOJ').val('');
+        $('#AnniDt').val('');
+
+        $('.pickdate').each(function () {
+            if ($(this).val() == '') {
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth() + 1; //January is 0!
+
+                var yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+                var today = dd + '/' + mm + '/' + yyyy;
+                // $(this).val(today);
+                var today = dd + '/' + mm + '/' + yyyy;
+                //  $('#CreateDates').val(today);
+            }
+        });
+    });
+
+    </script>
+
+<style>
+    .checkbox-inline input {margin-top: -3px;}
+    .checkbox-inline label {margin-bottom: 0px;line-height: 17px;}
+</style>
+     <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                     @if (ViewBag.isDistributor == true )
+                                    {  
+                                        <h4 class="modal-title"> Distributor   </h4>  
+                                    }
+                     else
+                     { <h4 class="modal-title"> Map Dealer</h4> }
+                    
+                </div>
+                <div class="modal-body input_popup">
+                    <div class="form-group">
+                        <div class="col-sm-1 padd_l padd_5">D.ID</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                             @Html.TextBoxFor(model => model.Dis_ID, new { @maxlength = "10", @class = "form-control",  @readonly = true })
+                            @*<input style="background: #f2eded;" class="form-control" id="Deal_ID" name="didNumber" value="1" type="text" disabled>*@</div>
+                        <div class="col-sm-3 padd_l padd_5"></div>
+
+@if (ViewBag.isDistributor == false )
+                                    {  
+                        <div class="col-sm-1 padd_l padd_5">Distributor @*Date*@</div>
+                        <div class="col-sm-5 padd_l padd_5"> 
+                            @Html.DropDownList("DistributorNM", (SelectList)ViewBag.vwDistributor, "--Select--", new { @class = "form-control", required = "required" })
+                        </div>
+}
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-sm-1 padd_l padd_5">Name</div>
+                        <div class="col-sm-5 padd_l padd_5"> 
+			 <input class="form-control" id="hdnMstCode" name="namtx"  value="" type="hidden">
+                            <input class="form-control" id="hdnDealerCode" name="namtx"  value="" type="hidden">
+                             
+                            @Html.HiddenFor(model => model.IsDistributor)
+                            <input class="form-control" id="Deal_Name" name="namtx" value=""  onblur="SetUserNM();" type="text"></div>
+                        <div class="col-sm-1 padd_l padd_5">Mobile</div>
+                        <div class="col-sm-2 padd_l padd_5">
+
+                            <input class="form-control" id="Deal_Mob2" name="Add3" value="" type="text" maxlength="10">
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">LandLine </div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="Deal_LandLine" maxlength="11" name="pobox" value="" type="text"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="col-sm-1 padd_l padd_5">Email</div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="Deal_Email" name="Add3" value="" type="text"></div>
+                        <div class="col-sm-1 padd_l padd_5">Aadhar  </div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="Deal_Skype" name="pobox" value="" type="text"></div>
+                         <div class="col-sm-1 padd_l padd_5">Cheque No  </div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="ChequeNo" name="pobox" value="" type="text"></div>
+                    </div>
+
+
+                    <div class="form-group">
+                         <div class="col-sm-1 padd_l padd_5"><label>Birth Date</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(m => m.DOB, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" }) 
+                                          </div>
+                        <div class="col-sm-1 padd_l padd_5"><label>Joining Date</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(m => m.DOJ, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" }) 
+                                          </div>
+                         <div class="col-sm-1 padd_l padd_5"><label>Anniversary Date</label></div>
+                                          <div class="col-sm-2 padd_l padd_5">
+                                             @Html.TextBoxFor(m => m.AnniDt, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" }) 
+                                          </div>
+                          <div class="col-sm-1 padd_l padd_5">Code  </div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input style="background: #f2eded;" class="form-control" id="Deal_Code" name="Add3" value="" type="text" disabled>
+                        </div>
+
+                    </div>
+                   
+
+                    <div class="form-group">
+                       @* <div class="col-sm-1 padd_l padd_5">Country</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            @Html.DropDownList("Deal_Country", new List<SelectListItem> {  
+           new SelectListItem { Text="India", Value="1"},
+           new SelectListItem { Text="England", Value="2"}, 
+           new SelectListItem { Text="Bahrain", Value="3"}, 
+           new SelectListItem { Text="Iran", Value="4"}, 
+           new SelectListItem { Text="Iraq", Value="5"}, 
+           new SelectListItem { Text="Kuwait", Value="6"}, 
+           new SelectListItem { Text="Northern Ireland", Value="7"}, 
+           new SelectListItem { Text="Oman", Value="8"}, 
+           new SelectListItem { Text="Saudi Arabia", Value="9"}, 
+           new SelectListItem { Text="Scotland", Value="10"}, 
+           new SelectListItem { Text="South africa", Value="11"}, 
+           new SelectListItem { Text="UAE", Value="12"}, 
+           new SelectListItem { Text="Wales", Value="13"}, 
+           }, new { @class = "form-control" })
+                        </div>*@
+                        <div class="col-sm-1 padd_l padd_5">State</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                           @* @Html.DropDownList("Deal_State", new List<SelectListItem> {new SelectListItem { Text="M.P.", Value="1"}, }, new { @class = "form-control" })*@
+                              @Html.DropDownList("Deal_State", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control", @onchange = "FillCity();" })  
+                        </div>
+                          <div class="col-sm-1 padd_l padd_5">City</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            @*@Html.DropDownList("Deal_City_I", new List<SelectListItem> {  
+           new SelectListItem { Text="Indore", Value="1834"},
+           new SelectListItem { Text="Bhopal", Value="1831"}, 
+           new SelectListItem { Text="Ujjain", Value="1904"}, 
+           new SelectListItem { Text="Khandwa", Value="4493"}, 
+           new SelectListItem { Text="Khargone", Value="4494"}, 
+           new SelectListItem { Text="Ratlam", Value="1876"},    
+           }, new { @class = "form-control", @onblur = "SetDealerCode();" })*@
+                             @Html.DropDownList("Deal_City_I", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control", @onchange = "FillTahsilList();" ,@onblur = "SetDisDealCode();" }) 
+                        </div>
+                       <div class="col-sm-1 padd_l padd_5">Tahsil</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                          @*  @Html.DropDownList("Deal_Tahsil", new List<SelectListItem> {  
+           new SelectListItem { Text="Indore", Value="1834"},
+           new SelectListItem { Text="Bhopal", Value="1831"}, 
+           new SelectListItem { Text="Ujjain", Value="1904"}, 
+           new SelectListItem { Text="Khandwa", Value="4493"}, 
+           new SelectListItem { Text="Khargone", Value="4494"}, 
+           new SelectListItem { Text="Ratlam", Value="1876"},    
+           }, new { @class = "form-control", @onblur = "SetDealerCode();" })*@
+                              @Html.DropDownList("Deal_Tahsil", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control" ,@onblur = "SetDisDealCode();" })  
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <div class="col-sm-1 padd_l padd_5">Address 1</div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="Deal_Add2" name="Add3" value="" type="text" placeholder="Flat/House/Block No ,Lane/Street"></div>
+                         <div class="col-sm-1 padd_l padd_5">Address 2</div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="Deal_Add3" name="Add3" value="" type="text" placeholder="Flat/House/Block No ,Lane/Street"></div>
+                    </div>
+                   
+                 @*   <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">H.O. City</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            @Html.DropDownList("Deal_City", new List<SelectListItem> {  
+          new SelectListItem { Text="Indore", Value="1834"},
+           new SelectListItem { Text="Bhopal", Value="1831"}, 
+           new SelectListItem { Text="Ujjain", Value="1904"}, 
+           new SelectListItem { Text="Khandwa", Value="4493"}, 
+           new SelectListItem { Text="Khargone", Value="4494"}, 
+           new SelectListItem { Text="Ratlam", Value="1876"},    
+           }, new { @class = "form-control" })
+                        </div>
+
+                        <div class="col-sm-2 padd_l padd_5">Office Address</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                            <input class="form-control" id="Deal_Add1" name="Add1" value="" type="text" placeholder="Flat/House/Block No ,Lane/Street"></div>
+
+                    </div>*@
+                    <div class="form-group">
+
+                        <div class="col-sm-1 padd_l padd_5">PAN </div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="Deal_pobox" name="pobox" value="" type="text"></div>
+                        <div class="col-sm-1 padd_l padd_5">GSTIN</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="Deal_GSTIN" name="Add3" value="" maxlength ="15" onblur="Chk_GSTIN()" type="text"> 
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">ContactPerson</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="Deal_ContactPerson" name="Add3" value="" type="text"></div>
+                        <div class="col-sm-1 padd_l padd_5">Mobile</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                           <input class="form-control" id="Deal_Mob1" maxlength="10" name="pobox" value="" type="text"></div>
+                    </div>
+
+                    <div class="form-group">
+                       
+                          
+                        <div class="col-sm-1 padd_l padd_5">ContactPerson_I</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="CP_I" name="CP_I" value="" type="text"></div>
+                        <div class="col-sm-1 padd_l padd_5">Mobile_I</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                           <input class="form-control" id="CP_NO_I" maxlength="10" name="CP_NO_I" value="" type="text"></div>
+                         
+                  
+                        <div class="col-sm-1 padd_l padd_5">ContactPerson_II</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="CP_II" name="CP_II" value="" type="text"></div>
+                        <div class="col-sm-1 padd_l padd_5">Mobile_II</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                           <input class="form-control" id="CP_NO_II" maxlength="10" name="CP_NO_I" value="" type="text"></div>
+                         
+                    </div> 
+
+                    <div class="form-group">
+                        <div class="col-sm-1 padd_l padd_5">UserName </div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <input class="form-control" id="Deal_UserName" name="pobox" disabled value="" type="text"></div>
+                        <div class="col-sm-1 padd_l padd_5">Password</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="Deal_Password" name="Add3" maxlength="8" autocomplete="off" type="password"></div>
+                        <div class="col-sm-1 padd_l padd_5">Re-Password</div>
+                        <div class="col-sm-2 padd_l padd_5">
+                            <input class="form-control" id="Deal_RePassword" name="Add3" onblur="ChkPassword_Deal();" maxlength="8" autocomplete="off" type="password"></div>
+ 
+                    </div>
+                      
+                     <div class="form-group">
+                        <div class="col-sm-1 padd_l padd_5">Brand </div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <div id="dvAllBrand" class="multi_list drop_down"  > 
+                             <ul style="height: 120px;"> 
+                                    <li class="checkbox-inline"> <label> <input type="checkbox" name="chkSelectAll" id="chkSelectAll" /> Select All</label></li> 
+				                   @for (var i = 0; i < Model.lstBrand.Count; i++)
+                       {  
+                                 <li class="checkbox-inline">  
+                                     <label>  <input type="checkbox" data-dispatch-entry-id="@Model.lstBrand[i].NameID" id ="chk_@Model.lstBrand[i].NameID" data-val="@Model.lstBrand[i].NameID" class="chkSelect" /> 
+                                        @Model.lstBrand[i].NameNM </label>
+                                 </li> 
+                       } 
+				                </ul>
+                                </div>
+                       </div>
+                        <div class="col-sm-1 padd_l padd_5">Product</div>
+                        <div class="col-sm-5 padd_l padd_5">
+                            <div id="dvAllProduct" class="multi_list drop_down"  > 
+				               <ul style="height: 120px;"> 
+                                    <li class="checkbox-inline"> <label> <input type="checkbox" name="chkAllProduct" id="chkAllProduct" /> Select All</label></li> 
+				                   @for (var i = 0; i < Model.lstProduct.Count; i++)
+                       {  
+                                 <li class="checkbox-inline">  
+                                     <label>  <input type="checkbox" data-dispatch-entry-id="@Model.lstProduct[i].NameID" id ="chk_@Model.lstProduct[i].NameID" data-val="@Model.lstProduct[i].NameID" class="chkSelect" /> 
+                                        @Model.lstProduct[i].NameNM </label>
+                                 </li> 
+                                    } 
+				                </ul>
+                               </div>
+
+                        </div>
+                        
+ 
+                    </div>
+                        <div class="modal-footer">
+                    <input type="button" id="InsDealer" value="Save" class="btn btn-default" />
+                  @*  <input type="button" id="UpdDealer" value="Update" class="btn btn-default" />*@
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                        
+              
+                        
+                    </div>
+                </div>
+            
+
+    
+
+
+
+<script type="text/javascript">
+    $('#InsDealer').click(function () {
+        debugger;
+
+  if ($('#Deal_Name').val() == "") {
+            $('#Deal_Name').focus();
+            alert('Please Enter Dealer Name ...');
+            return
+  }
+            
+        if ($('#Deal_Mob2').val() == "") {
+            $('#Deal_Mob2').focus();
+            alert('Please Enter Mobile No ...');
+            return
+        }
+        if ($('#Deal_GSTIN').val() == "" && $('#Deal_pobox').val() == "") {
+            $('#Deal_GSTIN').focus();
+            alert('Please Enter GSTIN Or PAN ...');
+            return
+        }
+        if ($('#hdnDealerCode').val() == "") {
+            if ($('#Deal_UserName').val() == "") {
+                $('#Deal_UserName').focus();
+                alert('Please Enter UserName ...');
+                return
+            }
+            if ($('#Deal_Password').val() == "") {
+                $('#Deal_Password').focus();
+                alert('Please Enter Password ...');
+                return
+            }
+        }
+        var UseType = 0; var DistributorID = 0; var Dis_City = 0; var Deal_City_I = 0; var Deal_State = 0;
+            if ($('#IsDistributor').val() == "true")
+            {
+                UseType = 3;
+DistributorID = 0;
+            }
+            else
+            {
+                UseType = 4;
+                DistributorID = $('#DistributorNM').val();
+
+                if ($('#DistributorNM').val() == "") {
+                    $('#DistributorNM').focus();
+                    alert('Please Select Distributor ...');
+                    return
+                }
+
+            }
+
+            var BrandId = $.map($("#dvAllBrand .chkSelect:checked"), function (n, i) {
+                return $(n).attr("data-dispatch-entry-id");
+            }).join(',');
+
+            var ProductId = $.map($("#dvAllProduct .chkSelect:checked"), function (n, i) {
+                return $(n).attr("data-dispatch-entry-id");
+            }).join(',');
+
+            if ($('#Deal_State').val() != undefined && $('#Deal_State').val() != "") {
+                Deal_State = $('#Deal_State').val();
+            }
+            if ($('#Dis_City').val()  != undefined && $('#Dis_City').val() != "") {
+                Dis_City = $('#Dis_City').val(); 
+            }
+            if ($('#Deal_City_I').val() != null && $('#Deal_City_I').val() != undefined && $('#Deal_City_I').val() != "") {
+                Deal_City_I = $('#Deal_City_I').val();
+            }
+
+            ShowHideLoader('show');
+
+            $.get("../Home/chkDealer", { Name: $("#Deal_Name").val(), City: Deal_City_I }, function (data) {
+                if (data != null) {
+                    if ($('#hdnDealerCode').val() == "" && parseInt(data["DealCount"]) > 0) {
+                        alert("Dealer Already Exists ....");
+                        return;
+                        ShowHideLoader('hide');
+                    }
+                    else {
+                        if ($('#Deal_Name').val() != '') {
+                            $.get("/Home/InsDistributor", { Dis_ID: $('#Dis_ID').val(), Dis_Country: 1, Dis_State: Deal_State, Dis_City: Dis_City, Dis_Add1: '', Dis_Add2: $('#Deal_Add2').val(), Dis_Add3: $('#Deal_Add3').val(), Dis_pobox: $('#Deal_pobox').val(), Dis_City_I: Deal_City_I, Dis_Name: $('#Deal_Name').val(), DistributorID: DistributorID, ContactPerson: $('#Deal_ContactPerson').val(), Mob1: $('#Deal_Mob1').val(), Mob2: $('#Deal_Mob2').val(), LandLine: $('#Deal_LandLine').val(), Email: $('#Deal_Email').val(), Skype: $('#Deal_Skype').val(), GSTIN: $('#Deal_GSTIN').val(), usetype: UseType, usename: $('#Deal_UserName').val(), usepass: $('#Deal_Password').val(), DealCode: $('#Deal_Code').val(), CityNM: $('#Deal_City_I :selected').text(), hdnDealerCode: $('#hdnDealerCode').val(), Brand: BrandId, Product: ProductId, ChequeNo: $('#ChequeNo').val(), CP_I: $('#CP_I').val(), CP_II: $('#CP_II').val(), CP_NO_I: $('#CP_NO_I').val(), CP_NO_II: $('#CP_NO_II').val(), DOB: $('#DOB').val(), DOJ: $('#DOJ').val(), AnniDt: $('#AnniDt').val() }, function (data) {
+                                if (data != null) {
+                                    alert('Saved Successfully ...');
+                                    //FillDistributor();
+                                    SetDisDealCode();
+                                    $('#Dis_ID').val(data.Dis_ID);
+                                    $('#DealCode').val(data.Deal_ID);
+                                    $('#DistributorNM').val(''); $('#Deal_Add2').val('');
+                                    $('#Deal_Add3').val(''); $('#Deal_pobox').val(''); $('#Deal_Name').val('');
+                                    $('#Deal_ContactPerson').val(''); $('#Deal_Mob1').val(''); $('#Deal_Mob2').val('');
+                                    $('#Deal_LandLine').val(''); $('#Deal_Email').val(''); $('#Deal_Skype').val('');
+                                    $('#Deal_GSTIN').val(''); $('#Deal_UserName').val(''); $('#Deal_Password').val('');
+                                    $('#Deal_RePassword').val(''); $('#Deal_Code').val(''); $('#hdnDealerCode').val('');
+                                    $('#ChequeNo').val(''); $('#CP_I').val(''); $('#CP_II').val(''); $('#CP_NO_I').val(''); $('#CP_NO_II').val('');
+                                    $('#DOB').val(''); $('#DOJ').val(''); $('#AnniDt').val('');
+                                    ShowHideLoader('hide');
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+         
+    });
+
+    function SetUserNM() {
+        debugger; 
+        if ($('#Deal_Name').val() != '') {
+            $('#Deal_UserName').val(getFirstWord($('#Deal_Name').val()) + $('#Dis_ID').val());
+        }
+    };
+
+    $("#chkSelectAll").change(function () {
+        $("#dvAllBrand .chkSelect").prop('checked', $(this).prop("checked"));
+    });
+    $("#chkAllProduct").change(function () {
+        $("#dvAllProduct .chkSelect").prop('checked', $(this).prop("checked"));
+    });
+
+    function SetDisDealCode() {
+        debugger;
+        if ($('#hdnDealerCode').val() > 0) return;
+
+        var sCode = ""; var sCity = "";
+
+        if ($('#Deal_City_I').val() == "1")
+            sCity = "IND";
+        else if ($('#Deal_City_I').val() == "2")
+            sCity = "BPL";
+        else if ($('#Deal_City_I').val() == "3")
+            sCity = "UJN";
+        else if ($('#Deal_City_I').val() == "4")
+            sCity = "KND";
+        else if ($('#Deal_City_I').val() == "5")
+            sCity = "KGN";
+        else if ($('#Deal_City_I').val() == "6")
+            sCity = "RTM";
+        sCode = "D" + sCity + SetNo($('#Dis_ID').val());
+        $('#Deal_Code').val(sCode);
+    }
+
+
+    function Chk_GSTIN() {
+        debugger;
+
+        var StateCode = 0; var AcctCode = 0;
+
+        if ($('#Deal_GSTIN').val() == '') { return; }
+        if ($('#hdnDealerCode').val() != "") { AcctCode = $('#hdnDealerCode').val(); }
+        if ($('#Deal_GSTIN').val().length > 0  && $('#Deal_GSTIN').val().length < 15) { alert("Please Enter Proper GSTIN !"); $('#Deal_GSTIN').val(''); return; }
+
+        //if (parseInt($('#StateCode').val()) > 0) { StateCode = $('#StateCode').val(); }
+        //if (parseInt($('#acctcode').val()) > 0) { AcctCode = $('#acctcode').val(); }
+
+        //if ($('#acctgstin').val() != '') {
+        //    if ($('#PAN').val().length != 10) { alert("Please Enter PAN Before GSTIN !"); return; }
+
+        //    if ($('#acctgstin').val().substr(0, 12) != StateCode + $('#PAN').val()) {
+        //        alert('GSTIN (' + $('#acctgstin').val() + ') Not Valid'); $('#acctgstin').val('');
+        //        $('#acctgstin').focus(); 
+        //        return;
+        //    }
+
+        $.get("/Home/Chk_GSTIN", { sGSTIN: $('#Deal_GSTIN').val(), Type: 2, iCode: AcctCode }, function (data) {
+                if (data != null && data != 0) {
+                    alert('GSTIN (' + $('#Deal_GSTIN').val() + ') Already Exists ...');
+                    $('#Deal_GSTIN').val('');
+                    $('#Deal_GSTIN').focus();
+                }
+            });
+        //}
+    }
+
+    //function SetDealerCode() {
+    //    debugger;
+
+    //    var sCode = ""; var sCity = "";
+
+    //    if ($('#Deal_City_I').val() == "1")
+    //        sCity = "IND";
+    //    else if ($('#Deal_City_I').val() == "2")
+    //        sCity = "BPL";
+    //    else if ($('#Deal_City_I').val() == "3")
+    //        sCity = "UJN";
+    //    else if ($('#Deal_City_I').val() == "4")
+    //        sCity = "KND";
+    //    else if ($('#Deal_City_I').val() == "5")
+    //        sCity = "KGN";
+    //    else if ($('#Deal_City_I').val() == "6")
+    //        sCity = "RTM";
+    //    sCode = "D" + sCity + SetNo($('#Deal_ID').val());
+    //    $('#Deal_Code').val(sCode);
+    //}
+     
+</script>
+
+  <script type ="text/javascript">
+      $('#Deal_City_I').empty();
+      $('#Deal_Tahsil').empty();
+      //FillMaxNo();
+
+      function FillCity() {
+          debugger;
+          $('#Deal_City_I').empty();
+          $('#Deal_Tahsil').empty();
+          $.get("../Master/GetCityList", { iState: $("#Deal_State").val() }, function (data) {
+              if (data != null) {
+                  var opt = new Option('--Select--', 0);
+                  $("#Deal_City_I").append(opt);
+
+                  for (var i = 0; i < data.length; i++) {
+                      opt = new Option(data[i].cityname, data[i].citycode);
+                      $("#Deal_City_I").append(opt);
+                  }
+              }
+          });
+      }
+
+      function FillTahsilList() {
+          debugger;
+          $('#Deal_Tahsil').empty();
+          $.get("../Master/GetTahsilList", { iState: $("#Deal_City_I").val() }, function (data) {
+              if (data != null) {
+                  var opt = new Option('--Select--', 0);
+                  $("#Deal_Tahsil").append(opt);
+
+                  for (var i = 0; i < data.length; i++) {
+                      opt = new Option(data[i].cityname, data[i].citycode);
+                      $("#Deal_Tahsil").append(opt);
+                  }
+                   
+              }
+          });
+      }
+
+      function chkDealer() {
+          debugger; 
+          
+      }
+
+      $("#Deal_Mob2").keypress(function (e) {
+          if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+              e.preventDefault();
+              return false;
+          }
+      });
+      $("#Deal_LandLine").keypress(function (e) {
+          if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+              e.preventDefault();
+              return false;
+          }
+      });
+      $("#Deal_Mob1").keypress(function (e) {
+          if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+              e.preventDefault();
+              return false;
+          }
+      });
+
+   @*   $(document).on("click", ".deleteContact", function () {
+
+          debugger;
+          var index = $(this).closest("tr").index();
+          var iMstCode = 0;
+          if ($('#hdnMstCode_' + index).val() != "") iMstCode = $('#hdnMstCode_' + index).val(); else iMstCode = 0;
+
+          if (iMstCode > 0) {
+
+              $.ajax({
+                  type: "GET",
+                  url: "@Url.Action("Dist_Deal", "Master")",
+                     data: { isDistributor: false },
+                     success: function (data) {
+                         $("#dvDist_Deal").html(data);
+
+                         $.get("/Home/FillDistributorDet", { MstCode: iMstCode }, function (data) {
+                             if (data != null) {
+                                 $('#Dis_ID').val(data[0].Dis_ID); //$('#Deal_ID').val(data[0].MstCode); 
+                                 $('#DistributorNM').val(data[0].DistributorID);
+                                 $('#Deal_City').val(data[0].CityID); $('#Deal_Add1').val(data[0].Add_I);
+                                 $('#Deal_Add2').val(data[0].Add_II);
+                                 $('#Deal_Add3').val(data[0].Add_III); $('#Deal_pobox').val(data[0].PO_Box);
+                                 $('#Deal_City_I').val(data[0].CityID_I);
+                                 $('#Deal_Name').val(data[0].DisName); $('#Deal_State').val(data[0].StateID);
+                                 $('#Deal_Country').val(data[0].CountryID); $('#hdnMstCode').val(data[0].MstCode);
+                                 $('#Deal_ContactPerson').val(data[0].ContactPerson); $('#Deal_Mob1').val(data[0].Mob1);
+                                 $('#Deal_Mob2').val(data[0].Mob2); $('#Deal_LandLine').val(data[0].LandLine);
+                                 $('#Deal_Email').val(data[0].Email); $('#Deal_Skype').val(data[0].Skype);
+                                 $('#Deal_GSTIN').val(data[0].GSTIN); $('#Deal_Code').val(data[0].DealCode);
+                                 $('#hdnDealerCode').val(data[0].MstCode);
+
+                                 $("#dvAllBrand input:checkbox").prop("checked", false);
+                                 if (data[0].Brand != "") {
+                                     var arr = data[0].Brand.split(',');
+                                     for (var i = 0; i < arr.length; i++) {
+                                         if ($("#dvAllBrand #chk_" + arr[i]).attr('data-val') == arr[i])
+                                             $("#dvAllBrand #chk_" + arr[i]).prop('checked', true);
+                                     }
+                                 }
+                                 $("#dvAllProduct input:checkbox").prop("checked", false);
+                                 if (data[0].Product != "") {
+                                     var arrProduct = data[0].Product.split(',');
+                                     for (var i = 0; i < arrProduct.length; i++) {
+                                         if ($("#dvAllProduct #chk_" + arrProduct[i]).attr('data-val') == arrProduct[i])
+                                             $("#dvAllProduct #chk_" + arrProduct[i]).prop('checked', true);
+                                     }
+                                 }
+                             }
+                         });
+                     },
+                     error: function () {
+                         alert('Error');
+                     }
+                 });
+             }
+         });*@
+      </script>

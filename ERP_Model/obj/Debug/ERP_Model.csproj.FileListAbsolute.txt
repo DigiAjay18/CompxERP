@@ -1,0 +1,5 @@
+D:\Webs\CompxERP\ERP_Model\bin\Debug\ERP_Model.dll
+D:\Webs\CompxERP\ERP_Model\bin\Debug\ERP_Model.pdb
+D:\Webs\CompxERP\ERP_Model\obj\Debug\ERP_Model.csprojResolveAssemblyReference.cache
+D:\Webs\CompxERP\ERP_Model\obj\Debug\ERP_Model.dll
+D:\Webs\CompxERP\ERP_Model\obj\Debug\ERP_Model.pdb

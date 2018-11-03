@@ -1,0 +1,176 @@
+﻿ 
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div id="DivPFReceipt" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="ClosePopUpRec()">&times;</button>
+                <h4 class="modal-title">Offer/ Float Scheme</h4>
+            </div>
+
+            <div class="modal-body input_popup">
+                <div class="form-group">
+
+                    <div class="form-group marg-top">
+                        <label class="control-label col-sm-2 padd_l padd_5">Select Scheme</label>
+                        <div class="col-sm-4 padd_l">
+                            @Html.DropDownList("ddlSchName", ViewBag.SchemeNm as SelectList, "--Select--", new { @class = "form-control" })
+                        </div>
+                        <label class="control-label col-sm-2 padd_l padd_5">Select Employee </label>
+                        <div class="col-sm-4 padd_l">
+                            @Html.DropDownList("ddlSchEmployee", ViewBag.Employee as SelectList, "--Select--", new { @class = "form-control" })
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+                <div id="dvFloatDealer">
+                    <table class="table table-fixed table-bordered j_table_new table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%;">S.No.</th>
+                                <th style="width: 50%;">Dealer Name </th>
+                                <th style="width: 20%;">Select</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-12 btn-div-c">
+                    <input type="button" id="btnSetFloat" value="Save" class="btn btn-search" />
+                    <input type="button" value="Cancel " id="btnClosePFRec_I" onclick="ClosePopUpRec()" class="btn btn-search" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    $("#ddlSchEmployee").change(function(){
+        GetDealerName();
+    });
+         
+
+    function GetDealerName() {
+        debugger;
+        var Executive = "0";
+        if ($("#ddlSchEmployee").val() > 0) Executive = $("#ddlSchEmployee").val();
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetDealerJSon", "Quotation")",
+            data: { ExecID: $("#ddlSchEmployee").val() },
+            success: function (data) { 
+                var str = ""; var Itm = "";
+                 
+                str = "<table class='table table-fixed table-bordered j_table_new table-striped' ><thead><tr><th style='width:10%;'>S.No.</th><th style='width:50%;'>Dealer Name </th><th style='width:20%;'>Select</th></tr></thead>";
+                            
+                for (var i = 0; i < data.length; i++) {
+                    str += "<tr><td style='width:10%;'>"+ parseInt(i+1) +"</td><td style='width:50%;'>" + data[i]["Name"] + "</td><td style='width:20%;'> <label class='checkbox-inline f-s'><input type='checkbox' data-Float-id='" + data[i]["Code"] + "' class='chkSelectDealer_Float' /></label></td></tr>"
+                     
+                }
+
+                $("#dvFloatDealer").html(str);
+
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+    }
+
+
+    $("#btnSetFloat").click(function () {
+
+        debugger;
+        if ($("#ddlSchName").val() == "0" ) {
+            $('#ddlSchName').focus();
+            alert('Please Select Scheme ...');
+            return;
+        }
+        if ($("#ddlSchEmployee").val() == "0" ) {
+            $('#ddlSchEmployee').focus();
+            alert('Please Select Employee ...');
+            return;
+        }
+
+        var PartyIds = $.map($("#dvFloatDealer .chkSelectDealer_Float:checked"), function (n, i) {
+            return $(n).attr("data-Float-id");
+        }).join(',');
+         
+        //$.post("../Service/FloatScheme", { iScheme: $("#ddlSchName").val(), iEmployee: $("#ddlSchEmployee").val(), sDealer: PartyIds }, function (data) {
+        //    if (data != null) {
+        //        ShowHideLoader('hide');
+        //        if (data.MsgID == "1") {
+        //            alert(response.Message); 
+        //            $("#ddlSchName").val(0); $("#ddlSchEmployee").val(0); $("#dvFloatDealer").html("");
+        //        }
+        //        else {
+        //            alert('Not Saved Successfully ...');
+        //            alert(response.Message);
+        //            ShowHideLoader('hide');
+        //        }
+        //    }
+        //    ShowHideLoader('hide');
+
+        //});
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("FloatScheme", "Service")",
+            data: { iScheme: $("#ddlSchName").val(), iEmployee: $("#ddlSchEmployee").val(), sDealer: PartyIds },
+            success: function (response) {
+                if (response != null) {
+                    ShowHideLoader('hide');
+                    if (response.MsgID == "1") {
+                        alert(response.Message); 
+                        $("#ddlSchName").val(0); $("#ddlSchEmployee").val(0); $("#dvFloatDealer").html("");
+                    }
+                    else {
+                        alert('Not Saved Successfully ...');
+                        alert(response.Message);
+                        ShowHideLoader('hide');
+                    }
+                }
+                ShowHideLoader('hide');
+            }
+        });
+
+        //$.ajax
+        //    ({
+        //        url: "/Service/FloatScheme",
+        //        type: "POST",
+        //        data: { iScheme: $("#ddlSchName").val(), iEmployee: $("#ddlSchEmployee").val(), sDealer: PartyIds },
+        //        contentType: false,
+        //        processData: false,
+        //        success: function (response) {
+        //            if (response != null) {
+        //                ShowHideLoader('hide');
+        //                if (response.MsgID == "1") {
+        //                    alert(response.Message);
+        //                    $("#txtC_CompNo").val(response.ComplaintNo);
+        //                    $("#ddlSchName").val(0), $("#ddlSchEmployee").val(0) $("#dvFloatDealer").html("");
+                                  
+        //                }
+        //                else {
+        //                    alert('Not Saved Successfully ...');
+        //                    alert(response.Message);
+        //                    ShowHideLoader('hide');
+        //                }
+        //            }
+        //            ShowHideLoader('hide');
+        //        }
+        //    });
+
+    });
+
+</script>

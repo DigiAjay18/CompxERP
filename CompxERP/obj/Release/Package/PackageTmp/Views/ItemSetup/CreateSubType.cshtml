@@ -1,0 +1,207 @@
+﻿@model CompxERP.Models.itgroup  
+@using System.Web.Optimization
+@{
+    ViewBag.Title = "CreateSubType";  
+}
+ 
+ @{ 
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Styles.Render("~/Content/angularcss")
+
+@*<link href="~/Content/css/menu.css" rel="stylesheet" />
+<link href="~/Content/css/my-style.css" rel="stylesheet" />
+<link href="~/Scripts/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+<link href="~/Content/css/angular-material.css" rel="stylesheet" />
+ *@
+ 
+
+@if (ViewBag.MenCode != null){
+    
+    
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script> 
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    
+<script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+     <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+     <link rel="stylesheet" href="~/css/font-awesome.min.css">
+      <link href="~/css/Sub.css" rel="stylesheet" />
+      <link rel="stylesheet" href="~/css/responsive.css">
+}
+
+  
+
+<div class="dialogdemoBasicUsage  modal_mid popuptxt" data-ng-controller="cntrlSetSubCat" id="popupContainer" data-ng-cloak="" data-ng-app="CompXApp">
+     <md-toolbar>
+      <div class="md-toolbar-tools">
+         <h2>Add Sub Category</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="hide()">
+          <md-icon  aria-label="Close dialog"><i class="fa fa-times" aria-hidden="true"></i></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+@using (Html.BeginForm("CreateSubType", "ItemSetup", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+     <md-dialog-content>
+      <div class="md-dialog-content">
+          <input type ="hidden" id ="itgpcode" value="0" />
+        @*@Html.HiddenFor(model => model.groupsrno)
+        @Html.HiddenFor(model => model.grourepo)
+        @Html.HiddenFor(model => model.grouunde)
+        @Html.HiddenFor(model => model.grouposi)
+        @Html.HiddenFor(model => model.groumain)
+        @Html.HiddenFor(model => model.compcode)
+        @Html.HiddenFor(model => model.groudefa)*@
+        @*@Html.HiddenFor(model => model.groucode)*@
+
+
+        <div id="" style="color: red; font-weight: bold" class="col-xs-10">
+            @TempData["Msg"]
+        </div>
+
+        <div id="Type-edit" class="col-xs-4" style="display: none">
+            @TempData["Msg"]
+        </div>
+         <div class="form-group"> 
+             <div class="col-sm-6 padd_l padd_5">
+                 <label class="control-label">Category</label>
+                   @Html.DropDownList("category", (SelectList)ViewBag.vwCategory, "--Select--", new { @onchange = "FillData();", @class = "form-control", ng_model = "category", required = "required" }) 
+             </div>
+              <div class="col-sm-1 padd_l padd_5">
+                    <label class="control-label" style="height:15px;width: 100%;">&nbsp;</label>
+                    <a data-ng-click="OpenAddCat($event)"><img src="~/Images/add.svg" /></a>
+              </div>
+              <div class="col-sm-5 padd_l padd_5">
+                   <label class="control-label">Sub Category</label>
+                     @Html.TextBoxFor(model => model.itgpname, new { @class = "form-control", @maxlength = 50, @ng_model = "itgpname" })
+               </div>
+              <div class="col-sm-3 padd_l padd_5">
+              </div>
+         </div>
+          <div class="form-group"> 
+             <div class="col-sm-4 padd_l padd_5">
+                 <label class="control-label">Alias</label>
+                  @Html.TextBoxFor(model => model.itgpalia, new { @class = "form-control", @maxlength = 20, @ng_model = "itgpalia" })
+              </div>
+              <div class="col-sm-4 padd_l padd_5">
+                 <label class="control-label">Rate per</label>
+                 @Html.TextBoxFor(model => model.itgpbcqt, new { @class = "form-control", @maxlength = 10, @Value = "1", @type = "number", mg_mode = "itgpbcqt" })
+              </div>
+              <div class="col-sm-4 padd_l padd_5">
+                    <label class="control-label">Type</label>
+                     @Html.DropDownList("itgptype", new List<SelectListItem> {  
+           new SelectListItem { Text="Final", Value="0"},
+           new SelectListItem { Text="Raw", Value="1"}, 
+           new SelectListItem { Text="Packing", Value="2"},  
+           new SelectListItem { Text="Spare", Value="3"},  
+           new SelectListItem { Text="Middle", Value="4"},  
+           }, new { @class = "form-control", @ng_mode = "itgptype" })
+              </div>
+         </div>
+          <div class="form-group"> 
+               <div class="col-sm-3 padd_l padd_5">
+                 <label class="control-label">Sort</label>
+                     @Html.TextBoxFor(model => model.itgpsort, new { @class = "form-control", @maxlength = 10, @type = "number", @ng_model = "itgpsort" })
+               </div>
+               <div class="col-sm-3 padd_l padd_5">
+                 <label class="control-label">Basic Unit</label>
+                     @Html.DropDownList("itgpbasi", (SelectList)ViewBag.vwUnit, "--Select--", new { @class = "form-control", ng_model = "itgpbasi", required = "required" }) 
+                </div>
+              <div class="col-sm-3 padd_l padd_5">
+                 <label class="control-label">HSN</label>
+                 <input class="form-control" id="itgprefn" name="HSN" type="text" maxlength="20"  ng-model="itgprefn"> 
+              </div>
+              <div class="col-sm-3 padd_l padd_5">
+                 <label class="control-label">GST %</label>
+                 <input class="form-control" id="itgpcart" name="GST"  maxlength="2" type="number" ng-model="itgpcart"> 
+              </div>
+           </div>
+           <div class="form-group">
+                <div class="col-sm-12 padd_l padd_5">
+                   <input type="button" value="Save" id="btnAddSubCat" class="btn btn-default" data-dismiss="modal" ng-click="SetSubCatItem()"/>
+
+ @if (ViewBag.MenCode == null)
+                      {
+                     <button type="button" class="closeBtnBlack btn btn-default" data-dismiss="modal" ng-click="hide()">Close</button>
+ }
+                      @if (ViewBag.MenCode != null)
+                      {
+            <input type="button" value="Show Sub Category" id="btnShowSubCate" class="btn btn-default" data-dismiss="modal" ng-click="ShowSubCategory()"/>}
+
+                </div> 
+           </div>
+      
+        </div>
+      </md-dialog-content>
+    
+}
+         @if (ViewBag.MenCode != null)
+         {
+                        <div class="width_100">
+                            <div class="md-dialog-content">
+                             <table id="tblSubCategory" class="table table-fixed table-striped table-bordered j_table_new dataTable">
+                                  <thead class="thead-default">
+                                      <tr style="color:white;">
+                                          <th style="width:10%">SrNo</th> 
+                                          <th style="width:30%">Sub Category</th> 
+                                          <th style="width:10%">Alias </th> 
+                                          <th style="width:10%">Sort </th> 
+                                          <th style="width:10%">Rate </th> 
+                                          <th style="width:10%">HSN </th> 
+                                          <th style="width:10%">GST</th> 
+                                          <th style="width:10%">Edit </th> 
+                                       </tr>
+                                   </thead>
+                                    <tbody style="height:350px;">
+                                        <tr ng-repeat="x in getSubCategory">
+                                            <td style="width:10%">{{$index+1}}</td> 
+                                            <td style="width:30%">{{x.itgpname}}</td>  
+                                            <td style="width:10%">{{x.itgpalia}}</td>   
+                                            <td style="width:10%">{{x.itgpsort}}</td>   
+                                            <td style="width:10%">{{x.itgpbcqt}}</td> 
+                                            <td style="width:10%">{{x.itgprefn}}</td>  
+                                            <td style="width:10%">{{x.itgpcart}}</td> 
+                                             <td style="width:10%">  <button   ng-click="DelSubCate(x)"  ><img src="../../Img/remove11.gif" width="20"/></button> 
+                                                 <button  ng-click="EditSubCate(x)"><img src="../../Img/edit1.png" width="20"/></button> </td> 
+                                        </tr>
+                                    </tbody>
+                              </table>
+                         </div>
+                            </div>
+                                   
+    }
+
+    </div>
+
+
+<script type ="text/javascript">
+    
+  
+    function FillData()
+    {
+      //  ShowHideLoader('show');
+        angular.element(document.getElementById('category')).scope().ShowSubCategory();
+      //  ShowHideLoader('hide');
+    }
+   
+</script>
+
+
+
+
+
+

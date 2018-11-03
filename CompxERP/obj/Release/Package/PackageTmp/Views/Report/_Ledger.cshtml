@@ -1,0 +1,62 @@
+﻿   
+   
+ <div class="col-sm-12">
+       
+    <table id="example1" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr>
+<th  style="width:5%;">No</th>  
+<th style="width:15%;">Head Description</th>   
+<th style="width:7%;">Voucher No</th>   
+<th style="width:10%;">Voucher Date</th>   
+<th style="width:7%;">Voucher Type</th>   
+<th style="width:12%;">Particulars</th>   
+<th style="width:7%;">Dr. Amt</th>   
+<th style="width:7%;">Cr. Amt</th>   
+<th style="width:10%;">GST Type</th>    
+<th style="width:20%;">Narration</th>   
+        </tr>
+    </thead>
+    <tbody style="height:430px;">
+         
+           @{ var iIndex = 0; var sParty = "";  var iDR = 0;  var iCR = 0; var IsFirst =true;
+            foreach (var item in ViewBag.vwLedger)
+            {
+                iIndex = iIndex +1;
+                if (sParty != @item.HeadDes && IsFirst == false)
+               {
+               <tr class ="Closing"><td  style="width:56%;" colspan ="6" >Total</td> <td style="width:7%;">@iDR</td><td style="width:7%;">@iCR</td></tr>
+               iDR =iCR =0;
+               }
+               <tr>   
+                     <td  style="width:5%;">@iIndex</td>  
+                   @if (@item.HeadDes == sParty )
+                   {<td style="width:15%;"></td> IsFirst = false;
+                   }
+                   else 
+                   {<td style="width:15%;">@item.HeadDes</td>  
+                       sParty = @item.HeadDes;
+                       IsFirst = true;
+                   }
+
+    <td style="width:7%;">@item.VchNo</td>   
+    <td style="width:10%;">  @item.VchDt</td>   
+    <td style="width:7%;">@item.VchTp</td>   
+    <td style="width:12%;">@item.Particulars</td>   
+    <td style="width:7%;">@item.DrAmt</td>   
+    <td style="width:7%;">@item.CrAmt</td>   
+    <td style="width:10%;">@item.GSTType</td>    
+    <td style="width:20%;">@item.Narration</td>   
+                @if (@item.DrAmt != null && @item.DrAmt > 0) { iDR = Convert.ToInt32(@item.DrAmt  + Convert.ToDecimal(iDR)); }
+                @if (@item.CrAmt != null && @item.CrAmt > 0) { iCR = Convert.ToInt32(@item.CrAmt + Convert.ToDecimal(iCR)); }
+                </tr>
+               
+               
+            }
+             <tr class ="Closing"><td  style="width:56%;"  colspan ="6" >Total</td> <td  style="width:7%;">@iDR</td><td  style="width:7%;">@iCR</td></tr>
+            }
+       
+    </tbody>
+</table>
+</div>
+  

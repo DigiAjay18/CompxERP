@@ -1,0 +1,496 @@
+body {
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    border: none;
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 0px;
+}
+
+/*css for login page*/
+
+.digilogo {
+    text-align: left;
+    margin-right: 0;
+    margin-top: 0;
+    vertical-align: top;
+}
+
+
+.dtatm {
+    font-size: 16px;
+    color: #fff;
+    font-family: 'Agency FB';
+    width: 120px;
+    text-align: left;
+    vertical-align: bottom;
+    font-weight: 600;
+}
+
+.bg-2 {
+    border: none;
+    width: 500px;
+    height: 360px;
+    display: table;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 0px;
+    vertical-align: middle;
+    bottom: 0;
+}
+
+.single-line {
+    width: 280px;
+    height: 40px;
+    font-size: 14px;
+    font-family: 'Agency FB';
+    display: inline-block;
+    border: 0.5px solid rgba(0,0,0,0.15);
+    background-color: rgba(0,255,0,0.1);
+}
+
+    .single-line:hover {
+        background-color: rgba(255, 0, 0,0.1);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3) blur;
+    }
+
+.rollover {
+    background-color: #00cc66;
+    color: white;
+    width: 230px;
+    height: 50px;
+    vertical-align: top;
+    line-height: 50px;
+    text-align: center;
+    font-size: 18px;
+}
+
+    .rollover:hover {
+        background-color: #f0483e;
+    }
+
+
+.button1 {
+    color: white;
+    text-decoration: none;
+    border: 1px solid;
+    width: 100px;
+    background-color: #33689c;
+    padding: 3px 5px 5px 3px;
+    margin-left: 10px;
+}
+
+    .button1:hover {
+        text-decoration: none;
+        background-color: #0763bd;
+        border: 1px solid #000;
+    }
+
+.img1 {
+    background-image: url(../../icons/setting2.png);
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    background-color: transparent;
+    border: 0;
+}
+
+    .img1:hover {
+        background-image: url(../../icons/setting.png);
+        width: 60px;
+        height: 60px;
+        background-color: transparent;
+        border: 0;
+    }
+
+.img2 {
+    background-image: url(../../icons/attach.png);
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+}
+
+    .img2:hover {
+        background-image: url(../../icons/attach2.png);
+        width: 60px;
+        height: 60px;
+    }
+
+.img3 {
+    background-image: url(../../icons/backup.png);
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    background-size: cover;
+}
+
+    .img3:hover {
+        background-image: url(../../icons/backup2.png);
+        width: 60px;
+        height: 60px;
+        background-size: cover;
+    }
+
+.img4 {
+    background-image: url(../../icons/help.png);
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+}
+
+    .img4:hover {
+        background-image: url(../../icons/help2.png);
+        width: 60px;
+        height: 60px;
+    }
+
+.img5 {
+    background-image: url(../../icons/chat.png);
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+}
+
+    .img5:hover {
+        background-image: url(../../icons/chat2.png);
+        width: 60px;
+        height: 60px;
+    }
+
+/*css for company form page*/
+.compbg {
+    background-color: #5886b2;
+    width: 600px;
+    height: 600px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+}
+
+.bg-3 {
+    background-color: transparent;
+    border: 2px solid #000;
+    width: 550px;
+    height: 580px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.buttonlogin {
+    margin-left: 7px;
+    color: white;
+    text-decoration: none;
+    border: 1.5px solid #000;
+    width: 100px;
+    padding: 4px 5px 4px 5px;
+    background-color: #2468ab;
+}
+
+    .buttonlogin:hover {
+        color: white;
+        text-decoration: none;
+        background-color: #0b61bb;
+        text-shadow: none;
+    }
+
+.buttonlogout {
+    width: 80px;
+    height: 30px;
+    color: #efefef;
+    text-align: center;
+    border-radius: 5px;
+    display: inline-block;
+    background-color:#f0483e ;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 2px 2px 2px #666;
+    margin-right: 0px;
+}
+
+    .buttonlogout:hover {
+        color: #fff;
+        text-decoration: none;
+        background-color:#00cc66;
+    }
+
+    .buttonlogout:visited {
+        color: #fff;
+    }
+
+.bottomtab {
+    text-align: right;
+    text-shadow: 1px 1px 1px #000;
+    color: white;
+    margin-right: 0;
+    padding-top: 50px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.container {
+    font-family: sans-serif;
+    height: 350px;
+    width: 75%;
+    margin: 10px auto;
+    position: relative;
+    padding: 5%;
+}
+
+.block {
+    height: 50px;
+    width: 25%;
+    float: left;
+    text-align: right;
+    vertical-align: middle;
+    line-height: 50px;
+    box-sizing: border-box;
+    padding-right: 5px;
+    padding-top: 10px;
+}
+
+.block2 {
+    display: block;
+    height: 50px;
+    width: 75%;
+    float: left;
+    vertical-align: middle;
+    line-height: 50px;
+    padding-top: 10px;
+}
+
+.rollover2 {
+    background-color: white;
+}
+
+    .rollover2:hover {
+        background-color: #00cc66;
+    }
+
+.block3 {
+    display: block;
+    height: 50px;
+    width: 100%;
+    float: left;
+    vertical-align: middle;
+    line-height: 30px;
+    padding-left: 5%;
+}
+
+.block4 {
+    font-size: 12px;
+    display: block;
+    height: 40px;
+    width: 100%;
+    float: left;
+    vertical-align: text-bottom;
+    line-height: 30px;
+    padding-left: 25%;
+    text-align: left;
+}
+
+.block5 {
+    font-family: sans-serif;
+    font-size: 12px;
+    height: 50px;
+    width: 25%;
+    float: left;
+    text-align: right;
+    vertical-align: middle;
+    line-height: 61px;
+    box-sizing: border-box;
+    padding-right: 5px;
+}
+
+.block6 {
+    display: inline-block;
+    height: 50px;
+    width: 75%;
+    float: left;
+    vertical-align: middle;
+    line-height: 50px;
+    padding-top: 10px;
+    padding-left: 0px;
+    text-align: left;
+}
+
+.icon {
+    margin-left: 7px;
+}
+
+    .icon:hover {
+        opacity: 0.7;
+    }
+
+.fogpass {
+    vertical-align: text-bottom;
+    color: #3b92f4;
+}
+
+    .fogpass:hover {
+        text-decoration: none;
+    }
+
+.header-part {
+    min-height: 50px;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+    text-align: left;
+}
+
+.signing {
+    color: #fff;
+    float: right;
+    //max-width: 550px;
+    position: relative;
+}
+
+.header-part .logo {
+    margin-bottom: 20px;
+    float: left;
+    transform: scale(0.6);
+    margin-left: -15px;
+}
+
+.dropbtn {
+    background-image: url("/Images/down-arrow.png");
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+}
+/* drop down css*/
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: relative;
+    background-color: #f9f9f9;
+    width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    float: right;
+}
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: transparent;
+}
+
+.menubar {
+    background-color: #00446d;
+    margin-left: 20px;
+    margin-top: 0px;
+    width: 220px;
+    height: 555px;
+    padding-top: 0;
+    float: left;
+    position: fixed;
+    margin-bottom: 0px;
+    border-right: none;
+}
+
+@media only screen and (min-width: 992px) {
+    .menubar {
+        height: 580px;
+        width: 220px;
+    }
+}
+
+.container-fluid {
+    padding-right: 15px;
+    margin-right: auto;
+    margin-left: -20px;
+    margin-top: 0px;
+}
+
+.hefram {
+    border: none;
+    width: 100%;
+    height: 595px;
+    overflow-y: auto;
+    background-color: transparent;
+    margin-left:15px;
+    
+}
+
+@media only screen and (max-width: 992px) {
+   .hefram {
+        height: 560px;
+        width: 100%;
+   
+}
+    }
+
+/*.heframcol {
+    border: 1px solid #000;
+    width: 83.5%;
+}
+
+@media only screen and (max-width: 992px) {
+    .heframcol {
+        border: 1px solid #000;
+    width: 75%;
+    }
+}*/
+
+
+
+
+
+.hefield {
+    border-top: 5px solid #f0483e;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: 0.5px 8px 8px 0.5px rgba(0,0,0,0.15);
+    margin-top: 9%;
+    padding: 20px 20px 20px 20px;
+    width: 500px;
+    height: 380px;
+}
+
+@media only screen and (max-width: 992px) {
+    .hefield {
+        border-top: 5px solid #f0483e;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        box-shadow: 0.5px 8px 8px 0.5px rgba(0,0,0,0.15);
+        margin-top: 6%;
+        padding: 20px 20px 20px 20px;
+        width: 500px;
+        height: 380px;
+    }
+}
+
+

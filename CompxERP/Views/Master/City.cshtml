@@ -1,0 +1,80 @@
+﻿@model CompxERP.Models.citydet
+@{
+    //Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+ 
+     <link rel="stylesheet" href="~/css/font-awesome.min.css"> 
+    <link rel="stylesheet" href="~/css/responsive.css"> 
+    
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script> 
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />  
+   
+<script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+      <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+     <link rel="stylesheet" href="~/css/font-awesome.min.css">
+
+<div class="dialogdemoBasicUsage  modal_mid popuptxt" data-ng-controller="cntrlCity" id="popupContainer" data-ng-cloak="" data-ng-app="CompXApp">
+       <div class="modal-content">
+               <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                   <input type ="hidden" id ="CityCode" ng-model="CityCode" />
+                    <h4 class="modal-title">City Master</h4>
+                </div>
+               <div class="modal-body input_popup">
+                    <div class="form-group">
+                        
+                        <div class="col-sm-1 padd_l padd_5">State</div>
+                        <div class="col-sm-3 padd_l padd_5">
+                              @Html.DropDownList("State", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control", @ng_model = "State" })  
+                        </div>
+                        <div class="col-sm-1 padd_l padd_5">City</div>
+                        <div class="col-sm-3 padd_l padd_5">
+                         
+                             <input class="form-control" id="CityName" name="City" type="text" ng-model="CityName" >
+                        </div>
+                    </div>
+                  
+                   
+                   <input type="button" value="Save" id="btnInsCity" class="btn btn-default" ng-click ="InsCity()" />
+               
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  
+                     
+            <input type="button" value="Show City" id="btnShowCity" class="btn btn-default" onclick="ShowHideLoader('show');" data-dismiss="modal" ng-click="ShowCity()"/> 
+                </div>
+             
+         </div> 
+         
+                           <div class="width_100">
+                            <div class="md-dialog-content">
+                                     <table id="tblCity" class="table table-fixed table-striped table-bordered j_table_new">
+                                        <thead class="thead-default">
+                                            <tr style="color:white;">
+                                                <th style="width:10%">SrNo</th> 
+                                                <th style="width:40%">City</th>  
+                                                <th style="width:10%">Edit </th>
+                                            </tr>   </thead>
+                                        <tbody style="height:350px;">
+                                              <tr ng-repeat="x in getCity">
+                                                <td style="width:10%">{{$index+1}}</td> 
+                                                <td style="width:40%">{{x.cityname}}</td>  
+                                                  <td style="width:10%">  
+                                                      <button class="btn btn-primary" ng-click="CityEdit(x)">Edit</button> 
+                                                        </td>
+                                                         
+                                            </tr>
+                                     </tbody>
+                                        </table>
+                                </div>
+                          </div>
+ 
+ 
+     </div>  

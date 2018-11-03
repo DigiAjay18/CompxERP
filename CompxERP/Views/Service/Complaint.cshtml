@@ -1,0 +1,685 @@
+﻿<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+<script>
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#txtC_Date').val(today);
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+</script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#txtC_CustName").autocomplete({
+            source: function (request, response) {
+                debugger;
+                var customer = new Array();
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    type: "POST",
+                    url: "@(Url.Action("GetDealer", "Service"))",
+                    data: { "sName": request.term, IsDealer: $("#hdnIsDealer").val() },
+                    success: function (data) {
+                        for (var i = 0; i < data.length ; i++) {
+                            customer[i] = { label: data[i].acctname, Id: data[i].acctCode };
+                        }
+                    }
+                });
+                response(customer);
+            },
+            select: function (event, ui) {
+                debugger;
+                $("#hdnCustID").val(ui.item.Id);
+                var DealerID = 0; var CustID = 0;
+                var rbDealer = document.getElementById("C_rbDealer");
+                if (rbDealer.checked)
+                    DealerID = $("#hdnCustID").val();
+                else
+                    CustID = $("#hdnCustID").val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("getComplent", "Service")',
+                    data: { CustID: CustID, DealID: DealerID },
+                    success: function (data) {
+                        $('#dvComplaintDet').html(data);
+                    }
+                });
+            }
+        });
+
+
+
+    });
+
+</script>
+
+
+@*<div class="compex_form">
+            <div class="container-fluid">
+                <div id ="dvPuSL" class="Personal_form">
+                   
+                    <div style="width: 100%; float: left; margin-bottom: 5px;">
+                        <div class="col-sm-3 padd_l padd_5">
+*@
+
+
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div id="DivPFReceipt" class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="ClosePopUpRec()">&times;</button>
+                <h4 class="modal-title">Complaint </h4>
+            </div>
+            <div class="modal-body input_popup">
+                <div class="form-group">
+
+                    <div class="form-group">
+
+                        <div class="col-sm-6">
+                            <fieldset>
+                                <div class="col-sm-12 padd_l padd_5" style="text-align: center;">
+                                    <label class="radio-inline">
+                                        <input id="C_rbDealer" name="optradio" checked onclick="SetDealer();" type="radio">Dealer</label>
+                                    <input type="hidden" id="hdnIsDealer" value="true" />
+                                    <label class="radio-inline">
+                                        <input id="C_rbCust" name="optradio" onclick="SetDealer();" type="radio">Customer</label>
+                                </div>
+                                <div class="col-sm-12 padd_l padd_5 top-mrg">
+                                    <div class="control-label col-sm-3 padd_l padd_5">
+                                        Complaint No 
+                                    </div>
+                                    <div class="col-sm-3  padd_l padd_5 mrgin-btm">
+                                        <input type="text" disabled id="txtC_CompNo" value =@ViewBag.CompNo  class = "form-control" />
+                                    </div>
+                                    <label class="control-label col-sm-3 padd_l padd_5 ">
+                                        Complaint Dt.
+                                    </label>
+                                    <div class="col-sm-3 padd_l padd_5 mrgin-btm">
+                                        <input type="text" class="form-control" id="txtC_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                                    </div>
+
+                                </div>
+                            </fieldset>
+                        </div>
+
+
+
+                        <div class="col-sm-6 padd_l padd_5 " style="text-align: center;">
+                            <fieldset>
+                                <label class="radio-inline font-s">
+                                    <input id="C_rbNew" name="New" onclick="SetCustomer();" type="radio">External</label>
+                                <label class="radio-inline font-s">
+                                    <input id="C_rbExists" name="New" onclick="SetCustomer();" checked type="radio">Internal</label>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend>SEARCH </legend>
+                        <div class="form-group marg-top">
+
+                            <label class="control-label col-sm-1 padd_l padd_5">Mobile </label>
+                            <div class="col-sm-3 padd_l">
+                                <input type="text" id="txtCS_Mobile" class="form-control" />
+                            </div>
+
+                            <label class="control-label col-sm-1 padd_l padd_5">Invoice No</label>
+                            <div class="col-sm-1 padd_l">
+                                <input type="text" class="form-control" id="txtC_InvoiceNo" />
+                            </div>
+                            @*   <label class="control-label col-sm-1 padd_l padd_5">Model No</label>
+                       <div class="col-sm-2 padd_l">
+                          <input type="text"  class = "form-control" id="txtC_ModelNo" />
+                       </div> *@
+                            <div class="col-sm-1 padd_l">
+                                <a href="#" id="btnC_Search">
+                                    <img src="/img/search-icon.png">
+                                </a>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                    <fieldset>
+                        <legend>Invoice Detail </legend>
+                        <div class="form-group marg-top">
+
+                            <label class="control-label col-sm-1 padd_l padd_5">Inv No. </label>
+                            <div class="col-sm-2 padd_l">@Html.DropDownList("ddlC_Invoice", ViewBag.Executive as SelectList, "--Select--", new { @class = "form-control", @onchange = "getInvItem();" })   </div>
+
+                            <label class="control-label col-sm-1 padd_l padd_5">Inv Date</label>
+                            <div class="col-sm-2 padd_l">
+                                <input type="text" disabled class="form-control" id="txtC_InvDate" />
+                            </div>
+                            <label class="control-label col-sm-1 padd_l padd_5">Warranty (Days) Left</label>
+                            <div class="col-sm-2 padd_l">
+                                <input type="text" disabled class="form-control" id="txtC_RemDays" />
+                            </div>
+                            <label class="control-label col-sm-1 padd_l padd_5">Status</label>
+                            <div class="col-sm-2 padd_l">
+                                <input type="text" disabled class="form-control" id="txtC_W_Status" />
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Customer Detail </legend>
+
+                        <div class="form-group">
+                        </div>
+                        <div class="form-group marg-top">
+
+
+                            <label class="control-label col-sm-2 padd_l padd_5">Customer Name </label>
+                            <div class="col-sm-4 padd_l">
+                                <input type="text" id="txtC_CustName" class="form-control" />
+                                <input type="hidden" id="hdnCustID" />
+                            </div>
+                            <label class="control-label col-sm-2 padd_l padd_5">Mobile </label>
+                            <div class="col-sm-4 padd_l">
+                                <input type="text" id="txtC_SPhone" class="form-control" />
+                            </div>
+                            <label class="control-label col-sm-2 padd_l padd_5">Address </label>
+                            <div class="col-sm-4 padd_l">
+                                <input type="text" id="txtC_SAdd" class="form-control" />
+                            </div>
+
+                            <div id="dvCustomer">
+                                <label class="control-label col-sm-2 padd_l padd_5">Email Id</label>
+                                <div class="col-sm-4 padd_l">
+                                    <input type="text" class="form-control" id="txtC_Email" />
+                                </div>
+                                <label class="control-label col-sm-2 padd_l padd_5">State</label>
+                                <div class="col-sm-4 padd_l">
+                                    @Html.DropDownList("ddlC_State", ViewBag.vwState as SelectList, "--Select--", new { @class = "form-control", @onchange = "FillCity()" })
+                                </div>
+
+                                <label class="control-label col-sm-2 padd_l padd_5">City</label>
+                                <div class="col-sm-4 padd_l">
+                                    @Html.DropDownList("ddlC_City", ViewBag.SubCategory as SelectList, "--Select--", new { @class = "form-control" })
+                                </div>
+                                <label class="control-label col-sm-2 padd_l padd_5">Tele No.</label>
+                                <div class="col-sm-4 padd_l">
+                                    <input type="text" class="form-control" id="txtC_TeleNo" />
+                                </div>
+                                <label class="control-label col-sm-2 padd_l padd_5">Mobile No.</label>
+                                <div class="col-sm-4 padd_l">
+                                    <input type="number" pattern="/^-?\d+\.?\d*$/" onkeypress="if(this.value.length==12) return false;" class="form-control" id="txtC_Mobile" />
+
+                                </div>
+
+                                <label class="control-label col-sm-2 padd_l padd_5">Address</label>
+                                <div class="col-sm-4 padd_l">
+                                    <textarea class="form-control" id="txtC_Address" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+
+                    <fieldset>
+                        <legend>Complain Detail</legend>
+                        <div class="form-group marg-top">
+                            <div class="col-sm-12 padd_l">
+                                <label class="control-label col-sm-3 padd_l padd_5">Category</label>
+                                <div class="col-sm-3 padd_l">
+                                    @Html.DropDownList("ddlC_SubCategory", ViewBag.SubCategory as SelectList, "--Select--", new { @class = "form-control", })
+                                </div>
+                                <label class="control-label col-sm-3 padd_l padd_5">Service Type </label>
+                                <div class="col-sm-3 padd_l">
+                                    @Html.DropDownList("ddlC_Service", ViewBag.vbService as SelectList, "--Select--", new { @class = "form-control" })
+                                </div>
+
+                                <label class="control-label col-sm-3 padd_l padd_5">Wish To Take Paid Service </label>
+                                <div class="col-sm-3 padd_l">
+                                    <label class="radio-inline font-s">
+                                        <input id="C_rbYes" name="New1" type="radio">Yes</label>
+                                    <label class="radio-inline font-s">
+                                        <input id="C_rbNo" name="New1" checked type="radio">No</label>
+                                </div>
+
+                                <label class="control-label col-sm-3 padd_l padd_5">Service Mode </label>
+                                <div class="col-sm-3 padd_l">
+                                    <label class="radio-inline font-s">
+                                        <input id="C_rbFree" name="New" type="radio" checked="checked">Free Of Cost</label>
+                                    <label class="radio-inline font-s">
+                                        <input id="C_rbPaid" name="New" checked type="radio">Paid</label>
+                                </div>
+
+
+
+                                @*     <label class="control-label col-sm-4 padd_l padd_5">Inv No. </label>
+                       <div class="col-sm-4 padd_l">
+                            @Html.DropDownList("ddlC_Invoice", ViewBag.Executive as SelectList, "--Select--", new { @class = "form-control", @onchange = "getInvItem();" }) </div>
+
+                          
+                          <div class="col-sm-4 padd_l"><input type="text"  placeholder="type your Inv. No."  class = "form-control" id="txtC_InvNo" /> 
+                       </div>
+
+                           <label class="control-label col-sm-4 padd_l padd_5">Warranty (Days)</label>
+                       <div class="col-sm-8 padd_l">
+                           <input type="text" disabled    class = "form-control" id="txtC_RemDays" /> 
+                           
+                       </div> *@
+
+                                @* @onchange = "getItemsSubCategory()"*@
+                                <div class="form-group">
+
+                                    @if (CompxERP.Models.SessionMaster.UserType == 0 || CompxERP.Models.SessionMaster.UserType == 1)
+                                    {
+                                        <label class="control-label col-sm-3 padd_l padd_5">Allot To</label>
+                                        <div class="col-sm-3 padd_l">
+                                            @Html.DropDownList("ddlC_Employee", ViewBag.Executive as SelectList, "--Select--", new { @class = "form-control" })
+                                        </div>
+                                    }
+
+                                    <label class="control-label col-sm-3 padd_l padd_5">Problem</label>
+                                    <div class="col-sm-3 padd_l ">
+                                        <textarea class="form-control" id="txtC_Problem" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 padd_l padd_5">Item</label>
+                                    <div class="col-sm-9 padd_l">
+                                        @Html.DropDownList("ddlC_Item", ViewBag.Executive as SelectList, "--Select--" , new { @class = "form-control"  } ) 
+                                        @*<fieldset>
+                                            <legend></legend>
+                                            <div id="dvCompItem" class="multi_list drop_down" style="min-height: 130px;"></div>
+                                        </fieldset>*@
+
+                                    </div>
+                                    </div>
+                                      <div class="form-group">
+
+                                    <label class="control-label col-sm-3 padd_l ">Description</label>
+                                    <div class="col-sm-9 padd_l ">
+                                        <textarea class="form-control" id="txtC_Description" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 padd_l padd_5">Tentetive Time</label>
+                                    <div class="col-sm-3 padd_l">
+                                        <input type="text" placeholder="in Days" class="form-control" id="txtC_Tentetive" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                                    </div>
+                                    <label class="control-label col-sm-3 padd_l padd_5">Diagnosis/Visit  Charge</label>
+                                    <div class="col-sm-3 padd_l">
+                                        <input type="text" class="form-control" id="txtC_Charge" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                    <div class="form-group">
+                        <div class="col-sm-12 btn-div-c">
+                            @*<a href="#" id="btnComplaint" > <img src="/img/floppy-disk.png" /></a>*@
+                            <input type="button" value="Save" id="btnComplaint" class="btn btn-default" />
+                            @*    <a href="#" onclick="ClearDvData();"> <img src="/img/cancel.png" /></a> *@
+                            <button type="button" onclick="ClearDvData();" class="btn btn-default">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="dvComplaintDet"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#ddlC_Invoice').empty();
+    });
+</script>
+
+<script type="text/javascript">
+
+    $('#ddlC_Item').empty();
+    $('#ddlC_City').empty();
+    $('#ddlC_Invoice').empty();
+    var CustArr = [];
+
+    getEmoplyee();
+    SetCustomer();
+
+    function getEmoplyee() {
+        debugger;
+        $('#ddlC_Employee').empty();
+        $.get("../api/api/getEmoplyee", {}, function (data) {
+            if (data != null) {
+                var opt = new Option('--Select--', 0);
+                $("#ddlC_Employee").append(opt);
+
+                for (var i = 0; i < data.Data.Emp.length; i++) {
+                    opt = new Option(data.Data.Emp[i].Column1, data.Data.Emp[i].UseCode);
+                    $("#ddlC_Employee").append(opt);
+                }
+            }
+        });
+    }
+
+
+    function FillCity() {
+        debugger;
+        $('#ddlC_City').empty();
+        $.get("../Master/GetCityList", { iState: $("#ddlC_State").val() }, function (data) {
+            if (data != null) {
+                var opt = new Option('--Select--', 0);
+                $("#ddlC_City").append(opt);
+
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].cityname, data[i].citycode);
+                    $("#ddlC_City").append(opt);
+                }
+            }
+        });
+    }
+
+    //$('#ddlC_SubCategory').change(function () {
+    //    getItemsSubCategory();
+    //});
+
+
+    function getItemsSubCategory() {
+        try {
+            debugger;
+            var SubCate = 0; var Brand = 0;
+            if ($("#ddlC_SubCategory").val() > 0) SubCate = $("#ddlC_SubCategory").val();
+
+            $('#ddlC_Item').empty();
+            if ($("#ddlC_SubCategory").val() != null) {
+                $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: "@Url.Action("GetItem", "Quotation")",
+                    data: { "subcat": SubCate, "Brand": Brand },
+                    success: function (data) {
+                        //{181027 uncomment because we need single selection
+                        var opt = new Option('--Select--', 0);
+                        $("#ddlC_Item").append(opt);
+
+                        for (var i = 0; i < data.length; i++) {
+                            opt = new Option(data[i]["itemname"], data[i]["itemcode"]);
+                            $("#ddlC_Item").append(opt);
+                        }
+                        //}181027
+                        //{181027 comment because we need single selection
+                        //var str = "";
+                        //str = " <ul style='height: 100px'>";
+                        //for (var i = 0; i < data.length; i++) {
+                        //    str += " <li class='checkbox-inline'><label  class='radio-inline'>  <input type='checkbox' data-Item-id='" + data[i]["itemcode"] + "' class='chkSelect'  data-val='" + data[i]["itemcode"] + "' /> " + data[i]["itemname"] + " </label> </li> ";
+                        //}
+                        //str += ' </ul>';
+                        //$("#dvCompItem").html(str);
+                        //}181027
+
+                        //var str = ""; 
+                        //str = " <ul style='height: 100px'>"; 
+                        //for (var i = 0; i < data.length; i++) {
+                        //    str += " <li class='checkbox-inline'><label  class='radio-inline'>  <input type='checkbox' data-Item-id='" + data[i]["itdItem"] + "' class='chkSelect' data-val='" + data[i]["itdItem"] + "' /> " + data[i]["itemname"] + " </label> </li> ";
+                        //}
+                        //str += ' </ul>'; 
+                        //$("#dvCompItem").html(str);
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Failed to Retrieve Status.');
+                    }
+                });
+            }
+        }
+        catch (err) {
+            alert(err.message);
+        }
+    }
+
+    $('#btnC_Search').click(function () {
+        var Mobile = ""; var Model = ""; var InvNo = "";
+        debugger;
+
+        if ($("#txtCS_Mobile").val() != "") Mobile = $('#txtCS_Mobile').val();
+        // if ($("#txtC_ModelNo").val() != "") Model = $('#txtC_ModelNo').val();
+        if ($("#txtC_InvoiceNo").val() != "") InvNo = $('#txtC_InvoiceNo').val();
+
+        $.get("../API/API/getCustDet", { Mobile: Mobile, Model: Model, InvNo: InvNo }, function (data) {
+            if (data != null) {
+                if (data["Data"].CustDet.length > 0) {
+                    $("#txtC_CustName").val(data["Data"].CustDet[0].AcctName);
+                    $("#txtC_SPhone").val(data["Data"].CustDet[0].Acctphon);
+                    $("#txtC_SAdd").val(data["Data"].CustDet[0].Acctaddr);
+                    // $("#txtC_InvDate").val(data["Data"].CustDet[0].InvDate);
+                    $("#hdnCustID").val(data["Data"].CustDet[0].AcctCode);
+                    $('#ddlC_Item').empty();
+                    $('#ddlC_Invoice').empty();
+
+                    //var unique = data["Data"].CustDet.filter(onlyUnique);
+
+                    for (var i = 0; i < data["Data"].CustDet.length; i++) {
+                        opt = new Option(data["Data"].CustDet[i].itemname, data["Data"].CustDet[i].itdItem);
+                        $("#ddlC_Item").append(opt);
+                    }
+
+                    CustArr = data["Data"].CustDet;
+
+                    opt = new Option('--Select--', 0);
+                    $("#ddlC_Invoice").append(opt);
+
+                    var sInvNo = "";
+                    for (var i = 0; i < data["Data"].CustDet.length; i++) {
+
+                        if (sInvNo != data["Data"].CustDet[i].InvNo) {
+                            opt = new Option(data["Data"].CustDet[i].InvNo, data["Data"].CustDet[i].InvNo);
+                            $("#ddlC_Invoice").append(opt);
+                            sInvNo = data["Data"].CustDet[i].InvNo;
+                        }
+                    }
+                }
+
+            }
+        });
+    });
+
+    $('#ddlC_Invoice').click(function () {
+        getInvItem();
+    });
+
+    function getInvItem() {
+        var str = "";
+
+        str = " <ul style='height: 100px'>";
+        for (var i = 0; i < CustArr.length; i++) {
+            if (CustArr[i]["InvNo"] == $("#ddlC_Invoice").val()) {
+                var d = new Date(CustArr[i]["ExpDt"]);
+
+                // $("#txtC_Warranty").val(moment(CustArr[i]["ExpDt"])).format("dd/MM/yyyy");
+                $("#txtC_RemDays").val(CustArr[i]["RemDays"]);
+                $("#txtC_InvDate").val(CustArr[i]["InvDate"]);
+
+                if (CustArr[i]["RemDays"] > 0)
+                { $("#txtC_W_Status").val("Out Of Warranty"); }
+                else
+                { $("#txtC_W_Status").val("Under Warranty"); }
+
+                str += " <li class='checkbox-inline'><label  class='radio-inline'>  <input type='checkbox' data-Item-id='" + CustArr[i]["itdItem"] + "' class='chkSelect'  data-val='" + CustArr[i]["itdItem"] + "' /> " + CustArr[i]["itemname"] + " </label> </li> ";
+            }
+        }
+        str += ' </ul>';
+        $("#dvCompItem").html(str);
+    }
+
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+
+    $('#btnComplaint').click(function () {
+        debugger;
+
+        var rbNewCust = document.getElementById("C_rbNew");
+
+
+        if ($("#txtC_CustName").val() == "") {
+            $('#txtC_CustName').focus();
+            alert('Please Enter Dealer / Customer Name ...');
+            return
+        }
+
+        if (($("#hdnCustID").val() == "" || $("#hdnCustID").val() == "0") && rbNewCust.checked == false) {
+            $('#txtC_CustName').focus();
+            alert('Please Enter Dealer / Customer Name ...');
+            return
+        }
+        if ($("#txtC_Problem").val() == "") {
+            $('#txtC_Problem').focus();
+            alert('Please Enter Problem ...');
+            return
+        }
+
+        debugger;
+
+        var sItemId = $.map($("#dvCompItem .chkSelect:checked"), function (n, i) {
+            return $(n).attr("data-Item-id");
+        }).join(',');
+
+        var isDealer = 0;
+        var rbDealer = document.getElementById("C_rbDealer");
+
+        if (rbDealer.checked)
+        { isDealer = 1; }
+        else
+        { isDealer = 2; }
+
+        ShowHideLoader('show');
+
+        var data = new FormData();
+
+        data.append("sCompDt", $("#txtC_Date").val());
+
+        if (rbDealer.checked)
+            data.append("DealerID", $("#hdnCustID").val());
+        else
+            data.append("CustID", $("#hdnCustID").val());
+
+        if (rbNewCust.checked)
+            data.append("IsNewCust", 1);
+        else
+            data.append("IsNewCust", 0);
+        /*{181027*/
+        data.append("Category", $("#ddlC_SubCategory").val());
+        if (C_rbYes.checked)
+            data.append("IsPaid", 1);
+        else
+            data.append("IsPaid", 0);
+
+        if (C_rbFree.checked)
+            data.append("IsSrvcMode", 1);
+        else
+            data.append("IsSrvcMode", 0);
+        /*}181027*/
+        data.append("CustNM", $("#txtC_CustName").val());
+        data.append("ModelNo", $("#txtC_Mobile").val());
+        data.append("SrvType", $("#ddlC_Service").val());
+        data.append("EmpID", $("#ddlC_Employee").val());
+        //data.append("ItemID", sItemId);//181027 comment because we need single selection
+        data.append("ItemID", $("#ddlC_Item").val());//181027 because we need single selection
+        data.append("InvNo", $("#txtC_InvNo").val());
+        data.append("sTentetiveTm", $("#txtC_Tentetive").val());
+        data.append("Charge", $("#txtC_Charge").val());
+        data.append("Remark_Cust", $("#txtC_Problem").val());
+        data.append("Remark_Eng", $("#txtC_Description").val());
+
+        data.append("studName", $("#txtC_CustName").val());
+        data.append("studadd1", $("#txtC_Address").val());
+        data.append("studadd2", $("#txtC_Email").val());
+        data.append("studcity", $("#ddlC_City").val());
+        data.append("studstat", $("#ddlC_State").val());
+        data.append("studphon", $("#txtC_TeleNo").val());
+        data.append("studshortc", $("#txtC_Mobile").val());
+
+        console.log(typeof data);
+
+        $.ajax
+        ({
+            url: "/Service/Complaint",
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    ShowHideLoader('hide');
+                    if (response.MsgID == "1") {
+                        alert(response.Message);
+                        $("#txtC_CompNo").val(response.ComplaintNo);
+                        $("#hdnCustID").val('0'); $("#txtC_CustName").val('');
+                        $("#txtC_Email").val(''); $("#ddlC_State").val('0'); $("#ddlC_City").val('0'); $("#txtC_TeleNo").val(''); $("#txtC_Mobile").val('');
+                        $("#txtC_Address").val(''); $("#ddlC_Service").val(''); $("#ddlC_Employee").val(''); $("#ddlC_SubCategory").val('');
+                        $("#ddlC_Item").val(''); $("#txtC_InvNo").val(''); $("#txtC_Problem").val(''); $("#txtC_Tentetive").val(''); $("#txtC_Charge").val('');
+                        $("#txtC_Description").val(''); $("#dvCompItem").html("");
+                        getEmoplyee();
+                    }
+                    else {
+                        alert('Not Saved Successfully ...');
+                        alert(response.Message);
+                        ShowHideLoader('hide');
+                    }
+                }
+                ShowHideLoader('hide');
+            }
+        });
+    });
+
+    function SetDealer() {
+        debugger;
+        $("#txtC_CustName").val("");
+
+        if (C_rbDealer.checked)
+            $("#hdnIsDealer").val(true);
+        else
+            $("#hdnIsDealer").val(false);
+    }
+
+    function SetCustomer() {
+        debugger;
+
+        if (C_rbNew.checked)
+            $("#dvCustomer").show();
+        else
+            $("#dvCustomer").hide();
+    }
+
+</script>

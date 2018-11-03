@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+     
+    <style type="text/css">
+        .loading-img {
+        }
+         
+        #loader {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url('../img/progress.gif') 50% 50% no-repeat rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+
+      <div id="loader"></div>
+</body>
+</html>
+
+<script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="~/plugins/datatables/dataTables.bootstrap.min.js"></script>  
+
+<script type ="text/javascript">
+
+    $(document).ready(function () {
+       // debugger;
+      ShowHideLoader('hide');
+ 
+    });
+
+    function ShowHideLoader(value) {
+      //  debugger;
+
+        if (value == 'show')
+            $('#loader').show();
+        else
+            $('#loader').hide();
+    }
+     
+    $(document).ajaxComplete(function (event, xhr, settings) { 
+       
+           if (xhr.responseText === "SessionExpired") {
+               window.location = '@Url.Action("LogOff", "Home")';
+            }
+        });
+</script>
+
+
+    <script type="text/javascript">
+
+        $(function () { 
+            $('#example1').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>

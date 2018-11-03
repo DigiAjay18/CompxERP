@@ -1,0 +1,89 @@
+﻿@model List<CompxERP.Models.clsEmpAllotMst>
+
+<link href="~/Content/css/tableexport.min.css" rel="stylesheet" />
+<script src="~/Scripts/FileSaver.min.js"></script>
+<script src="~/Scripts/tableexport.min.js"></script>
+
+<div class="col-sm-12">
+    <table id="tblPayPlanning" class="table table-bordered table-striped" style="margin-top: 10px;">
+        <thead>
+            <tr>
+                <th style="width: 10%;">S.No</th>
+
+                <th style="width: 70%;">Dealer Name</th>
+                <th style="width: 10%;">Folloup</th>
+                <th style="width: 10%;">Delete</th>
+
+            </tr>
+        </thead>
+        <tbody style="height: 430px;">
+            @{ 
+                var iIndex = 0;
+                if (Model != null && Model.Count > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        iIndex = iIndex + 1; 
+                <tr>
+                    <td style="width: 10%;">@iIndex</td>
+                    <td style="width: 70%;">@item.DealerNm </td>
+
+                    @if (@item.StatusID > 0)
+                    {
+                        <td style="width: 10%;">Done </td>}
+                    else
+                    {
+                        <td style="width: 10%;"></td> }
+
+                    <td width="10%">
+                        <input type ="hidden" id ="hdnPlannDt_@iIndex" value="@item.sPlanDate" />
+                        <button type="button" id="btnDelPlan" onclick="DelPlanning(@item.DealerID ,@iIndex  )" >
+                            <img src="../../img/remove11.gif" style="width: 18px;" /></button>
+
+                    </td>
+
+
+                </tr>
+            }
+        }
+        else
+        {
+                <tr>
+                    <td colspan="4">No Records Found</td>
+                </tr>            
+        }}
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#tblPayPlanning").tableExport({
+            bootstrap: true, // ignoreCols: ([1,9,10]),
+        });
+
+    });
+
+    function DelPlanning(DealerID, Index) {
+        debugger;
+        if (confirm('Do You Want To Delete ? ')) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("DelPlanning", "Service")",
+                data: { DealerID: DealerID, mstDate: $("#hdnPlannDt_" + Index).val() },
+                success: function (data) {
+                    if (data == "Delete Successfully ...") {
+                        $("#btnPaymentPlanning").click();
+                    }
+                    alert(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+    }
+
+</script>

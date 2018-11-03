@@ -1,0 +1,215 @@
+﻿@model CompxERP.Models.Jourmaster 
+
+@using GridMvc.Html
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<!DOCTYPE html>*@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>    
+<script src="~/Scripts/gridmvc.min.js"></script> 
+<link href="~/Content/gridmvc.datepicker.css" rel="stylesheet" />
+<link href="~/Content/gridmvc.datepicker.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.7.1.js"></script>
+  <link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>
+  
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+<link href="~/Content/css/menu.css" rel="stylesheet" />
+    <link href="~/Content/css/my-style.css" rel="stylesheet" />
+          <!----jcss-font---->
+ 
+ 
+   <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!------custom css---->
+
+  <link rel="stylesheet" href="~/css/font-awesome.min.css">
+  <link rel="stylesheet" href="~/css/custom.css">
+  <link rel="stylesheet" href="~/css/responsive.css">
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+ 
+     
+        var iType = 0;
+        iType = getUrl()["MstType"]
+        if (iType == 42)
+        {
+            $('#lgOrder').html("Sales Entry");
+        }
+        else if (iType == 43)
+        { $('#lgOrder').html("Purchase Entry"); }
+        else  
+        { $('#lgOrder').html(""); }
+
+        
+        $('#Print').click(function () {
+            debugger;
+            alert('POP');
+         @*   $.ajax({
+                url: '@Url.Action("Create", "Sauda")',
+                type: "POST",
+                data: { "sData": '{' + a + '"LstItem":' + JSON.stringify(itm) + '}' },
+                datatype: "JSON",
+                ContentType: "application/json",
+                success: function (d) {
+                    alert("hi");  //check is successfully save to database   
+                    if (d.status == true) { 
+                       alert("hi");
+                    }
+                    else {
+                        alert('Failed to Save Data');
+                    }
+                },
+            });*@
+        });
+        function getUrl() {
+            debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+         
+        
+        //$('a.Print').click(function () { 
+        //        var url = $(this).attr('href'); 
+        //        window.open(url, "popupWindow", "width=600,height=800,scrollbars=yes");
+        //    });
+
+        function abc()
+            {
+                alert('1111');
+            }
+    });
+
+    </script>
+     
+     
+ <style>
+      body {
+           background-color:#fff;
+       }
+     table {
+         background-color:#fff;
+     }
+
+     table tbody tr td {
+         background-color:transparent;
+     }
+        .table-striped > tbody > tr:nth-of-type(2n+1) {
+  background-color: #f9f9f9 !important;
+}
+
+       table tbody tr
+{
+    background-color: #f5f5f5;
+}
+
+      table tbody tr:hover
+{
+    background-color: #ddd;
+}
+       div.table_styl table tr td:nth-child(1), th:nth-child(1) {width: 7%; }
+		div.table_styl table tr td:nth-child(2), th:nth-child(2) {width: 7%;} 
+        div.table_styl table tr td:nth-child(3), th:nth-child(3) {width: 8%; text-indent:7px;} 
+        div.table_styl table tr td:nth-child(4), th:nth-child(4) {width: 10%; text-indent:5px} 
+        div.table_styl table tr td:nth-child(5), th:nth-child(5) {width: 18%; text-indent:5px;} 
+        div.table_styl table tr td:nth-child(6), th:nth-child(6) {width: 10%; text-indent:5px} 
+        div.table_styl table tr td:nth-child(7), th:nth-child(7) {width: 40%; text-indent:5px } 
+
+   
+          .container {
+         margin-top:0px;
+     }
+    table thead tr {
+         background-color: brown;
+         background-image:none;         
+     }
+     table thead tr th {
+         color:#fff;
+     }
+th a:link{
+         color:#fff;
+     }
+.grid-header-title > span {
+  color: #a52a2a  !important;
+}
+thead tr {
+  background-color: #f5f5f5 !important;
+}
+        </style>
+</head>
+
+<body>
+
+  
+
+     <div class="compex_head">
+            <div class="container-fluid">
+                <div class="col-md-3 col-sm-3 col-xs-12"></div>
+                <div class="col-md-6 col-sm-6 col-xs-12"><h2 id ="lgOrder">Purchase Detail</h2></div>
+                <div class="col-md-3 col-sm-3 col-xs-12 account_setup">
+                    <div class="btn_right">
+                    <a href="/Home/menuNew"> <img src="~/Images/home.png" width="22" height="22" /></a>
+                     @* @Html.ActionLink("Create","Create", new { MstType = ViewBag.MstType }, new { title = "Back to list" })*@
+                    @Html.ActionLink("Create New", "Create", new { MstType = ViewBag.MstType , MenCode = ViewBag.MenCode }, new {style = "background-image:url('/Images/new.png');background-size: 35px 24px;background-position:center; background-repeat:no-repeat; color:transparent; text-align:right;padding: 13px 0;", title = "Back to list" })
+                    <a href='/Home/LogOff' style="border: none; font-size: 14px;"><img src="~/Images/logout.png" width="22" height="22" /></a>
+               </div>
+             </div>
+            </div>
+        </div>
+    
+       <div class="compex_form">
+          <div class="container-fluid">
+             <div class="Personal_form">
+                 
+                
+
+
+                  @Html.HiddenFor(model => model.msttype)
+         <div class="container-fluid table_styl ">            
+                @Html.Grid(Model.ListArea).Columns(columns =>
+{
+    columns.Add().Titled("Action").Encoded(false)
+                        .Sanitized(false)                        
+                        .RenderValueAs(d => @<b>  
+                            @Html.ActionLink("Edit", "Create", new { MstCode = d.mstcode, MstType = d.msttype, comp = d.compcode, MenCode = ViewBag.MenCode }, new { @class = "editDialog", style = "background-image:url('/Images/edit1.png');background-position:left top; background-repeat:no-repeat;color:transparent; background-size:15px 15px; border:none; ", title = "Edit" }) 
+                              <span id="@d.mstcode + iIndex +" style="cursor: pointer;text-decoration:underline" onclick="Print('@d.mstcode' ,'@d.msttype','@d.compcode');"  ><img src="../../Images/print1.png" /></span> 
+                            @* @Html.ActionLink("Print", "Print", new { comp = d.compcode, mstCode = d.mstcode, msttype= d.msttype , mencode = ViewBag.MnnCode  }, new { target = "_blank", @class = "Print", style = "background-image:url('/Images/print1.png');background-position:left top; background-repeat:no-repeat;color:transparent; background-size:15px 15px; ", title = "Print" })  *@            
+                        </b>);
+    columns.Add(c => c.mstcode).Titled("Code").Filterable(true).Encoded(false).Sanitized(false);
+      columns.Add(c => c.mstchno).Titled("Ref No").Filterable(true); 
+      columns.Add(c => c.mstdate).Titled("Date").Format("{0:dd/MM/yyyy}").Filterable(true); 
+    columns.Add(c => c.msttota).Titled("Total").Filterable(true);
+    columns.Add(c => c.partyname).Titled("PartyName").Filterable(true);
+
+    columns.Add(c => c.mstrema).Titled("Remark").Filterable(true);
+}).WithPaging(13)
+       
+        </div>
+             </div>
+         </div>
+      </div>
+ 
+
+</body>
+</html>
+     <script type="text/javascript">
+ 
+         function Print(mstcode, msttype, compcode) { 
+             window.open('../Pages/Reports.aspx?Code=' + mstcode + '&msttype=' + msttype + '&PType=' + msttype + '&comp=' + compcode + '', '_blank');
+             }
+        
+</script>
+ 

@@ -1,0 +1,2249 @@
+﻿@model CompxERP.Models.Jourmaster
+@{
+     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Service Input</title> 
+    <!----bootstrap css---->
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <!-----favicon.ico---->
+    <link href="~/img/favicon.png" rel="shortcut icon" type="image/x-icon">
+
+    <!-----font---->
+
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/custom.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script src="~/js/Chart.min.js"></script>
+    <script src="~/js/emojionearea.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <style>
+        .Personal_form {padding:2px;}
+        .Personal_form .form-group {margin-bottom:2px !important;}
+        .mrg_bottom {margin-bottom:2px !important;}
+        .panel-primary {border:0px !important;}      
+    </style>
+
+</head>
+<body>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/ddaccordion.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <link href="~/Content/css/menu.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+
+
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <style>
+        .aa {
+        }
+    </style>
+    <script>
+        window.history.forward();
+        $(function () {
+            //GetPartyid();
+            $("#sMstdate").focus();
+            //ShowHideLoader('hide');
+            $("#mstDate").datepicker();
+            $("#ReadyDate").datepicker();
+            if ($('#isReady').val() == "True") { $('#ReadyDay').hide(); $('#ReadyDate').hide(); $('#Day').hide(); }
+            else { $('#ReadyDay').show(); $('#ReadyDate').show(); $('#Day').show(); $("#rbisReadyN").attr("checked", "checked") }
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            if (hashes.length > 1) { $('#MstCode').val(getUrl()["mstCode"]); }
+            else { $('#MstCode').val(0); }
+            var iType = 0;
+            iType = getUrl()["MstType"]
+            $('#MstType').val(iType);
+            if (iType == 42) { $('.C42').show(); $('.C43').hide(); $('#lgId').html("Sale Entry"); $('#sHeader').html("Sale Entry"); $('#lblPurType').html("Sale"); $('#lblBroker').html("Agent"); document.title = "Sale Entry"; $("#hdnAcGroup").val("21"); }
+            else if (iType == 43) { $('.C42').hide(); $('.C43').show(); $('#lgId').html("Purchase Entry"); $('#lblBroker').html("Agent"); $('#sHeader').html("Purchase Entry"); $('#lblPurType').html("Purchase"); document.title = "Purchase Entry"; $("#hdnAcGroup").val("22"); } else { $('#lgId').html("Service Input"); $('#sHeader').html("Service Input"); $("#hdnAcGroup").val("21"); }
+
+            $('#myModal').hide();
+            var iMstCode = 0;
+            iMstCode = getUrl()["MstCode"]
+
+            //GetPartyid();
+
+            if (iMstCode > 0) {
+                $('#IsEdit').val('true');
+                //ShowHideLoader('show');
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetSrvDet", "PuSL")',
+                    data: { "iMstcode": +getUrl()["MstCode"], "iCompcode": +getUrl()["comp"], "iType": +getUrl()["MstType"] },
+                    success: function (data) {
+                        itm = data.oItemList;
+                        var mapcity = {};
+                        var len = data.length;
+                        SetExpences(data.ExpList);//By Ajay On 27012018
+                        GenratedItemTable(data.oItemList);
+                        trnItemTable(data.oList);
+                        $("#DisAmt").val(data.oList.find(Item).tpDrAmt);
+                        if (data.oList.find(Item).AdjuAmt != '') $("#DisPer").val(data.oList.find(Item).AdjuAmt); else $("#DisPer").val(0);
+                        //getTaxAmt(); By Ajay On 27012018 console.log(inventory.find(isCherries)); 
+                        //SetExpences(data.ExpList)
+                    }
+                });
+                // ShowHideLoader('hide');
+            }
+            else {
+                GetPartyid();
+            }
+            function Item(Item) {
+                return Item.ItemID === 2;
+            }
+
+            function SetExpences(trn_Exp) {
+
+                if (trn_Exp.length > 0) {
+                    var iIndex = 0;
+                    $.each(trn_Exp, function (i, val) {
+                        iIndex = i + 1;
+                        $("#Exp" + iIndex).val(val.ItemID);
+                        $("#Exp" + iIndex + "_Per").val(val.AdjuAmt);
+                        if (getUrl()["MstType"] == 42)
+                            $("#Exp" + iIndex + "_Amt").val(val.tpCrAmt);
+                        else
+                            $("#Exp" + iIndex + "_Amt").val(val.tpDrAmt);
+                    });
+                }
+            }
+
+            function getUrl() {
+
+                var vars = [], hash;
+                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            }
+
+            $("#mstchnV").keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+        var itm = [];
+        var vTaxData = [];
+        var a;
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+            $("#Compcode").change(function () {
+                var uri = "/Sauda/SetCompcode";
+
+                $.getJSON(uri, { CompName: this.value })
+               .done(function (data) {
+                   //alert(data[0]);
+                   $('#Compcode').val(this.value);
+                   alert($('#Compcode').val());
+               });
+
+            });
+
+            $("#acctname").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    //  alert(document.getElementById("compcode").value);
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/Cateogry", "OpeningBal"))",
+
+                        data: { "cateory": request.term, "iType": +getUrl()["MstType"] },
+                        success: function (data) {
+                            $('#PartyID').val('');
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+
+                    $('#PartyID').val(ui.item.Id);
+                    $.ajax({
+                        async: false, cache: false, type: "POST",
+                        url: "@(Url.Action("/GetAccountDet", "AcctMst"))",
+                        data: { "iCode": ui.item.Id },
+                        success: function (data) {
+                            if (data.length != 0) {
+                                $('#acctledg').val(data[0].acctledg);
+                                $('#mstpofs').val(data[0].Statename);
+                            }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                        }
+                    });
+                }
+            });
+
+
+
+
+            $("#UnitID").change(function () {
+                var iCases = 0; var iQty; var iTotal; var iUnitVal = 0;
+                //if ($('#Cases').val() != "") iCases = $('#Cases').val(); else iCases = 0;
+                //if ($('#UnitID').val().split("~")[1] != "") iUnitVal = $('#UnitID').val().split("~")[1].toString(); else iUnitVal = 0;
+                //iTotal = (iCases * iUnitVal).toFixed(2);
+                //$('#Qty').val(iTotal);
+                Calc_Amt(); GetItemAmt()
+            });
+          @*  $("#Broker").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false, cache: false, type: "POST", url: "@(Url.Action("/Cateogry", "OpeningBal"))",
+                        data: { "cateory": request.term, "iType": +34 },
+                        success: function (data) { for (var i = 0; i < data.length ; i++) { customer[i] = { label: data[i].Value, Id: data[i].Key }; } }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $('#mstbrok').val(ui.item.Id);
+                }
+            });*@
+            $("#ItemNm").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetSrvItem", "OpStock"))",
+                        data: { "countryName": request.term },
+                        success: function (data) {
+                            $('#ItemID').val('');
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                     
+                    $.ajax({
+                        cache: false,
+                        async: false,
+                        type: "POST",
+                        url: "@(Url.Action("/sp_GetSrvItemDet", "Comm"))",
+                        data: { "iItemID": ui.item.Id, "iPartyID": $('#PartyID').val(), "MstType": $('#msttype').val(), acctrate: 0, "GSTAppl": $('#GSTAppl').val() },//170829
+                        success: function (data) {
+
+                            $('#ItemID').val(ui.item.Id);
+                            $('#TaxPer').val(data[0]["vat"]);
+                            $('#PU_Qty2').val(data[0]["unitqty2"]);
+                            $('#UnitID').val(data[0]["unitcode"] + "~" + data[0]["unitqty2"]);
+                            $('#ItemPerRate').val(data[0]["Rate"]); //Item  Amount divied by ItemPerRate Ajay 02022018
+                            $('#TRate').val(data[0]["ItemRate"]);  //$('#Rate').val(data[0]["ItemRate"]);
+                            $('#acctcode').val(data[0]["Acctcode"]);
+                            $('#GSTStateVal').val(data[0]["GSTStateVal"]);//170830
+                            $('#itemdisc').val(data[0]["itemdisc"]); // $('#DisPer').val(data[0]["itemdisc"]); 
+                            $('#itgpbasi').val(data[0]["unitcode"]);
+                            vTaxData = data;//170829 For Enter 2 or 1 Row in Trn Tables 
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                            $('#TaxPer').val('');
+                            $('#PU_Qty2').val('');
+                            $('#UnitId').val('');
+                            $('#Rate').val('');
+                            $('#acctcode').val('');
+                        }
+                    });
+                }
+            });
+
+
+            //    .blur(function () {
+            //    if ($('#ItemID').val().toString() == "")
+            //        $("#ItemNm").focus();
+            //});
+
+            //function setItemValue(ItemID) {
+            //    alert(ItemID);
+
+            //};
+
+
+            $('.pickdate').each(function () {
+                if ($(this).val() == '') {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    $(this).val(today);
+                }
+            });
+
+
+            //$('#ItemNm').blur(function () {
+            //    if ($('#ItemNm').val() == "") {
+            //        $('#mstdued').focus();
+            //    }
+            //});
+            // Add Button Click Function
+            $('#add').click(function () {
+                var i = 0;
+                 
+                if ($('#ItemID').val() == '') { alert('Please Select Item !'); $('#ItemNm').focus(); return; }
+               
+                if ($('#ItemNm').val() == '') { $('#ItemNm').siblings('span.error').css('visibility', 'visible'); }
+                else { $('#ItemNm').siblings('span.error').css('visibility', 'hidden'); i++; }
+               
+                if ($('#Amt').val() == '') { $('#Amt').siblings('span.error').css('visibility', 'visible'); }
+                else {
+                    $('#Amt').siblings('span.error').css('visibility', 'hidden');
+                    i++;
+                }
+                if ($('#TaxPer').val() == '') { $('#TaxPer').siblings('span.error').css('visibility', 'visible'); }
+                else { $('#TaxPer').siblings('span.error').css('visibility', 'hidden');
+                    i++;  }
+                if ($('#SrvAccountHead').val() == '') { $('#SrvAccountHead').siblings('span.error').css('visibility', 'visible'); }
+                else { $('#SrvAccountHead').siblings('span.error').css('visibility', 'hidden'); i++; }
+
+                if ($('#Tax_Amt').val() == '') { $('#Tax_Amt').siblings('span.error').css('visibility', 'visible'); }
+                else { $('#Tax_Amt').siblings('span.error').css('visibility', 'hidden'); i++; }
+
+                GetItemTax($('#ItemID').val(), $('#TaxPer').val());
+                var iAcctCode = 0; iUnitID = 0; iTaxPer = 0; DisPer = 0; DisAmt = 0; DisWT = 0; DisQtyAmt = 0; TRate = 0; PerDisTota = 0; QtyDis = 0; FQty = 0; BilledQty = 0; itemdisc = 0;
+
+                 
+                 
+                if ($('#acctcode').val() != '') { iAcctCode = $('#acctcode').val() }
+                var iCases = 0;
+                //if ($('#Cases').val() != '') { iCases = $('#Cases').val() }
+                if ($('#SrvAccountHead').val() != '') { iUnitID = $('#SrvAccountHead').val() }
+                if ($('#TaxPer').val() != '') { iTaxPer = $('#TaxPer').val() }
+
+                if (i == 5) {
+
+                    itm.push({
+                        SrNo: itm.length + 1,
+                        ItemID: $('#ItemID').val(),
+                        ddlItem: $('#ItemNm').val(),  
+                        Amt: $('#Amt').val(),  
+                        SrvAccountHead:  $('#SrvAccountHead').val(),  //$('#UnitID').val().split("~")[0].toString(), //$('#UnitID').val(), 
+                        SrvAccountHeadNM: $('#SrvAccountHead :selected').text(),
+                        TaxPer: iTaxPer,// $('#TaxPer').val(), 
+                        Tax_Amt: $('#Tax_Amt').val(),
+                        acctcode: iAcctCode,
+                        GSTStateVal: $('#GSTStateVal').val(),//170830 
+                    });
+                    $('#ItemNm').val('').focus();
+                   $('#ItemID').val(''); $('#UnitID').val(''); $('#TaxPer').val(''); $('#acctcode').val('');//$('#Cases').val('');
+                    $('#Rate').val('');
+                    $('#Amt').val('0'); $('#Tax_Amt').val('0'); $('#SrvAccountHead').val('');
+                    $('#TaxPer').val('0'); 
+                  
+                }
+                GenratedItemTable(itm);
+                getTrnItem();
+                $('#TaxPer').val('');
+                if ($('#GSTStateVal').val() == "1") $('#mstIorL').val("I"); else $('#mstIorL').val("L");
+                //$('#sItemDet').val('{"LstItem":' + JSON.stringify(itm) + '}');
+            });
+            $(document).on("click", ".deleteContact", function () {
+                if (itm.length > 0) {
+
+                    var index = $(this).closest("tr").index();
+
+                    var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+    $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+                    $('#ItemID').val(itm[index].ItemID);
+                    $('#ItemNm').val($row.find("td:nth-child(2)").text());
+                     
+                    $('#SrvAccountHead').val(itm[index].SrvAccountHead);
+
+                    $('#Tax_Amt').val(itm[index].Tax_Amt);
+                    $('#Amt').val(itm[index].Amt);
+                    $('#TaxPer').val(itm[index].TaxPer);
+                      
+                    $('#acctcode').val(itm[index].acctcode);
+                      
+                    $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                    itm.splice(index, 1);
+                      
+                    GetItemTax($('#ItemID').val(), $('#TaxPer').val());
+                    //getTaxAmt();
+                    getTrnItem();
+                    GenratedItemTable(itm);
+                }
+
+
+            });
+            $(document).on("click", ".btnDeleteTrn", function () {
+                if (trn.length > 0) {
+                    var index = $(this).closest("tr").index();
+                    var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+    $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+                    $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                    trn.splice(index, 1);
+                    $('#sItemDet').val('{"LstItem":' + JSON.stringify(trn) + '}');
+                }
+            });
+
+            $('#mstsale').blur(function () {
+
+                setGSTApply();
+             @*   $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("GSTApply", "PuSL")",
+                    data: { SaleType: $("#mstsale").val() },
+                success: function (response) {
+                    $('#GSTAppl').val(response);
+                },
+                error: function () {
+                    $('#GSTAppl').val(0);
+                }
+                });*@
+
+            }
+                );
+
+            $('#ItemNm').blur(function () {
+                 
+                //alert("Blur");
+                if ($('#isItemSelect').val() == "0" || $('#ItemID').val().toString() != "") ChkNewItem();
+
+                $('#isItemSelect').val("0");
+            });
+
+            //Ajay on 03032018
+            $('#ItemNm').change(function () {
+                 
+                //var destId = $(this).val();
+                //alert("change");
+                //alert(destId);
+                $('#isItemSelect').val("1");
+            });
+
+            $('#Qty').blur(function () {
+
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Qty').val() != "") iQty = $('#Qty').val(); else iQty = 0;
+                //if ($('#UnitID').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID').val().split("~")[1].toString(); else iUnitVal = 0;
+                //iTotal = (iQty / iUnitVal).toFixed(2);
+                //$('#Cases').val(iTotal);
+                Calc_Amt(); GetItemAmt()
+            });
+             
+            $('#TaxPer').blur(function () { Calc_Amt(); GetItemAmt() });
+            
+            $('#Exp3_Amt').blur(function () { if ($('#Exp3_Amt').val() > 0 && $('#Exp3').val() == 0) { alert("Please Select Head"); $('#Exp3').focus(); return; } getTaxAmt(); getTrnItem(); });
+            $('#Exp4_Amt').blur(function () { if ($('#Exp4_Amt').val() > 0 && $('#Exp4').val() == 0) { alert("Please Select Head"); $('#Exp4').focus(); return; } getTaxAmt(); getTrnItem(); });
+            $('#msttota').blur(function () { getTrnItem(); });
+            $('#mstneta').blur(function () { getTrnItem(); });
+            $('#mstbala').blur(function () { getTrnItem(); });
+            $('#mstpaid').blur(function () { getTrnItem(); getNetAmt(); });
+            $('#CommAmt').blur(function () { getTrnItem(); });
+            $('#Comm').blur(function () { getTrnItem(); Brokerage(); });
+            $('#DisAmt').blur(function () { $('#TotDis').val($('#DisAmt').val()); getTrnItem(); getNetAmt(); });
+            $('#Exp1_Amt').blur(function () { if ($('#Exp1_Amt').val() > 0 && $('#Exp1').val() == 0) { alert("Please Select Head"); $('#Exp1').focus(); return; } getTaxAmt(); getTrnItem(); });
+            $('#Exp2_Amt').blur(function () { if ($('#Exp2_Amt').val() > 0 && $('#Exp2').val() == 0) { alert("Please Select Head"); $('#Exp2').focus(); return; } getTaxAmt(); getTrnItem(); });
+            //$('#Comm').blur(function () { });
+            $('#Sauda_II').blur(function () { GetSaudaNo(); });
+            $('#rbisReadyY').click(function () {
+                $('#ReadyDay').hide();
+                $('#isReady').val(true);
+                $('#ReadyDate').hide();
+                $('#Day').hide();
+                $('#ReadyDay').val('');
+                $('#ReadyDate').val('');
+            });
+            $('#rbisReadyN').click(function () {
+                $('#ReadyDay').show();
+                $('#isReady').val(false);
+                $('#ReadyDate').show();
+                $('#Day').show();
+            });
+            $("#ReadyDay").on("change", function () {
+                var iDay; var someDate = new Date();
+                if ($('#ReadyDay').val() != "") iDay = $('#ReadyDay').val(); else iDay = 0;
+                someDate.setDate(someDate.getDate() + parseInt(iDay));
+                var dd = someDate.getDate();
+                var mm = someDate.getMonth() + 1;
+                var y = someDate.getFullYear();
+                $('#ReadyDate').val(mm + '/' + dd + '/' + y);
+            });
+            $(document).ready(function () {
+                $(".mydivAdd").click(function () { $(".mydivAdditional").toggle(); });
+                $(".dvTran").click(function () { $(".dvTransection").toggle(); });
+            });
+            var iPack = 0;
+            $("#Cases").focus(function () { iPack = $('#Cases').val(); });
+            $('#Cases').blur(function () {
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Cases').val() != "") iCases = $('#Cases').val(); else iCases = 0;
+                if ($('#UnitID').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID').val().split("~")[1].toString(); else iUnitVal = 0;
+                if (iPack == iQty)
+                    return;
+                iTotal = (iCases * iUnitVal).toFixed(2);
+                $('#Qty').val(iTotal);
+                //$('#Wt').val(iTotal * iDisc);
+            });
+
+            $('#AddAccount').click(function () {
+                var modal = document.getElementById('myModal');
+                var City = 0; var State = 0;
+                if ($('#acctstat').val() != "") State = $('#acctstat').val(); else State = 0;
+                if ($('#acctcity').val() != "") City = $('#acctcity').val(); else City = 0;
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("AddAccount", "PuSL")',
+                    data: { "Name": $('#NewName').val(), "Address": $('#NewAddress').val(), "Mobile": $('#NewMobile').val(), "GSTIN": $('#NewGSTIN').val(), "State": State, "City": City, "AcGroup": $("#hdnAcGroup").val() },
+                    success: function (data) {
+
+                        $('#mstpofs').val($('#Statename').val());
+                        $('#PartyID').val(data);
+                        $('#acctledg').val(0);
+                        $('#acctcity').val(0);
+                        modal.style.display = "none";
+                        $('#mstsale').focus();
+                    }
+                });
+
+            });
+
+           @* $('#AddItem').click(function () {
+                var modal = document.getElementById('myModal1');
+                var iCess = 0; var iVat = 0; var iGST = 0;
+
+                if ($('#NewItemEcee').val() != "") iCess = $('#NewItemEcee').val(); else iCess = 0;
+                if ($('#NewItemVat').val() != "") iVat = $('#NewItemVat').val(); else iVat = 0;
+                if ($('#NewItemGST').val() != "") iGST = $('#NewItemGST').val(); else iGST = 0;
+
+                 
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("AddItem", "PuSL")',
+                    data: { "Name": $('#NewItemNm').val(), "itemgrou": $('#SubCate').val(), "itemnumb": $('#itemnumb').val(), "Vat": iVat, "HSN": $('#NewItemHSN').val(), "itemgstr": iGST, "itemcess": iCess },
+                    success: function (data) {
+                         
+                        $('#ItemID').val(data);
+                        $('#ItemNm').val($('#NewItemNm').val());
+                        $('#Qty').focus();
+                        modal.style.display = "none";
+
+                        $.ajax({
+                            cache: false,
+                            async: false,
+                            type: "POST",
+                            url: "@(Url.Action("/GetItemDet", "Comm"))",
+                            data: { "iItemID": $('#ItemID').val(), "iPartyID": $('#PartyID').val(), "MstType": $('#msttype').val() },//170829
+                            success: function (data1) {
+                                 
+                                //$('#ItemID').val(ui.item.Id);
+                                $('#TaxPer').val(data1[0]["vat"]);
+                                $('#PU_Qty2').val(data1[0]["unitqty2"]);
+                                $('#UnitId').val(data1[0]["unitcode"]);
+                                $('#Rate').val(data1[0]["Rate"]);
+                                $('#acctcode').val(data1[0]["Acctcode"]);
+                                $('#GSTStateVal').val(data1[0]["GSTStateVal"]);//170830
+                                vTaxData = data1;//170829 For Enter 2 or 1 Row in Trn Tables
+                                action = data1.Action;
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                alert('Failed to retrieve states.');
+                                $('#TaxPer').val('');
+                                $('#PU_Qty2').val('');
+                                $('#UnitId').val('');
+                                $('#Rate').val('');
+                                $('#acctcode').val('');
+                            }
+                        });
+                        $('#Qty').focus();
+                    }
+                });
+
+    });*@
+            $('#CloseAccount').click(function () {
+                var modal = document.getElementById('myModal');
+                modal.style.display = "none";
+            });
+            $('#CloseItem').click(function () {
+                var modal = document.getElementById('myModal1');
+                modal.style.display = "none";
+            });
+        });
+
+        function setGSTApply() {
+             
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GSTApply", "PuSL")",
+                data: { SaleType: $("#mstsale").val() },
+                success: function (response) {
+                    $('#GSTAppl').val(response);
+                    getTrnItem();
+                },
+                error: function () {
+                    $('#GSTAppl').val(0);
+                }
+            });
+        }
+
+        function Brokerage() {
+            var Comm, mstneta = 0;
+
+            if ($('#Comm').val() != "") Comm = parseFloat($('#Comm').val()); else Comm = 0;
+            if ($('#mstneta').val() != "") mstneta = parseFloat($('#mstneta').val()); else mstneta = 0;
+
+            Paid = ((mstneta * Comm) / 100).toFixed(2);
+            $('#CommAmt').val(Paid);
+        }
+
+        function getTaxAmt() {
+            var Excise = 0, VAT = 0, Exp1 = 0, Exp2 = 0, Exp3 = 0, Exp4 = 0, Paid = 0; ItemTax = 0;
+
+            if ($('#Exp1_Amt').val() != "") Exp1 = parseFloat($('#Exp1_Amt').val()); else Exp1 = 0;
+            if ($('#Exp2_Amt').val() != "") Exp2 = parseFloat($('#Exp2_Amt').val()); else Exp2 = 0;
+            if ($('#Exp3_Amt').val() != "") Exp3 = parseFloat($('#Exp3_Amt').val()); else Exp3 = 0;
+            if ($('#Exp4_Amt').val() != "") Exp4 = parseFloat($('#Exp4_Amt').val()); else Exp4 = 0;
+            if ($('#ItemTax').val() != "") ItemTax = parseFloat($('#ItemTax').val()); else ItemTax = 0;
+            Paid = (VAT + Exp2 + Exp1 + Exp3 + Exp4 + ItemTax).toFixed(2);
+            $('#TotTax').val(Paid);
+            getNetAmt();
+        }
+
+        function getNetAmt() {
+            var iDis, iNet, Amount, Tax = 0, Paid = 0;
+
+            if ($('#msttota').val() != "") Amount = parseFloat($('#msttota').val()); else Amount = 0;
+            if ($('#TotTax').val() != "") Tax = parseFloat($('#TotTax').val()); else Tax = 0;
+            if ($('#TotDis').val() != "") iDis = parseFloat($('#TotDis').val()); else iDis = 0;
+            if ($('#mstneta').val() != "") iNet = parseFloat($('#mstneta').val()); else iNet = 0;
+            if ($('#mstpaid').val() != "") Paid = parseFloat($('#mstpaid').val()); else Paid = 0;
+
+            iNet = ((Amount + Tax) - iDis).toFixed(2);
+            $('#mstneta').val(iNet);
+            $('#mstbala').val(iNet - Paid);
+            Brokerage();
+        }
+
+        //$('#acctname').blur(function () {
+        //    alert('blur');
+        //    if ($('#isItemSelect').val() == 0) ChkNewAccout();
+
+        //    alert($('#PartyID').val());
+        //    $('#isItemSelect').val(0);
+        //});
+
+        //$('#acctname').change(function () {
+        //    alert('Change');
+        //    $('#isItemSelect').val(1);
+        //});
+
+
+        function ChkNewAccout() {
+
+            if ($('#acctname').val().toString() == "") { $('#acctname').focus(); return; }
+
+            var modal = document.getElementById('myModal');
+            if ($('#PartyID').val().toString() == "") {
+                if (confirm('Do You Want To Create New Account ? ')) {
+                    modal.style.display = "block";
+                    $('#NewName').focus();
+                    $('#NewName').val($('#acctname').val());
+                    $('#NewAddress').val('');
+                    $('#NewMobile').val('');
+                    $('#NewGSTIN').val('');
+                    //krishna 2/10/2017
+                    $('#Cityname').val('');
+                    $('#Statename').val('');
+
+                    if ($("#hdnAcGroup").val() == "21")
+                        $('#Party_CrDr').html("Add Party ( Debtors )");
+                    else
+                        $('#Party_CrDr').html("Add Party ( Creditors )");
+                }
+                else {
+                    $('#acctname').val('');
+                    return;
+                    // modal.style.display = "none";
+                    // $('#myModal').hide();
+                    //$('#acctname').val('');
+                    //  $('#acctname').focus();
+                }
+            }
+        }
+
+        //function ChkNewItem() {
+        //     
+        //    if ($('#ItemNm').val().toString() == "") {
+        //        $('#mstrema').focus();
+        //        return;
+        //    }
+        //           var modal = document.getElementById('myModal1');
+        //           if ($('#ItemID').val().toString() == "" || $('#ItemNm').val().toString() == "")
+        //           {
+        //               if (confirm('Do You Want To Create New Item ? ')) {
+        //                   modal.style.display = "block";
+        //                   $('#SubCate').focus();
+        //                   $('#NewItemNm').val($('#ItemNm').val());
+        //                   $('#NewItemHSN').val('');
+        //                   $('#NewItemVat').val('');
+        //                   $('#NewItemGST').val('');
+        //                   $('#NewItemEcee').val('');
+        //               }
+        //               else {
+        //                   modal.style.display = "none";
+        //                   $('#myModal').hide();
+        //                   //$('#acctname').val('');
+        //                   //$('#acctname').focus();
+        //               }
+        //           }
+        //}
+
+        function ChkNewItem() {
+
+            if ($('#acctname').val() == "") {
+                $('#acctname').focus();
+            }
+            if ($('#ItemNm').val().toString() == "") {
+                $('#Exp1').focus(); //$('#DisPer').focus(); // $('#mstrema').focus();
+                return;
+            }
+
+            if ($('#ItemID').val().toString() == "" || $('#ItemNm').val().toString() == "") {
+                if (confirm('Do You Want To Create New Item ? ')) {
+                    angular.element(document.getElementById('ItemNm')).scope().OpenItem();
+                }
+                else { $('#ItemNm').val(""); $('#ItemNm').focus(); }
+            }
+            else {
+                //var modal = document.getElementById('myModal1');
+
+                //modal.style.display = "block";
+                $('#Amt').focus();
+                if (itm.length ==0)
+                    $('#SrvAccountHead').val($('#mstsale').val());
+                //$('#NewItemNm').val($('#ItemNm').val());
+                //$('#NewItemHSN').val('');
+                //$('#NewItemVat').val('');
+                //$('#NewItemGST').val('');
+                //$('#NewItemEcee').val('');
+
+            }
+        }
+
+        var trn = [];
+
+        function getTrnItem() {
+            trn = [];
+            var iHeadID = 0; var iHeadNM = 0; var iDR = 0; var iCR = 0; var iAdju = 0;
+
+            var iTrnLedg = 0;
+
+
+            if ($('#mstbala').val() != "") {
+
+                if ($('#acctledg').val() != "") iTrnLedg = $('#acctledg').val(); else iTrnLedg = 0;
+
+                iHeadID = $('#PartyID').val(); iHeadNM = $('#acctname').val(); iCR = 0; iDR = $('#mstbala').val(); iAdju = 0
+                if ($('#PartyID').val() != "" && parseInt($('#PartyID').val()) > 0) {
+                    trn.push({
+                        ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: null, trnaddv: 0,
+                        trnledg: iTrnLedg
+                    });
+                }
+                else { alert('Please Enter Party Name '); $('#acctname').focus(); }
+            }
+            
+            //if ($('#mstsale').val() != "") {
+            //    iHeadID = $('#mstsale').val(); iHeadNM = $('#mstsale :selected').text(); iCR = $('#msttota').val(); iDR = 0; iAdju = 0;
+            //    trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: null, trnaddv: 0 });
+            //}
+          
+            if ((Math.round($('#mstneta').val()) - $('#mstneta').val()) > 0) {
+                iHeadID = 256; iHeadNM = "Round Off"; iDR = parseFloat(Math.round($('#mstneta').val()) - $('#mstneta').val()).toFixed(2);; iCR = 0; iAdju = 0;
+                trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: 1, trnaddv: 0 });
+            }
+            
+            if (($('#mstpaid').val()) != "" && parseInt($('#mstpaid').val()) > 0) {
+                iHeadID = 1; iHeadNM = "Cash"; iCR = 0; iDR = $('#mstpaid').val(); iAdju = 0;
+                trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: null, trnaddv: 0 });
+            }
+            if (parseFloat($('#Exp1_Amt').val()) > 0) { 
+                iHeadID = $('#Exp1').val(); iHeadNM = $('#Exp1 :selected').text(); iCR = $('#Exp1_Amt').val(); iDR = 0; iAdju = $('#Exp1_Per').val();
+                trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: 1, trnaddv: 0 });
+            }
+            if (parseFloat($('#Exp2_Amt').val()) > 0) {
+                // fnCalcPercAmt('Exp2_Per', 'Exp2_Amt', 1);//170901
+                iHeadID = $('#Exp2').val(); iHeadNM = $('#Exp2 :selected').text(); iCR = $('#Exp2_Amt').val(); iDR = 0; iAdju = $('#Exp2_Per').val();
+                trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: 1, trnaddv: 0 });
+            }
+            if (parseFloat($('#Exp3_Amt').val()) > 0) {
+                // fnCalcPercAmt('Exp3_Per', 'Exp3_Amt', 1);//170901
+                iHeadID = $('#Exp3').val(); iHeadNM = $('#Exp3 :selected').text(); iCR = $('#Exp3_Amt').val(); iDR = 0; iAdju = $('#Exp3_Per').val();
+                trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: 1, trnaddv: 0 });
+            }
+            if (parseFloat($('#Exp4_Amt').val()) > 0) {
+                // fnCalcPercAmt('Exp4_Per', 'Exp4_Amt', 1);//170901
+                iHeadID = $('#Exp4').val(); iHeadNM = $('#Exp4 :selected').text(); iCR = $('#Exp4_Amt').val(); iDR = 0; iAdju = $('#Exp4_Per').val();
+                trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: 1, trnaddv: 0 });
+            }
+            if ($('#DisAmt').val() != "") {
+                //fnCalcPercAmt('DisPer', 'DisAmt', 1);//170901
+                iHeadID = 2; iHeadNM = "Discount"; iCR = 0; iDR = $('#DisAmt').val(); if ($('#DisPer').val() == "") iAdju = 0; else iAdju = $('#DisPer').val();
+                trn.push({ ItemID: iHeadID, trnItem: iHeadNM, tpDrAmt: iDR, tpCrAmt: iCR, AdjuAmt: iAdju, trninde: 0, trnexpa: 0, trntagv: 0, trnaddv: 0 });
+            } 
+            var isExists = false; var isSrvAccExists = false;
+            debugger;
+            if (parseInt($('#GSTAppl').val()) > 0) {
+                $.each(itm, function (i, val) {
+                    isSrvAccExists = false;
+                    GetItemTax(itm[i].ItemID, itm[i].TaxPer);
+                    $.each(trn, function (ii, val) {
+                        if (itm[i].acctcode == trn[ii].ItemID) {
+                            isExists = true;
+                            if (vTaxData != "") {//170830
+                                $.each(vTaxData, function (iii, val) {
+
+                                    if (val.Acctcode == trn[ii + iii].ItemID)
+                                        trn[ii + iii]['tpCrAmt'] = parseFloat(trn[ii + iii]['tpCrAmt']) + parseFloat(itm[i].Tax_Amt) / vTaxData.length;//170830 tpDrAmt
+                                });
+                            } else {
+                                trn[ii]['tpCrAmt'] = parseFloat(trn[ii]['tpCrAmt']) + parseFloat(itm[i].Tax_Amt);//170830 tpDrAmt
+                            }
+                        }
+
+                        if (itm[i].SrvAccountHead == trn[ii].ItemID) {
+                            isSrvAccExists = true;
+                            trn[ii]['tpCrAmt'] = parseFloat(trn[ii]['tpCrAmt']) + parseFloat(itm[i].Amt);//170830 tpDrAmt
+                        }
+
+                    });
+                    if (isExists == false) {
+                        if (itm[i].acctcode > 0) {
+                            if (vTaxData != "") {
+                                $.each(vTaxData, function (iii, val) {
+                                    trn.push({ ItemID: val.Acctcode, trnItem: val.TaxTypeName, tpCrAmt: parseFloat(itm[i].Tax_Amt) / vTaxData.length, tpDrAmt: 0, AdjuAmt: parseFloat(val.vat) / vTaxData.length, trninde: 3, trnexpa: 0, trntagv: val.acctgsta, trnaddv: itm[i].Amt });//Case Of Tax
+                                });
+                            } else { trn.push({ ItemID: itm[i].acctcode, trnItem: itm[i].TaxPer, tpCrAmt: itm[i].Tax_Amt, tpDrAmt: 0, AdjuAmt: 0, trninde: 0, trnexpa: 0, trntagv: null, trnaddv: 0 }); }
+                        }
+                    }
+                    if (isSrvAccExists == false) {
+                        trn.push({ ItemID: itm[i].SrvAccountHead, trnItem: itm[i].SrvAccountHeadNM, tpCrAmt: itm[i].Amt, tpDrAmt: 0, AdjuAmt: 0, trninde: 0, trnexpa: 0, trntagv: null, trnaddv: 0 }); isSrvAccExists = false;
+                    }
+
+                });
+            }
+            else { }
+            trnItemTable(trn);
+        }
+
+        @* function GetItemTax(itmID) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/GetItemDet", "Comm"))",
+                data: { "iItemID": itmID, "iPartyID": $('#PartyID').val() },//170829
+                success: function (data) {
+                     
+                    //$('#ItemID').val(ui.item.Id);
+                    //$('#TaxPer').val(data[0]["vat"]);
+                    //$('#PU_Qty2').val(data[0]["unitqty2"]);
+                    //$('#UnitID').val(data[0]["unitcode"] + "~" + data[0]["unitqty2"]);
+                    //$('#Rate').val(data[0]["ItemRate"]);
+                    //$('#acctcode').val(data[0]["Acctcode"]);
+                    //$('#GSTStateVal').val(data[0]["GSTStateVal"]);//170830
+                    vTaxData = data;//170829 For Enter 2 or 1 Row in Trn Tables
+                    action = data.Action;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states.');
+                    //$('#TaxPer').val('');
+                    //$('#PU_Qty2').val('');
+                    //$('#UnitId').val('');
+                    //$('#Rate').val('');
+                    //$('#acctcode').val('');
+                }
+            });
+
+        }*@
+
+        function GetItemTax(itmID, TaxPer) {
+             
+
+            if ($('#GSTAppl').val() == 0) {
+                setGSTApply();
+            }
+
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/sp_GetSrvItemDet", "Comm"))",
+                data: { "iItemID": itmID, "iPartyID": $('#PartyID').val(), "MstType": $('#msttype').val(), acctrate: TaxPer, "GSTAppl": $('#GSTAppl').val() },//170829
+                success: function (data) {
+
+                    $('#ItemID').val(itmID);
+                    $('#TaxPer').val(TaxPer); // data[0]["vat"] on 12022018
+                    $('#PU_Qty2').val(data[0]["unitqty2"]);
+                    //$('#UnitID').val(data[0]["unitcode"] + "~" + data[0]["unitqty2"]);
+                    $('#ItemPerRate').val(data[0]["Rate"]); //Item  Amount divied by ItemPerRate Ajay 02022018
+                    //$('#TRate').val(data[0]["ItemRate"]);  //$('#Rate').val(data[0]["ItemRate"]);
+                    $('#acctcode').val(data[0]["Acctcode"]);
+                    $('#GSTStateVal').val(data[0]["GSTStateVal"]);//170830
+                    $('#itemdisc').val(data[0]["itemdisc"]); // $('#DisPer').val(data[0]["itemdisc"]); 
+                    $('#itgpbasi').val(data[0]["unitcode"]);
+                    vTaxData = data;//170829 For Enter 2 or 1 Row in Trn Tables
+                    action = data.Action;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states.');
+                    $('#TaxPer').val('');
+                    $('#PU_Qty2').val('');
+                    $('#UnitId').val('');
+                    $('#Rate').val('');
+                    $('#acctcode').val('');
+                }
+            });
+        }
+
+        function trnItemTable(trn) {
+             
+            if (trn.length > 0) {
+                var $table = $('<table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0"/>');
+                $table.append('<thead class="thead-default"><tr><th width="60%">Item</th><th width="20%">Dr</th><th width="20%">Cr</th></tr></thead>');
+                var $tbody = $('<tbody style="height:100px;"/>');
+                $.each(trn, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td width="60%"/>').html(val.trnItem));
+                    $row.append($('<td width="20%"/>').html(val.tpDrAmt));
+                    $row.append($('<td width="20%"/>').html(val.tpCrAmt));
+                    //$row.append($('<td width="20%"/>').html('<button type="button" id="btnDeleteTrn" class="deleteContact btn-color"></button>'));
+                    $tbody.append($row);
+                });
+                $table.append($tbody);
+                $('#TrnTable').html($table);
+                $('#sTrnDet').val('{"LstItem":' + JSON.stringify(trn) + '}');
+            }
+        }
+        function getItemRemark() {
+            var someDate = new Date();
+            return GetFiveNo($('#ItemID').val()) + '' + GetFiveNo($('#mstcode').val()) + '04' + '' + someDate.getFullYear();
+        }
+        function GetFiveNo(ChNo) {
+            var str = new String(ChNo);
+            if (str.length == 1)
+                return "0000" + str;
+            else if (str.length == 2)
+                return "000" + str;
+            else if (str.length == 3)
+                return "00" + str;
+            else if (str.length == 4)
+                return "0" + str;
+            else
+                return str;
+        }
+        // Function For Show Added Items in Table
+        function GenratedItemTable(itm) {
+            if (itm.length > 0) {
+                var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+               
+                var $tbody = $('<tbody style="height:290px;"/>');
+                var iTotal = 0;
+                var iTax = 0;
+
+                $.each(itm, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td width=2%"/>').html(i + 1)); 
+                    $row.append($('<td width="28%"/>').html(val.ddlItem)); 
+                    $row.append($('<td width="10%"/>').html(val.Amt)); 
+                    $row.append($('<td width="10%"/>').html(val.TaxPer));
+                    $row.append($('<td width="10%"/>').html(val.Tax_Amt));
+                    $row.append($('<td width="15%"/>').html(val.SrvAccountHeadNM));
+                    $row.append($('<td width="5%"/>').html('<button type="button" id="btnDelete" class="deleteContact btn btn btn-danger btn-xs"><img src="../../Images/remove.png" width="20"/></button>'));
+
+                    $tbody.append($row);
+                    iTotal = iTotal + parseFloat(val.Amt);
+                    iTax = iTax + parseFloat(val.Tax_Amt);
+                });
+                $table.append($tbody);
+                //alert($table);
+                $('#ShowTable').html($table);
+                $('#ItemTax').val((iTax).toFixed(2));
+                $('#msttota').val((iTotal).toFixed(2));
+
+                getTaxAmt();
+                $('#sItemDet').val('{"LstItem":' + JSON.stringify(itm) + '}');
+            }
+        }
+
+        function GetTotal(itm) {
+            if (itm.length > 0) {
+                var iTotal = 0;
+                $.each(itm, function (i, val) {
+                    iTotal = iTotal + parseFloat(val.Amt);
+                });
+
+                $('#NetAmt').val((iTotal).toFixed(2));
+            }
+        }
+
+        function Calc_Amt() {
+            var Amt; var TaxPer;
+             
+            if ($('#Amt').val() != "") Amt = $('#Amt').val(); else Amt = 0; 
+            if ($('#TaxPer').val() != "") TaxPer = $('#TaxPer').val(); else TaxPer = 0;
+
+            iTotal = ((Amt * TaxPer) / 100).toFixed(2);
+         
+            $('#Tax_Amt').val(iTotal);
+
+        }
+        function GetSaudaNo() {
+            var iRate; var iQty;
+
+            if ($('#Sauda_I').val() != "") iRate = $('#Sauda_I').val(); else iRate = 0;
+            if ($('#Sauda_II').val() != "") iQty = $('#Sauda_II').val(); else iQty = 0;
+
+            $('#SaudaNo').val(iRate + '-' + iQty);
+
+
+        }
+        function GetTotalTax() {
+            var iTaxPer; var iTax_C; var iTax_S; var iTax_I;
+
+            if ($('#Tax_C').val() != "") iTax_C = parseFloat($('#Tax_C').val()); else iTax_C = 0;
+            if ($('#Tax_S').val() != "") iTax_S = parseFloat($('#Tax_S').val()); else iTax_S = 0;
+            if ($('#Tax_I').val() != "") iTax_I = parseFloat($('#Tax_I').val()); else iTax_I = 0;
+
+            iTotal = (iTax_C + iTax_S + iTax_I).toFixed(2);
+            $('#TaxPer').val(iTotal);
+
+        }
+
+        function GetItemAmt() {
+            var iTaxPer; var iAmt; var iTax_Amt; var iTax_I;
+
+            if ($('#TaxPer').val() != "") iTaxPer = parseFloat($('#TaxPer').val()); else iTaxPer = 0;
+            if ($('#Amt').val() != "") iAmt = parseFloat($('#Amt').val()); else iAmt = 0;
+            if ($('#Tax_I').val() != "") iTax_I = parseFloat($('#Tax_I').val()); else iTax_I = 0;
+
+            iTax_I = ((iTaxPer * iAmt) / 100).toFixed(2);
+            $('#Tax_Amt').val(iTax_I);
+            $('#ItemNetAmt').val(parseFloat(iTax_I) + iAmt);
+
+        }
+
+        function getUrl() {
+
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function GetModelDetails(id) {
+            var iUnitVal = 0;
+
+            iUnitVal = $('#Tax_C').val().split("~")[1].toString();
+            $('#PU_Qty2').val($('#Tax_C').val().split("~")[1].toString());
+            alert($('#PU_Qty2').val());
+
+        }
+        function fnCalcPercAmt(a, b, c) {
+
+            if ($('#' + a).val() == "" || $('#' + a).val() == 0) { $('#' + a).val(0); return; }
+
+            var d = parseFloat($('#msttota').val());
+            // 
+            if (d != "") {
+                if (c == 1) {
+                    if ($('#' + a).val() != "") $('#' + b).val((parseFloat($('#' + a).val()) * d / 100).toFixed(2)); else $('#' + a).val('0')
+                }
+                else {
+                    if ($('#' + b).val() != "") $('#' + a).val((parseFloat($('#' + b).val()) * 100 / d).toFixed(2)); else $('#' + b).val('0')
+                }
+            }
+        }
+
+
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".digit").keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    $("#errormsg").html("Digits Only").show().fadeOut("slow");
+                    return false;
+                }
+            });
+
+            $('#Print').click(function () {
+                window.open('../../Pages/Reports.aspx?PType=PuSL&comp=' + $("#compcode").val() + '&Code=' + $("#mstcode").val() + '&msttype=' + $("#msttype").val() + '&mencode=104', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50');
+                //window.open('../../PuSL/Print?comp=' + $("#compcode").val() + '&mstCode=' + $("#mstcode").val() + '&msttype=' + $("#msttype").val() + '&mencode=104', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50');
+            });
+
+
+        });
+        //$('#acctname').blur(function () {
+        //    alert("sf");
+        //});
+
+
+    </script>
+    <style>
+        body {
+            background-color: #e6e4e4;
+        }
+
+        .btn-color {
+            background-color: transparent;
+            background-image: url("/Images/remove.svg");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            border: medium none;
+            height: 18px;
+            width: 16px;
+        }
+
+        th {
+            padding: 5px;
+            color: #fff;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .table.table-fixed.table-bordered.j_table_new.table-striped td { padding: 2px !important;}
+        .table > thead > tr > th {padding: 2px 10px !important;}
+        .panel-title {font-size:14px !important;}
+    </style>
+
+    <div class="md-padding dialogdemoBasicUsage" data-ng-controller="cntrlOpnItem" id="popupContainer" data-ng-cloak="" data-ng-app="CompXApp">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true)
+            <!----compex_heading---->
+        
+            <div class="compex_head">
+                <div class="container-fluid">
+                    <div class="col-md-3 col-sm-3 col-xs-12"></div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <h2 id="sHeader"></h2>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12 account_setup">
+                        <div class="btn_right">
+                            <a href="/Home/menuNew">
+                                <img src="~/Images/home.png" width="22" height="22" /></a>
+                            @*    @Html.ActionLink("Back to list", "Index", new { MstType = ViewBag.MstType }, new { title = "Back to list" })
+                    @Html.ActionLink("BackToList", "Index", new { MstType = ViewBag.MstType }, new { style = "background-image: url('/Images/bulleted-list1.png');background-position: center;background-repeat: no-repeat;color: transparent;text-align: right;background-size: 24px 24px;", title = "Back to list" }),  comp = Model.compcode, mstCode = Model.mstcode*@
+                         
+                                @Html.ActionLink("BackToList", "PuSLList" ,"PuSL", new { MstType = ViewBag.MstType , mencode = ViewBag.MenCode }, new { style = "background-image: url('/Images/bulleted-list1.png');background-position: center;background-repeat: no-repeat;color: transparent;text-align: right;background-size: 24px 24px;", title = "Back to list" })
+                            <a href='/Home/LogOff' style="border: none; font-size: 14px;">
+                                <img src="~/Images/logout.png" width="22" height="22" /></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!----compex_heading end---->
+            <!----compex_BODY---->
+            <div class="compex_form">
+                <div class="">
+                    <div id="dvPuSL" class="Personal_form">
+
+                        <div style="width: 100%; float: left; margin-bottom: 5px;">
+                            <div class="col-sm-2 padd_l padd_5">
+                                <fieldset>
+
+                                    @Html.ValidationMessageFor(model => model.mstdate, "", new { style = "color:red;" })
+                                    @Html.ValidationMessageFor(model => model.mstcode, "", new { style = "color:red;" })
+                                    @Html.ValidationMessageFor(a => a.msttimes, "", new { style = "color:red;" })
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">Code</label>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            @Html.HiddenFor(model => model.acctcode)
+                                            @Html.HiddenFor(model => model.acctledg)@*170830*@
+                                            @Html.HiddenFor(model => model.ItemID)
+                                            @Html.HiddenFor(model => model.mstptcode)
+                                            @Html.HiddenFor(model => model.mstcode_Print)
+                                            @Html.HiddenFor(model => model.msttype)
+                                            @Html.HiddenFor(model => model.mstrefc)
+                                            @Html.HiddenFor(model => model.compcode)
+                                            @Html.HiddenFor(model => model.PU_Qty2)
+                                            @Html.HiddenFor(model => model.sItemDet)
+                                            @Html.HiddenFor(model => model.ItemRemark)
+                                            @Html.HiddenFor(model => model.sTrnDet)
+                                            @Html.HiddenFor(model => model.hdnAcGroup)
+                                            @Html.HiddenFor(model => model.acctcity)
+                                            @Html.HiddenFor(model => model.acctstat)
+                                           
+                                               <input type="hidden" id="isItemSelect" value="0" />
+                                               <input type="hidden" id="itgpbasi" value="0" />
+                                            <input type="hidden" id="itemdisc" value="0" /> 
+                                            <input type="hidden" id="ItemPerRate" value="0" /> 
+                                            <input type="hidden" id="GSTStateVal" value="0" /> 
+                                             <input type="hidden" id="GSTAppl" value="0" /> 
+                                            @Html.ValidationMessageFor(a => a.mstptcode)
+
+                                            @Html.TextBoxFor(model => model.mstcode, new { @class = "form-control", @Value = ViewBag.MstCode, @readonly = true })
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">Date</label>
+                                        <div class="col-sm-5 padd_l padd_5">
+                                            @Html.TextBoxFor(m => m.sMstdate, "{0:dd/MM/yyyy}", new { @class = "form-control pickdate", placeholder = "Enter Date" })
+                                        </div>
+                                        <div class="col-sm-5 padd_l padd_5">
+                                            @Html.TextBoxFor(a => a.msttimes, new { @class = "form-control t1", @readonly = true })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">Ref</label>
+                                    @*    <div class="col-sm-5 padd_l padd_5 C42">
+                                            @Html.TextBoxFor(model => model.mstchnH, new { @maxlength = "10", @class = "form-control", @readonly = true })
+                                        </div>
+                                        <div class="col-sm-5 padd_l padd_5 C42">
+                                            @Html.TextBoxFor(model => model.mstchnV, new { @maxlength = "12", @class = "form-control" })
+                                        </div>*@
+                                        <div class="col-sm-10 padd_l padd_10 C43">
+                                            @Html.TextBoxFor(model => model.mstchno, new { @maxlength = "10", @class = "form-control" })
+                                        </div>
+                                        @*   <div class="col-sm-11 padd_l padd_5 C43">
+                                        Reverse Charge Applicable
+                                        <input type="checkbox" />
+                                    </div>*@
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div class="col-sm-6 padd_l padd_5">
+                                <fieldset>
+                                   @* @Html.ValidationMessageFor(model => model.Broker, "", new { style = "color:red;" })*@
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">
+                                            Party
+                                         @Html.ValidationMessageFor(model => model.acctname, "", new { style = "color:red;" })</label>
+                                        <div class="col-sm-10 padd_l padd_5">
+
+                                            @Html.TextBoxFor(model => model.acctname, new { @class = "form-control capital_let"  ,onblur = "ChkNewAccout()" })
+                                            @Html.HiddenFor(model => model.PartyID)
+ 
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label id="lblPurType" class="control-label col-sm-2 padd_l padd_5">Purchase</label>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            @Html.DropDownList("mstsale", ViewBag.mstsale as string  )
+                                        </div>
+                                        @* <label class="control-label col-sm-1 padd_l padd_5" style="visibility: hidden">Order</label>
+                                    <div class="col-sm-5 padd_l padd_5" style="visibility: hidden">
+                                        @Html.DropDownList("mstsale", ViewBag.mstsale as string)
+                                    </div>*@
+                                    </div>
+                                   @* <div class="form-group">
+                                        <label id="lblBroker" class="control-label col-sm-2 padd_l padd_5">Broker </label>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                       
+                                        </div>
+                                        <label class="control-label col-sm-1 padd_l padd_5">(%)</label>
+                                        <div class="col-sm-2 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.Comm, new { @class = "form-control", onblur = "fnCalcPercAmt('Comm','CommAmt',1)" })
+                                        </div>
+                                        <label class="control-label col-sm-1 padd_l padd_5">Amt.</label>
+                                        <div class="col-sm-2 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.CommAmt, new { @class = "form-control" })
+                                            
+                                        </div>
+                                    </div>*@
+                                </fieldset>
+
+                            </div>
+                            <div class="col-sm-4 padd_l padd_5">@*style="display: none;"*@
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">Bill No.</label>
+                                        <div class="col-sm-5 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.mstblno, new { @class = "form-control" })
+                                        </div>
+                                      <label class="control-label col-sm-2 padd_l padd_5">Dt.</label>
+                                    <div class="col-sm-3 padd_l padd_5">
+                                        @Html.TextBoxFor(model => model.sMstBlDt, "{0:dd/MM/yyyy}" , new { @class = "form-control pickdate", placeholder = "Enter Date"  }) 
+                                    </div>
+                                      @*<label class="control-label col-sm-2 padd_l padd_5">Time of Removal</label>
+                                    <div class="col-sm-2 padd_l padd_5">
+                                        @Html.TextBoxFor(a => a.msttimR, new { @class = "form-control t1", @readonly = true })
+                                    </div>*@
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">Ch No.</label>
+                                        <div class="col-sm-10 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.mstclno, new { @class = "form-control" })
+                                        </div>
+                                        @*                                    <label class="control-label col-sm-2 padd_l padd_5">Dt</label>
+                                    <div class="col-sm-2 padd_l padd_5">
+                                        @Html.TextBoxFor(model => model.mstcldt, new { @class = "form-control" })
+                                    </div>*@
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        @*<label class="control-label col-sm-2 padd_l padd_5">Bill Type</label>
+                                    <div class="col-sm-10 padd_l padd_5">
+                                        @Html.DropDownList("mstctyp", ViewBag.mstctyp as SelectList, "--Select--")
+                                    </div>*@
+                                        <label class="control-label col-sm-4 padd_l padd_5">Place of Supply</label>
+                                        <div class="col-sm-8 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.mstpofs, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+
+                        <div id="myModal" class="modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 id="Party_CrDr" class="modal-title"></h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Name</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.NewName, new { @class = "form-control capital_let" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Address</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.NewAddress, new { @maxlength = "200", @class = "form-control capital_let" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">State</label>
+                                            <div class="col-sm-4 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.Statename, new { @class = "form-control" })
+                                            </div>
+                                            <label class="control-label col-sm-2 padd_l padd_5">City</label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.Cityname, new { @class = "form-control" })
+                                                @* <a data-ng-click="OpenCity($event)"><img src="~/Images/add.svg" /></a>*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Mobile</label>
+                                            <div class="col-sm-4 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.NewMobile, new { @maxlength = "11", @class = "form-control digit" })
+                                            </div>
+                                            <label class="control-label col-sm-2 padd_l padd_5">GSTIN</label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.NewGSTIN, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer text-left">
+                                        <input type="button" id="AddAccount" value="Save" class="btn-default pull-left" />
+                                        <input type="button" id="CloseAccount" value="Close" class="btn-default pull-left" />
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                      @*  <div id="myModal1" class="modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title"></h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Billed Qty</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                <input type="text" id="BilledQty" onblur ="getActQty();" class="form-control"> 
+                                            </div>
+                                        </div>   
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Dis %</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                <input   id="DisPer" maxlength="10" type="number", onblur="getDiscAmt();" class="form-control"> 
+                                            </div>
+                                        </div>   
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Trade Rate</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                <input   id="TRate" maxlength="10" type="number", onblur="getDiscAmt();" class="form-control"> 
+                                            </div>
+                                        </div> 
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Dis Amt </label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                <input id="ItemDisAmt"   maxlength="10" type="number"  class="form-control">  
+                                            </div>
+                                        </div>  
+                                        
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Free Qty </label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                <input id="FQty"   maxlength="10" type="number" onblur ="getActQty();" class="form-control">  
+                                            </div>
+                                        </div>  
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Dis / Wt</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                <input type="text" id="DisWT" maxlength="10" type="number" onblur="getQtyDis()" class="form-control">  
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Dis/Qty Amt</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                <input type="text" id="DisQtyAmt" maxlength="10"  type="number"  onblur="getQtyDis()" class="form-control">  
+                                            </div>
+                                        </div>
+                                         
+                                    </div>
+                                    <div class="modal-footer text-left"> 
+                                        <input type="button" id="CloseItem" value="Close" class="btn-default pull-left" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>*@
+
+                         <div id="myModal1" class="modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title"></h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Billed Qty</label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                <input type="text" id="BilledQty" onblur ="getActQty();" class="form-control"> 
+                                            </div>
+                                             <label class="control-label col-sm-2 padd_l padd_5">Dis %</label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                <input   id="DisPerItem" maxlength="10" type="number", onblur="getDiscAmt();" class="form-control"> 
+                                            </div>
+                                              <label class="control-label col-sm-2 padd_l padd_5">Trade Rate</label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                <input   id="TRate" maxlength="10" type="number", onblur="getDiscAmt();" class="form-control"> 
+                                            </div>
+                                        </div>   
+                                       
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Dis Amt </label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                <input id="ItemDisAmt"   maxlength="10" type="number"  class="form-control">  
+                                            </div>
+                                            <label class="control-label col-sm-2 padd_l padd_5">Free Qty </label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                <input id="FQty"   maxlength="10" type="number" onblur ="getActQty();" class="form-control">  
+                                            </div>
+                                             <label class="control-label col-sm-2 padd_l padd_5">Dis / Wt</label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                <input type="text" id="DisWT" maxlength="10" type="number" onblur="getQtyDis()" class="form-control">  
+                                            </div>
+                                        </div>  
+                                        
+                                     
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-2 padd_l padd_5">Dis/Qty Amt</label>
+                                            <div class="col-sm-2 padd_l padd_5">
+                                                <input type="text" id="DisQtyAmt" maxlength="10"  type="number"  onblur="getQtyDis()" class="form-control">  
+                                            </div>
+                                             <div class="col-sm-8 padd_l padd_5">
+                                                  <input type="button" id="CloseItem" value="Close" onclick="SetFoucsQty();" class="btn-default pull-right"  style="margin-top:0px !important;margin-left:10px;font-size:14px !important;"/>
+                                            </div>
+                                        </div>
+                                         
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <fieldset class="mrg_bottom">
+
+                            @Html.ValidationMessageFor(model => model.Amt, "", new { style = "color:red;" }) 
+                            <table class="table table-fixed table-bordered j_table_new" id="example" width="100%" cellspacing="0">
+                                <thead class="thead-default">
+                                    <tr>
+                                        <th width="30%">Service <a data-ng-click="OpenItem($event)"><img src="~/Images/add.svg" /></a> </th> 
+                                        <th width="10%">Amount</th>
+                                      <th width="10%">Tax</th>
+                                        <th width="10%">Tax_Amt</th>
+                                          <th width="15%">Account Head</th> 
+                                    </tr>
+                                    <tr>
+                                        <th width="30%">@Html.TextBoxFor(model => model.ItemNm, new { @class = "form-control capital_let", ng_model = "ItemNm" })</th> 
+                                         <th width="10%">@Html.TextBoxFor(model => model.Amt, new { @type = "number", @class = " form-control text-right"  })</th>
+                                        <th width="10%">@Html.TextBoxFor(model => model.TaxPer, new { @type = "number", @class = " form-control text-right", placeholder = "%" })</th>
+                                         <th width="10%">@Html.TextBoxFor(model => model.Tax_Amt, new { @type = "number", @class = " form-control text-right", disabled = true, @readonly = true })</th>
+                                        <th width="15%">  
+                                            @Html.DropDownList("SrvAccountHead", (SelectList)ViewBag.mstsale, "--Select--")
+                                        </th>
+                                         
+                                        <th width="5%">
+                                            <input type="button" id="add" value="add" class="btn btn-default" /></th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                            <div id="ShowTable" class="item_styl clearfix tablecontainer" style="height: 290px;"></div>
+
+                        </fieldset>
+                        <div class="col-md-12 accordion_menu">
+                            <div class="row">
+                                <div class="col-sm-3 padd_l padd_5">
+                                    <div class="panel panel-primary">
+
+                                        <div class="panel-heading">
+                                            <!-- panel-heading -->
+                                            <h4 class="panel-title">
+                                                <!-- title 1 -->
+                                                <a class="mydivAdd" href="#">Expenses Heads
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <!-- panel body -->
+                                        <div id="mydivAdditional" class="mydivAdditional">@*style="display: none;"*@
+                                            <div class="">
+                                                <table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0">
+                                                    <thead class="thead-default">
+
+                                                        <tr>
+                                                            <th width="50%">Head</th>
+                                                            <th width="25%">%</th>
+                                                            <th width="25%">Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    @* <tr>
+      <td>Excise</td>
+                    <td>@Html.TextBoxFor(model => model.ExcisePer, new { style = "width:50px;" })</td><td>
+                        @Html.TextBoxFor(model => model.Excise, new { style = "width:100px;" }) </td> 
+               </tr> 
+                <tr>
+                        <td>VAT</td>
+                    <td>@Html.TextBoxFor(model => model.VATPer, new { style = "width:50px;" })</td><td>
+                        @Html.TextBoxFor(model => model.VAT, new { style = "width:100px;" }) </td> 
+                </tr>*@
+                                                  @*  <tr>
+                                                        <td width="35%">@Html.DropDownList("TaxHead_I", (SelectList)ViewBag.TaxHead_I, "--Select--")<b>Tax</b> </td>
+                                                        <td width="30%"></td>
+                                                        <td width="35%">
+                                                            @Html.TextBoxFor(model => model.ItemTax, new { @type = "number", @class = " form-control text-right" }) </td>
+                                                    </tr>*@
+                                                   
+                                                    <tr>
+                                                        <td width="50%">@Html.DropDownList("Exp1", (SelectList)ViewBag.Exp1, "--Select--")</td>
+                                                        <td width="25%">@Html.TextBoxFor(model => model.Exp1_Per, new { @type = "number", @class = " form-control text-right", onblur = "fnCalcPercAmt('Exp1_Per','Exp1_Amt',1)" })</td>
+                                                        <td width="25%">@Html.TextBoxFor(model => model.Exp1_Amt, new { @type = "number", @class = " form-control text-right" })</td>
+                                                        @*, onblur = "fnCalcPercAmt('Exp1_Per','Exp1_Amt',2)" By Ajay on 03102017 *@
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="50%">@Html.DropDownList("Exp2", (SelectList)ViewBag.Exp1, "--Select--") </td>
+                                                        <td width="25%">@Html.TextBoxFor(model => model.Exp2_Per, new { @type = "number", @class = " form-control text-right", onblur = "fnCalcPercAmt('Exp2_Per','Exp2_Amt',1)" })</td>
+                                                        <td width="25%">@Html.TextBoxFor(model => model.Exp2_Amt, new { @type = "number", @class = " form-control text-right" }) </td>
+                                                        @*, onblur = "fnCalcPercAmt('Exp2_Per','Exp2_Amt',2)"*@
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="50%">@Html.DropDownList("Exp3", (SelectList)ViewBag.Exp1, "--Select--")</td>
+                                                        <td width="25%">@Html.TextBoxFor(model => model.Exp3_Per, new { @type = "number", @class = " form-control text-right", onblur = "fnCalcPercAmt('Exp3_Per','Exp3_Amt',1)" })</td>
+                                                        <td width="25%">
+                                                            @Html.TextBoxFor(model => model.Exp3_Amt, new { @type = "number", @class = " form-control text-right" }) </td>
+                                                        @*, onblur = "fnCalcPercAmt('Exp3_Per','Exp3_Amt',2)"*@
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="50%">@Html.DropDownList("Exp4", (SelectList)ViewBag.Exp1, "--Select--") </td>
+                                                        <td width="25%">@Html.TextBoxFor(model => model.Exp4_Per, new { @type = "number", @class = " form-control text-right", onblur = "fnCalcPercAmt('Exp4_Per','Exp4_Amt',1)" })</td>
+                                                        <td width="25%">
+                                                            @Html.TextBoxFor(model => model.Exp4_Amt, new { @type = "number", @class = " form-control text-right" }) </td>
+                                                        @*, onblur = "fnCalcPercAmt('Exp4_Per','Exp4_Amt',2)"*@
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4 padd_l padd_5">
+                                    <fieldset> 
+
+
+                                          <div class="form-group" style="margin-top: 10px;margin-bottom:5px;">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Total Tax</label>
+                                                <div class="col-sm-3 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.ItemTax, new { @type = "number", @readonly="trur", @class = " form-control text-right" })
+                                                </div>
+                                                <label class="control-label col-sm-2 padd_l padd_5">Discount</label>
+                                                 <div class="col-sm-2 padd_l padd_5">
+                                                  @Html.TextBoxFor(model => model.DisPer, new { @type = "number", @class = " form-control text-right", onblur = "fnCalcPercAmt('DisPer','DisAmt',1)" })
+                                                </div>
+                                               <div class="col-sm-2 padd_l padd_5">
+                                                      @Html.TextBoxFor(model => model.DisAmt, new { @type = "number", @class = " form-control text-right" }) 
+                                                        @*onblur = "fnCalcPercAmt('DisPer','DisAmt',2)"*@
+                                               </div>
+                                           </div>
+                                       
+                                          <div class="form-group" style="margin-bottom:5px;">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Day</label>
+                                                <div class="col-sm-4 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.mstdued, new { @class = "form-control" })
+                                                </div>
+                                           </div>
+                                          <div class="form-group" style="margin-bottom:5px;">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Remark </label>
+                                                <div class="col-sm-9 padd_l padd_5">
+                                                     @Html.TextBoxFor(model => model.mstrema, new { @class = "form-control" })
+                                                  @*  <textarea rows="2"  class = "form-control" id="mstrema"></textarea> *@
+                                                </div>
+                                         </div>
+                            <div class="col-sm-12 padd_l padd_5" style="margin-top:10px !important">
+                                @if (Model != null && Model.menaddi == true)
+                                {
+                                    <input type="submit" value="Save" class="btn-default" onclick="ShowHideLoader('show');"/> 
+                                }
+                                @if (Model != null && Model.menedit == true)
+                                {
+                                    //menu_code by rupesh , id = Model.mstcode - 1
+                                    @Html.ActionLink("<<<<", "ServiceInput", new { MstCode = Model.mstcode - 1, MstType = Model.msttype, MenCode = ViewBag.MenCode, comp = Model.compcode }, new { @class = "btn-default", title = "Previouse" ,@onclick ="ShowHideLoader('show');" })
+                                   
+                                    if (TempData["FrsRec"] != null)
+                                    {
+                                    <script type="text/javascript">
+                                        @*alert(@Html.Raw(Json.Encode(TempData["FrsRec"])));, id = Model.mstcode + 1*@
+                                    </script>
+                                    }
+                                   
+                                    @Html.ActionLink(">>>>", "ServiceInput", new { MstCode = Model.mstcode + 1, MstType = Model.msttype, MenCode = ViewBag.MenCode, comp = Model.compcode }, new { @class = "btn-default", title = "Next" ,@onclick ="ShowHideLoader('show');" })
+                                    
+                                    if (TempData["lstRec"] != null)
+                                    {
+                                    <script type="text/javascript">
+                                        alert(@Html.Raw(Json.Encode(TempData["lstRec"])));
+                                    </script>
+                                    }
+
+                                }
+                                <input type="button" id="Print" value="Print" class="btn-default"/>
+                                 
+
+                                @Html.ActionLink("New", "ServiceInput", new { MstCode = 0, MstType = Model.msttype, comp = Model.compcode,   MenCode = ViewBag.MenCode }, new { @class = "btn-default", @style = "margin-top: 0px;height: 29px !important;" ,@onclick ="ShowHideLoader('show');" })
+                            </div>
+
+                      
+                                      </fieldset>
+                                    
+                                 </div>
+                                <div class="col-sm-3 padd_l padd_5">
+                                     
+                                         
+
+                                            <div class="panel panel-primary">
+
+                                        <div class="panel-heading">
+                                            <!-- panel-heading -->
+                                            <h4 class="panel-title">
+                                                <!-- title 1 -->
+                                                <a class="dvTran" href="#">Output @Html.TextBoxFor(model => Model.mstIorL, new { style = "color:red;", @width = "20px", @readonly = true })
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <!-- panel body -->
+                                        <div class="dvTransection" id="dvTransection">@*style="display: none;"*@
+                                            <div class="">
+                                                <div id="TrnTable" class="transaction_styl clearfix tablecontainer"></div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                      
+                                  
+                                </div>
+                              
+                                <div class="col-sm-2 padd_l padd_5">
+                                    
+                                    <div class="panel panel-primary">
+                                        <div class="">
+
+                                            <table id="example11" class="table table-fixed table-bordered j_table_new" width="100%" cellspacing="0">
+                                                <tr>
+                                                    <td width="40%">Amount
+                                                      @Html.ValidationMessageFor(model => model.msttota, "", new { style = "color:red;" })
+                                                    </td>
+                                                    <td width="60%">@Html.TextBoxFor(model => model.msttota, new { @type = "number", @class = "form-control text-right", @readonly = true, })  </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%">Exp/Taxes (+) </td>
+                                                    <td width="60%">@Html.TextBoxFor(model => model.TotTax, new { @type = "number", disabled = true, @readonly = true, @class = "form-control text-right" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%">Disc. (-)</td>
+                                                    <td width="60%">@Html.TextBoxFor(model => model.TotDis, new { @type = "number", @readonly = true, @class = "form-control text-right" })</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td width="40%">Net Amount</td>
+                                                    <td width="60%">@Html.TextBoxFor(model => model.mstneta, new { @type = "number", @readonly = true, @class = "form-control text-right" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%">Paid</td>
+                                                    <td width="60%">@Html.TextBoxFor(model => model.mstpaid, new { @type = "number", @class = "form-control text-right" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="40%">Balance</td>
+                                                    <td width="60%">@Html.TextBoxFor(model => model.mstbala, new { @type = "number", @readonly = true, @class = "form-control text-right" })</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        
+       
+        }
+    </div>
+    @*<div style="width: 100px; height: 20px; top: 15px; right: 10px; position: absolute;">
+        @Html.ActionLink("Back to List", "Index", "PuSL", new { MstType = ViewBag.MstType }, null)
+    </div>*@
+    @*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}*@
+    <!-----bootstrap script -->
+
+    @* @{ 
+        if (TempData["message"] != null)
+        { 
+                                            <script type="text/javascript">
+                                                var r = confirm("Saved Successfully , Do You Want To Print ? ");
+                                                if (r == true) {
+                                                     
+                                                    window.open('../../PuSL/Print?comp=' + $("#compcode").val() + '&mstCode=' + $("#mstcode_Print").val() + '&msttype=' + $("#msttype").val() + '&mencode=104', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50');
+                                                } else {
+                                                    alert("You pressed Cancel!");
+                                                }
+    </script>
+        }
+                                    }*@
+
+    @{
+        if (TempData["message"] != null && TempData["message"] == "Saved Successfully ...")
+        {    
+        <script type="text/javascript">
+            var r = confirm("Saved Successfully , Do You Want To Print ? ");
+            if (r == true) {
+
+                //window.open('../../PuSL/Print?comp=' + $("#compcode").val() + '&mstCode=' + $("#mstcode_Print").val() + '&msttype=' + $("#msttype").val() + '&mencode=104', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50');
+
+                window.open('../../Pages/Reports.aspx?PType=PuSL&comp=' + $("#compcode").val() + '&Code=' + $("#mstcode_Print").val() + '&msttype=' + $("#msttype").val() + '&mencode=104', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50');
+
+            } else {
+            }
+        </script>
+        }
+        else if (TempData["message"] != null)
+        {
+        <script type="text/javascript">
+            alert(@Html.Raw(Json.Encode(TempData["message"])));
+        </script>
+        }
+    }
+
+</body>
+</html>
+<!--<script type="text/javascript"> 
+      $(document).ready(function () {
+
+          });
+     </script>-->
+<script type="text/javascript">
+
+    $('#sMstdate').blur(function () {
+        //if ($('#sMstdate').val() == "")
+        //{
+        // $('#sMstdate').focus();
+        //}
+        //else
+        //{
+        $('#acctname').focus();
+        //}
+    });
+
+    $('#mstsale').change(function () {
+
+        if ($('#mstsale').val == 0) {
+            $('#mstsale').focus();
+
+        }
+        else {
+            // alert("krishna");
+            GetPartyid();
+
+        }
+    });
+
+    //$("input").keypress(function () {
+    //    alert("zxc");
+    //    $("span").text(i += 1);
+    //    alert("feg");
+    //});
+
+    //$(document).keydown(function (e) { 
+    //    if ((e.which == '115' || e.which == '83') && (e.ctrlKey || e.metaKey) && !(e.altKey)) {
+    //        e.preventDefault();
+    //        alert("Ctrl-s pressed");
+    //        return false;
+    //    }
+    //    return true;
+    //});
+    $(document).keydown(function (e) {
+
+        if ((e.which == '33') && (e.ctrlKey || e.metaKey) && (e.altKey || e.metaKey)) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getNextPrevRec", "PuSL")",
+                data: { CompCode: $("#compcode").val(), MstCode: parseInt($("#mstcode").val()) - 1, MstType: $("#msttype").val(), MenCode: 42 },
+                success: function (response) {
+                    window.location.href = response;
+                },
+                error: function () {
+                }
+            });
+
+            return false;
+        }
+        return true;
+    });
+    $(document).keydown(function (e) {
+        if ((e.which == '34') && (e.ctrlKey || e.metaKey) && (e.altKey || e.metaKey)) {
+            e.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getNextPrevRec", "PuSL")",
+                 data: { CompCode: 60, MstCode: parseInt($("#mstcode").val()) + 1, MstType: 42 },
+                 success: function (response) {
+                     window.location.href = response;
+                 },
+                 error: function () {
+                 }
+             });
+             return false;
+         }
+         return true;
+     });
+
+     function GetPartyid() {
+         var stateId = $('#mstsale').val();
+         //   
+         $.ajax({
+             type: "POST",
+             contentType: "application/json; charset=utf-8",
+             // url: "userregistration.aspx/sendotp",
+             url: "@(Url.Action("/Getpartid", "PuSL"))",
+             // data: { "partyid": + $('#tpPartyID').val(), "iType": +ViewBag.MstType },
+             data: "{partyid:'" + $('#mstsale').val() + "'}",
+             dataType: "json",
+             success: function (data) {
+                 $('#mstchnH').val(data.Items11);
+                 $('#mstchnV').val(data.Items12);
+             },
+             error: function (result) {
+                 alert("Error");
+             },
+         });
+     }
+
+     //krishna 30/9/2017
+     function GetQty() {
+         var iMstType = getUrl()["MstType"];
+         var stateId = $('#Qty').val();
+         var ipartyID = $('#ItemID').val();
+
+         if (stateId == "") return;
+         if (iMstType == "43") return;
+
+         $.ajax({
+             cache: false,
+             async: false,
+             type: "POST",
+             //   contentType: "application/json; charset=utf-8",
+             url: "@(Url.Action("/Getqty", "PuSL"))",
+             data: { "partyid": +ipartyID, "iType": +iMstType, "Qtyid": +stateId },
+             dataType: "json",
+             success: function (data) {
+
+                 if ((data - stateId) < 0) { // 1 02092018 
+                     //  var qty = data[0].Items11;
+                     // alert(data.Items11);
+                     //alert("Stock Not Available ... ");
+                     alert("Stock Not Available , Current Balance is " + data + " ... ");
+                     //$('#Qty').val(''); Ajay 06022018
+                     //$('#Qty').focus();
+                 }
+                 else {
+
+                 }
+             },
+             error: function (result) {
+                 alert("Error");
+             },
+         });
+     }
+
+     $("#Cityname").autocomplete({
+         source: function (request, response) {
+             var customer = new Array();
+
+             // alert("krishna");
+             $.ajax({
+                 async: false,
+                 cache: false,
+                 type: "POST",
+                 url: "@(Url.Action("/GetCity", "Master"))",
+                data: { "acctcity": request.term, "iState": $('#acctstat').val() },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            $('#acctcity').val(ui.item.Id);
+            @*  $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/GetItemDet", "AcctMst"))",
+                data: { "iItemID": ui.item.Id },
+                success: function (data) {
+                    $('#acctcity').val(ui.item.Id);
+                    action = data.Action;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states.');
+                }
+            });*@
+        }
+    });
+    @*.blur(function () {
+          if ($('#acctstat').val() != "" && $('#acctstat').val() != "0" && $('#Statename').val() != "") {
+              if (($('#acctcity').val() == "" || $('#acctcity').val() == "0") && $('#Cityname').val() != "" && confirm('City Not Exists Do You Want To Save This City...')) {
+                  $.ajax({
+                      cache: false,
+                      async: false,
+                      type: "POST",
+                      url: "@Url.Action("SetCityInfo", "AcctMst")",
+                      data: { "name": $(this).val(), state: $('#acctstat').val() },
+                      success: function (data) {
+                          $('#acctcity').val(data);
+                      },
+                      error: function (xhr, ajaxOptions, thrownError) {
+                          alert("Failed to Retrieve Status.");
+                      }
+                  });
+              }
+          }
+          else {
+              alert("Please Select Valid State First...");
+              $('#Statename').focus();
+          }
+      });*@
+
+    $("#Statename").autocomplete({
+        source: function (request, response) {
+            var customer = new Array();
+            $.ajax({
+                async: false,
+                cache: false,
+                type: "POST",
+                url: "@(Url.Action("/GetState", "Master"))",
+                data: { "acctstat": request.term, iCntry: 3 },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/GetItemDet", "AcctMst"))",
+                data: { "iItemID": ui.item.Id },
+                success: function (data) {
+                    $('#acctstat').val(ui.item.Id);
+                    action = data.Action;
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Failed to retrieve states.');
+                }
+            });
+        }
+    });
+         @* .blur(function () {
+      if (($('#acctstat').val() == "" || $('#acctstat').val() == "0") && $('#Statename').val() != "" && confirm('State Not Exists Do You Want To Save This State...')) {
+          $.ajax({
+              cache: false,
+              async: false,
+              type: "POST",
+              url: "@Url.Action("SetStateInfo", "AcctMst")",
+                        data: { "name": $(this).val() },
+                        success: function (data) {
+                            $('#acctstat').val(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert("Failed to Retrieve Status.");
+                        }
+                    });
+                }
+  });*@
+
+    $("#mstpofs").autocomplete({
+        source: function (request, response) {
+            var customer = new Array();
+            $.ajax({
+                async: false,
+                cache: false,
+                type: "POST",
+                url: "@(Url.Action("/GetState", "Master"))",
+                data: { "acctstat": request.term, iCntry: 3 },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        }
+    });
+
+    $('form').submit(function () {
+        debugger;
+        ShowHideLoader('show');
+        var acctCode = $('#PartyID').val();
+        var SaleType = $('#mstsale').val();
+        var ErrorVal = 0;
+        $.ajax({
+            cache: false,
+            async: false,
+            type: "POST",
+            url: "@(Url.Action("/ChkGST", "PuSL"))",
+            data: { "acctCode": +acctCode, "SaleType": +SaleType },
+            dataType: "json",
+            success: function (data) {
+
+                ErrorVal = data.ErrorVal;
+                if (ErrorVal != 0) {
+                    alert(data.HeadingV);
+                    ShowHideLoader('hide');
+                    return false;
+                }
+            },
+            error: function (result) {
+                ShowHideLoader('hide');
+                alert("Error");
+            },
+        });
+
+        if (ErrorVal != 0) {
+            // ShowHideLoader('show');
+            return false;
+        }
+    });
+
+    function getDiscAmt() {
+        var DisPer = 0; TRate = 0; DisAmt = 0;
+
+        if ($('#TRate').val() != "") TRate = $('#TRate').val(); else TRate = 0;
+        if ($('#DisPerItem').val() != "") DisPer = $('#DisPerItem').val(); else DisPer = 0;
+
+        iTotal = ((TRate * DisPer) / 100).toFixed(2);
+        $('#ItemDisAmt').val(iTotal);
+        getItemDiscAmt();
+        getActRate();
+    }
+    function getActQty() {
+        var FQty = 0; BQty = 0; Qty = 0;
+        if ($('#FQty').val() != "") FQty = $('#FQty').val(); else FQty = 0;
+        if ($('#BilledQty').val() != "") BQty = $('#BilledQty').val(); else BQty = 0;
+
+        $('#Qty').val(parseInt(BQty) + parseInt(FQty));
+        getItemDiscAmt();
+    }
+    function getItemDiscAmt() {
+        var BQty = 0; DisAmt = 0; ItemPerRate = 0;
+          
+        if ($('#BilledQty').val() != "") BQty = $('#BilledQty').val(); else BQty = 0;
+        if ($('#ItemDisAmt').val() != "") DisAmt = $('#ItemDisAmt').val(); else DisAmt = 0;
+        if ($('#ItemPerRate').val() != "") iRatePer = $('#ItemPerRate').val(); else iRatePer = 1;
+
+        iTotal = ((BQty * DisAmt) / iRatePer).toFixed(2);
+        if (parseFloat(iTotal) > 0)
+            $('#PerDisTota').val(iTotal);
+        else
+            $('#PerDisTota').val(0);
+
+        getActRate();
+    }
+    function getActRate() {
+        var TRate = 0; DisAmt = 0;
+
+        var itemdisc = 1; BQty = 0; DisAmt = 0; DisWT = 0; TotalDisWT = 0; itgpbasi = 0; DisQtyAmt = 0;
+
+
+        if ($('#DisQtyAmt').val() != "") DisQtyAmt = $('#DisQtyAmt').val(); else DisQtyAmt = 0;
+        if ($('#DisWT').val() != "") DisWT = $('#DisWT').val(); else DisWT = 0;
+
+        if ($('#itemdisc').val() != "") itemdisc = $('#itemdisc').val(); else itemdisc = 1;
+        if ($('#BilledQty').val() != "") BQty = $('#BilledQty').val(); else BQty = 0;
+
+        if ($('#itgpbasi').val() != "") itgpbasi = $('#itgpbasi').val(); else itgpbasi = 1;
+
+
+        if ($('#TRate').val() != "") TRate = $('#TRate').val(); else TRate = 0;
+        if ($('#ItemDisAmt').val() != "") DisAmt = $('#ItemDisAmt').val(); else DisAmt = 0;
+
+        iTotal = (TRate - DisAmt).toFixed(2);
+
+        if (DisQtyAmt > 0) iTotal = ((iTotal - DisQtyAmt).toFixed(2));
+
+        if (DisWT > 0) iTotal = ((iTotal - ((DisWT * itemdisc) / itgpbasi)).toFixed(2));
+
+        $('#Rate').val(iTotal);
+
+    }
+    function getQtyDis() {
+        var itemdisc = 1; BQty = 1; DisAmt = 1; DisWT = 1; TotalDisWT = 1; itgpbasi = 1; DisQtyAmt = 0;
+          
+
+        if ($('#DisQtyAmt').val() != "") DisQtyAmt = $('#DisQtyAmt').val(); else DisQtyAmt = 0;
+        if ($('#itemdisc').val() != "") itemdisc = $('#itemdisc').val(); else itemdisc = 1;
+        if ($('#BilledQty').val() != "") BQty = $('#BilledQty').val(); else BQty = 0;
+        if ($('#DisWT').val() != "") DisWT = $('#DisWT').val(); else DisWT = 0;
+        if ($('#itgpbasi').val() != "") itgpbasi = $('#itgpbasi').val(); else itgpbasi = 1;
+
+        TotalDisWT = ((itemdisc * BQty * DisWT) / itgpbasi).toFixed(2);
+
+        if (DisQtyAmt > 0) {
+            TotalDisWT = (parseFloat(TotalDisWT) + ((BQty * DisQtyAmt) / itgpbasi)).toFixed(2);
+        }
+
+
+        //itdQtyd = Total of (disperwt*qty*itemdisc/itgpbasi)+(Discperqty*qty/itgpbasi)
+
+        if (TotalDisWT > 0)
+            $('#QtyDis').val(TotalDisWT);
+        else
+            $('#QtyDis').val(0);
+
+        getActRate();
+    }
+
+    function SetFoucsQty() {
+        $('#Qty').focus();
+    }
+
+
+    $('#mstchnV').blur(function () {
+        angular.element(document.getElementById('mstchnV')).scope().ChkmstChNo();
+    });
+    $('#mstchnH').blur(function () {
+        angular.element(document.getElementById('mstchnH')).scope().ChkmstChNo();
+    });
+
+</script>
+<style>
+    .capital_let {
+        text-transform: capitalize;
+    }
+</style>
+
+ <script>
+     $('.modal-content').resizable({
+         //alsoResize: ".modal-dialog",
+         minHeight: 300,
+         minWidth: 300
+     });
+     $('.modal-dialog').draggable();
+
+     $('#myModal').on('show.bs.modal', function () {
+         $(this).find('.modal-body').css({
+             'max-height': '100%'
+         });
+     });
+</script>
+ 

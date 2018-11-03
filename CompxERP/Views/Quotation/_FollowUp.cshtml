@@ -1,0 +1,1128 @@
+﻿@model CompxERP.Models.clsFilter
+
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+<script>
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#F_Date').val(today);
+            $('#From_Date').val(today);
+            $('#To_Date').val(today);
+            $('#O_From_Date').val(today);
+            $('#O_To_Date').val(today);
+            $('#o_To_A').val(today); $('#txtUptoDate').val(today);
+            $('#o_From').val(today);
+            $('#o_To').val(today); $('#L_From').val(today); $('#L_To').val(today);
+            var aCode = '@ViewBag.Code';
+            var aRpType = '@ViewBag.RpType';//181030
+            if (aCode != "0" || aRpType == "NC" || aRpType == "CL" || aRpType == "AC" || aRpType == "UC" || aRpType == "OC" || aRpType == "TC") {//181030_3
+                $("#ddlCompl_Status").val(aCode);
+                $('#o_From_A').val('01/04/2018');
+                $('#btnComplaint_List').click();
+            }
+            else
+                $('#o_From_A').val(today);
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+</script>
+
+
+
+<div class="modal-content">
+
+    @if (ViewBag.Type == "FollowUp")
+    { 
+
+        <div class="modal-header">
+            <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+            <h4 class="modal-title">Follow Up</h4>
+        </div>
+        <div class="modal-body input_popup">
+
+            @if (ViewBag.UserType == "0" || ViewBag.UserType == "1")
+            {
+                <div class="col-sm-1 padd_l padd_3">Follow By </div> 
+                <div class="col-sm-2 padd_l padd_3">@Html.DropDownList("F_FollowBy_S", (SelectList)ViewBag.F_FollowBy_S, "--Select--", new { @class = "form-control", required = "required" })</div> }
+
+            <div class="col-sm-1 padd_l padd_3">Follow Up List </div>
+            <div class="col-sm-2 padd_l padd_3">
+                @Html.DropDownList("F_Days", new List<SelectListItem> {  
+            new SelectListItem { Text="-- ALL --", Value="0"},
+            new SelectListItem { Text="7 Days", Value="7"},
+           new SelectListItem { Text="15 Days", Value="15"}, 
+           new SelectListItem { Text="30 Days", Value="30"}, 
+           new SelectListItem { Text="Above 30 Days", Value="20000"}   
+           }, new { @class = "form-control" })
+            </div>
+
+            <div class="col-sm-1 padd_l padd_3">Status </div>
+            <div class="col-sm-2 padd_l padd_3">
+                @Html.DropDownList("F_Status_S", new List<SelectListItem> {  
+            new SelectListItem { Text="-- ALL --", Value="0"},
+            new SelectListItem { Text="Closed", Value="1"},
+           new SelectListItem { Text="Fake", Value="2"}, 
+           new SelectListItem { Text="Under Process", Value="3"}, 
+           new SelectListItem { Text="Converted", Value="4"}   
+           }, new { @class = "form-control" })
+            </div>
+
+            <div class="col-sm-1 padd_l padd_3">Type </div>
+            <div class="col-sm-1 padd_l padd_3">
+                @Html.DropDownList("F_S_Type", new List<SelectListItem> {  
+            new SelectListItem { Text="-- Both --", Value="2"},
+            new SelectListItem { Text="Dealer", Value="1"},
+           new SelectListItem { Text="Lead", Value="0"},  
+           }, new { @class = "form-control" })
+            </div>
+
+            <div class="col-sm-1 padd_l padd_3">Follow Up Type </div>
+            <div class="col-sm-2 padd_l padd_3">
+                @Html.DropDownList("F_S_Due", new List<SelectListItem> {  
+            new SelectListItem { Text="-- All --", Value="0"},
+            new SelectListItem { Text="Due", Value="1"},
+           new SelectListItem { Text="All", Value="0"},  
+           }, new { @class = "form-control" })
+            </div>
+            <span class="">
+                <input type="button" id="FollowUpSearch" value="Search" class="btn btn-search" />
+            </span>
+        </div>
+    }
+    else if (ViewBag.Type == "Calling")
+    {
+        <div class="modal-header">
+            <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+            <h4 class="modal-title">Calling List</h4>
+        </div>
+        <div class="modal-body input_popup">
+            <label class="col-sm-1 padd_l padd_3">From</label>
+            <div class="col-sm-2 padd_l padd_3">
+                <input type="text" class="form-control" id="From_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+            <label class="col-sm-1 padd_l padd_3">To</label>
+            <div class="col-sm-2 padd_l padd_3">
+                <input type="text" class="form-control" id="To_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+
+            <span class="input-group-btn">
+                <input type="button" id="FillCalling" value="Search" class="btn btn-search" />
+            </span>
+        </div>
+    }
+    else if (ViewBag.Type == "TrialBal")
+    {
+        <div class="modal-header">
+            <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+            <h4 class="modal-title">Trial Balance</h4>
+        </div>
+        <div class="modal-body input_popup">
+            <div class="col-sm-3 padd_l padd_5">
+                Company 
+ @Html.DropDownList("Company_TB", (SelectList)ViewBag.Company, "--Select--", new { @class = "form-control" })
+            </div>
+
+            <div class="col-sm-3 padd_l padd_5">
+                Party/Dealer Name 
+ @Html.DropDownList("ddlDealer_TB", (SelectList)ViewBag.vwDealer, "--Select--", new { @class = "form-control", @width = "20px;" })
+            </div>
+            <div class="col-sm-2 padd_l padd_3">
+                From
+                            <input type="text" class="form-control" id="From_TB" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+            <div class="col-sm-2 padd_l padd_3">
+                To
+                            <input type="text" class="form-control" id="To_TB" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+
+            <div class="col-sm-1 padd_l padd_5">
+                State
+  @Html.DropDownList("TB_StateID", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control" })
+            </div>
+
+            @if (CompxERP.Models.SessionMaster.UserType == 0 || CompxERP.Models.SessionMaster.UserType == 1)
+            {
+                <div class="col-sm-1 padd_l padd_5">
+                    Executive 
+                    @Html.DropDownList("TB_Executive", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control" }) 
+              @*  @if (CompxERP.Models.SessionMaster.UserType == 0 || CompxERP.Models.SessionMaster.UserType == 1)
+                {
+                    @Html.DropDownList("TB_Executive", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control" }) 
+                }
+                else
+                {
+                    @Html.DropDownList("TB_Executive", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control", @disabled = true, @readonly = true }) 
+                }*@
+                </div>
+            }
+
+            <span class="input-group-btn searchbtnTop">
+                <input type="button" id="FillTrialBal" value="Search" class="btn btn-search" />
+                <input type="button" id="PrintTrialBal" value="Print" class="btn btn-search" />
+            </span>
+        </div>
+    }
+@* else if (ViewBag.Type == "Order")
+     {
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+                    <h4 class="modal-title">Order List</h4>
+                </div>
+                <div class="modal-body input_popup"> 
+                     <label class="col-sm-1 padd_l padd_3">Company</label>
+                     <div class="col-sm-1 padd_l padd_5">  
+ @Html.DropDownList("Company_Or", (SelectList)ViewBag.Company, "--Select--", new { @class = "form-control"  }) 
+                     </div>
+                     <label class="col-sm-1 padd_l padd_3">From</label>
+                     <div class="col-sm-2 padd_l padd_3">
+                         <input type="text" class="form-control" id="O_From_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                     </div>
+                     <label class="col-sm-1 padd_l padd_3">To</label>
+                       <div class="col-sm-2 padd_l padd_3">
+                           <input type="text" class="form-control" id="O_To_Date" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                       </div>
+                 
+                        <span class="input-group-btn">
+                            <input type="button" id="FillOrder" value="Search"   class="btn btn-search" />
+                        </span>
+                 </div>
+     } *@
+    else if (ViewBag.Type == "Ledger")
+    {
+        <div class="modal-header">
+            <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+            <h4 class="modal-title">Ledger</h4>
+        </div>
+        <div class="modal-body input_popup">
+            <div class="col-sm-2 padd_l padd_3">
+                From
+                            <input type="text" class="form-control" id="L_From" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+            <div class="col-sm-2 padd_l padd_3">
+                To
+                            <input type="text" class="form-control" id="L_To" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                <input type ="hidden" id ="hdnParty" value="@ViewBag.UserCode" />
+            </div>
+
+            <div class="col-sm-3 padd_l padd_5">
+                Party/Dealer Name
+ @Html.DropDownList("Dealer_Ldg", (SelectList)ViewBag.vwDealer, "--Select--", new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 padd_l padd_5">
+                Company 
+ @Html.DropDownList("Company_Led", (SelectList)ViewBag.Company, "--Select--", new { @class = "form-control" })
+            </div>
+            <div class="col-sm-3 padd_l padd_5">
+                With Item
+  <input type="checkbox" id="chkWithItem" />
+            </div>
+
+            <span class="input-group-btn">
+                <input type="button" id="btnLedgerReport" value="Search" class="btn btn-search" />
+                <input type="button" id="btnLedgerPrint" value="Print" onclick="PrintLedger();" class="btn btn-search" />
+            </span>
+        </div>
+    }
+    else if (ViewBag.Type == "OrdApprove")
+    {<style>
+         .orderPoup label.col-sm-1.padd_l.padd_3 {
+             width: 7%;
+         }
+     </style>
+        <div class="modal-header">
+            <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+            <h4 class="modal-title">Pending Order Approve</h4>
+        </div>
+        <div class="modal-body input_popup orderPoup">
+            @*  <label class="col-sm-1 padd_l padd_3"></label>*@
+            <div class="col-sm-2 padd_l padd_5">
+                Company 
+                            @Html.DropDownList("Company", (SelectList)ViewBag.Company, "--Select--", new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 padd_l padd_5">
+                From  
+                <input type="text" class="form-control" id="o_From" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+            @*<label class="col-sm-1 padd_l padd_3"></label>*@
+            <div class="col-sm-2 padd_l padd_5">
+                To  
+                <input type="text" class="form-control" id="o_To" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+            </div>
+
+            @*      <label class="col-sm-1 padd_l padd_3"></label> *@
+            <div class="col-sm-3 padd_l padd_5">
+                Party/Dealer Name 
+ @Html.DropDownList("ddlPartyDealer", (SelectList)ViewBag.vwDealer, "--Select--", new { @class = "form-control", @width = "20px;" })
+            </div>
+
+            @*<label class="col-sm-1 padd_l padd_3">  </label> *@
+            <div class="col-sm-2 padd_l padd_5">
+                State
+  @Html.DropDownList("oSateID", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control" })
+            </div>
+
+            @*<label class="col-sm-1 padd_l padd_3">  </label> *@
+            <div class="col-sm-1 padd_l padd_5">
+                Brand
+  @Html.DropDownList("itdmill_OR", (SelectList)ViewBag.Brand, "--Select--", new { @class = "form-control" })
+            </div>
+
+            @* <label class="col-sm-1 padd_l padd_3">  </label> *@
+            <div class="col-sm-1 padd_l padd_5">
+                Sub Category
+  @Html.DropDownList("subCategoryID", ViewBag.SubCategory as SelectList, "--Select--", new { @class = "form-control" })
+            </div>
+
+            @if (CompxERP.Models.SessionMaster.UserType == 0 || CompxERP.Models.SessionMaster.UserType == 1)
+            {
+            <div class="col-sm-2 padd_l padd_5">
+                Executive 
+ @Html.DropDownList("Executive", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control" })
+            </div>
+            }
+
+            <div class="col-sm-1 padd_l padd_5">
+                <span class="input-group-btn searchbtnTop">
+                    <input type="button" id="btnOrderReport" value="Search" class="btn btn-search" />
+                </span>
+            </div>
+        </div>
+    }
+    else if (ViewBag.Type == "OrdApprove_I" || ViewBag.Type == "PayFollowUp" || ViewBag.Type == "PayFollowUpList" || ViewBag.Type == "DispatchOrd" || ViewBag.Type == "Order" || ViewBag.Type == "OrdFollowUp" || ViewBag.Type == "OrdFollowUpList" || ViewBag.Type == "BankReceipt" || ViewBag.Type == "UserWork" || ViewBag.Type == "ComplaintList" || ViewBag.Type == "PaymentPlanning")
+    {<style>
+         .orderPoup label.col-sm-1.padd_l.padd_3 {
+             width: 7%;
+         }
+     </style>
+        <div class="modal-header">
+            <button type="button" class="close" onclick="ClearDvData();">&times;</button>
+            @if (ViewBag.Type == "PayFollowUp")
+            {<h4 class="modal-title">Payment FollowUp</h4>}
+            else if (ViewBag.Type == "PayFollowUpList")
+            {<h4 class="modal-title">Payment FollowUp List</h4>}
+            else if (ViewBag.Type == "DispatchOrd")
+            {<h4 class="modal-title">Dispatch List</h4>}
+            else if (ViewBag.Type == "OrdFollowUp")
+            {<h4 class="modal-title">Order FollowUp</h4>}
+            else if (ViewBag.Type == "OrdFollowUpList")
+            {<h4 class="modal-title">Order FollowUp List</h4>}
+            else if (ViewBag.Type == "Order")
+            {<h4 class="modal-title">Order List</h4>}
+            else if (ViewBag.Type == "BankReceipt")
+            {<h4 class="modal-title">Bank Receipt</h4>}
+            else if (ViewBag.Type == "UserWork")
+            {<h4 class="modal-title">User Work</h4>}
+            else if (ViewBag.Type == "ComplaintList")
+            {<h4 class="modal-title">@ViewBag.aTitle</h4>}
+            else if (ViewBag.Type == "PaymentPlanning")
+            {<h4 class="modal-title">Payment Planning</h4>}
+            else
+            {<h4 class="modal-title">Approved Order List</h4>}
+
+        </div>
+        <div class="modal-body input_popup orderPoup">
+
+            @if (ViewBag.Type == "PaymentPlanning")
+            { 
+                <div class="col-sm-1 padd_l padd_5">
+                    Date  
+                    <input type="text" class="form-control" id="txtPayPlanningDate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                </div>
+            }
+
+            @if (ViewBag.Type == "PayFollowUp")
+            {
+                <div class="col-sm-3 padd_l padd_5 p_element" id="sb1">
+                    <fieldset>
+                        <legend>Parties</legend>
+                        <label class="radio-inline">
+                            <input type="checkbox" name="chkAllDealer" id="chkAllDealer" />
+                            Select All</label>
+                        <div id="dvAllParties" class="multi_list drop_down">
+                            <ul style="height: 100px">
+                                <li class="checkbox-inline"></li>
+                                @for (var i = 0; i < Model.lstFilter.Count; i++)
+                                {  
+                                    <li class="checkbox-inline">
+                                        <label class="radio-inline">
+                                            <input type="checkbox" data-dispatch-entry-id="@Model.lstFilter[i].PartyID" class="chkSelectDealer" />
+                                            @Model.lstFilter[i].PartyName
+                                        </label>
+                                    </li> 
+                                }
+                            </ul>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-sm-1 padd_l padd_5">
+                    UpTo Date  
+                    <input type="text" class="form-control" id="txtUptoDate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                </div>
+            }
+
+            @if (ViewBag.Type != "OrdFollowUp" && ViewBag.Type != "OrdFollowUpList" && ViewBag.Type != "BankReceipt" && ViewBag.Type != "PayFollowUpList" && ViewBag.Type != "ComplaintList" && ViewBag.Type != "PaymentPlanning")
+            {
+                <div class="col-sm-2 padd_l padd_5">
+                    Company 
+ @Html.DropDownList("Company_A", (SelectList)ViewBag.Company, "--Select--", new { @class = "form-control" })
+                </div>}
+
+            @if (ViewBag.Type != "PayFollowUp" && ViewBag.Type != "PaymentPlanning")
+            {
+                <div class="col-sm-2 padd_l padd_5">
+                    From  
+                    <input type="text" class="form-control" id="o_From_A" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                </div>
+                         
+                <div class="col-sm-2 padd_l padd_5">
+                    To  
+                    <input type="text" class="form-control" id="o_To_A" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                </div>
+                if (@CompxERP.Models.SessionMaster.UserType != 68 && @CompxERP.Models.SessionMaster.UserType != 4)//181030_1
+                {    
+                <div class="col-sm-2 padd_l padd_5">
+                    Party/Dealer Name 
+
+                    <input type="text" class="form-control" id="partyname" />
+                    <input type="hidden" class="form-control" id="ddlPartyDealer_A" />
+
+                    @*@Html.DropDownList("ddlPartyDealer_A", (SelectList)ViewBag.vwDealer, "--Select--", new { @class = "form-control" })*@
+                </div>
+                }
+            }
+
+            @if (ViewBag.Type != "PaymentPlanning" && @CompxERP.Models.SessionMaster.UserType != 68 && @CompxERP.Models.SessionMaster.UserType != 4)//181030_1
+            {
+                <div class="col-sm-2 padd_l padd_5">
+                    State
+  @Html.DropDownList("oSateID_A", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control", @onblur = "FillCity()" })
+                </div>
+           
+                <div class="col-sm-2 padd_l padd_5">
+                    City
+                         @Html.DropDownList("oCityID_A", new List<SelectListItem> { new SelectListItem { Text = "-- Select --", Value = "0" } }, new { @class = "form-control" })
+
+                </div>
+            }
+            @if (ViewBag.Type != "Order" && ViewBag.Type != "OrdFollowUp" && ViewBag.Type != "OrdFollowUpList" && ViewBag.Type != "BankReceipt" && ViewBag.Type != "UserWork" && ViewBag.Type != "ComplaintList" && ViewBag.Type != "PaymentPlanning")
+            {
+                if (ViewBag.Type != "PayFollowUp" && ViewBag.Type != "PayFollowUpList" && ViewBag.Type != "BankReceipt" && ViewBag.Type != "DispatchOrd")
+                {
+                <div class="col-sm-2 padd_l padd_5">
+                    Brand
+  @Html.DropDownList("itdmill_A", (SelectList)ViewBag.Brand, "--Select--", new { @class = "form-control" })
+                </div>  
+                }
+
+                if (ViewBag.Type != "PayFollowUp" && ViewBag.Type != "PayFollowUpList" && ViewBag.Type != "BankReceipt")
+                {
+                <div class="col-sm-2 padd_l padd_5">
+                    Sub Category
+  @Html.DropDownList("subCategoryID_A", ViewBag.SubCategory as SelectList, "--Select--", new { @class = "form-control" })
+                </div>}
+            }
+
+            @if (ViewBag.Type == "DispatchOrd")
+            {
+                <div class="col-sm-2 padd_l padd_5 p_element" id="sb2">
+                    <fieldset>
+                        <legend>Brand</legend>
+                        <div id="dvAllBrand" class="multi_list drop_down">
+                            <ul style="height: 100px">
+                                <li class="checkbox-inline">
+                                    <label class="radio-inline">
+                                        <input type="checkbox" name="chkAllBrand" id="chkAllBrand" />
+                                        Select All</label></li>
+                                @for (var i = 0; i < Model.lstBrand.Count; i++)
+                                {  
+                                    <li class="checkbox-inline">
+                                        <label class="radio-inline">
+                                            <input type="checkbox" data-Brand-entry-id="@Model.lstBrand[i].ItemID" class="chkSelectBrand" />
+                                            @Model.lstBrand[i].ItemNm
+                                        </label>
+                                    </li> 
+                                }
+                            </ul>
+                        </div>
+                    </fieldset>
+                </div>
+            }
+
+            @if (ViewBag.Type != "BankReceipt" && ViewBag.Type != "ComplaintList" && ViewBag.Type != "PaymentPlanning")
+            {
+                if (CompxERP.Models.SessionMaster.UserType == 0 || CompxERP.Models.SessionMaster.UserType == 1)
+                {
+                <div class="col-sm-2 padd_l padd_5">
+                    Executive 
+ @Html.DropDownList("Executive_A", (SelectList)ViewBag.Executive, "--Select--", new { @class = "form-control", @onchange = "SetDealerName();" })
+                </div>
+                }
+            }
+
+            @if (ViewBag.Type == "DispatchOrd")
+            { 
+                <div class="col-sm-1 padd_l padd_5">
+                    Dispatch
+                            @Html.DropDownList("DispatchStatus", new List<SelectListItem> {   
+            new SelectListItem { Text="Dispatch", Value="1"},
+           new SelectListItem { Text="Pending", Value="2"},  
+           }, new { @class = "form-control" })
+
+                </div>
+            }
+
+            @if (ViewBag.Type == "OrdFollowUpList")
+            { 
+                <div class="col-sm-1 padd_l padd_5">
+                    Dispatch
+                            @Html.DropDownList("OrdStatus", new List<SelectListItem> {   
+            new SelectListItem { Text="--Select--", Value="0"},
+            new SelectListItem { Text="Take Order", Value="1"},
+           new SelectListItem { Text="Abort", Value="2"},  
+           }, new { @class = "form-control" })
+
+                </div>
+            }
+            @if (ViewBag.Type == "BankReceipt")
+            { 
+                <div class="col-sm-1 padd_l padd_5">
+                    Status
+                            @Html.DropDownList("ddlBR_Status", new List<SelectListItem> {   
+            new SelectListItem { Text="Under Process", Value="0"},
+           new SelectListItem { Text="Verified", Value="1"},  
+           new SelectListItem { Text="Not Verified", Value="2"},  
+           }, new { @class = "form-control" })
+
+                </div>
+            }
+            @if (ViewBag.Type == "ComplaintList")
+            { 
+                <div class="col-sm-1 padd_l padd_5">
+                    Status
+                            @Html.DropDownList("ddlCompl_Status", new List<SelectListItem> {   
+            new SelectListItem { Text="Select", Value="0"},
+           new SelectListItem { Text="Pending", Value="1"},  
+           new SelectListItem { Text="Done", Value="2"},  
+           new SelectListItem { Text="Reject", Value="3"},  
+		   new SelectListItem { Text="Halted", Value="4"},  /*181029 %temp%*/
+           }, new { @class = "form-control" })
+
+                </div>
+            }
+            @if (ViewBag.Type == "PayFollowUp")
+            {
+                <div class="col-sm-3 padd_l padd_5 p_element" id="dvOption"></div>
+                 <div class="col-sm-3 padd_l padd_5 p_element">
+                    <input type="radio" id="optAll" name="optPayFollo" value="0" checked class="float-left" /> <label for="optAll" class="float-left mlr10 mt10">All</label>
+                    <input type="radio" id="optDue" name="optPayFollo" value="0" class="float-left" /><label for="optDue" class="float-left mlr10 mt10"> Due</label>
+                    <input type="radio" id="optCommit" name="optPayFollo" value="0" class="float-left"/><label for="optCommit" class="float-left mlr10 mt10"> Commit</label>
+                    <input type="radio" id="optPlanning" name="optPayFollo" value="0" class="float-left" /><label for="optPlanning" class="float-left mlr10 mt10"> Planning</label> 
+                </div>
+                <div class="col-sm-3 padd_l padd_5 p_element" id="sb4">
+                    <fieldset style="margin-top:10px !important;">
+                        <legend></legend>
+                        <div class="col-sm-4 padd_l padd_5">
+                            Planning Date  
+                    <input type="text" class="form-control" id="txtPlanningDate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask />
+                        </div>
+                        <div class="col-sm-8 padd_l padd_5 text-right">
+                            <input type="button" id="btnSavePlanning" value="Save Planning" onclick="SetPayPlanning()" class="btn btn-search" style="margin-top:18px;"/>
+                        </div>
+                    </fieldset>
+                </div>
+            }
+
+            <span class="input-group-btn searchbtnTop">
+                @if (ViewBag.Type == "PayFollowUp")
+                {<input type="button" id="btnPayFollowUpEnt" value="Search" class="btn btn-search" />
+@*<input type="button" id="btnPayFollowUpEnt_Chk"  onclick="chkAllDealer_a();" value="Search_Chk"   class="btn btn-search" />*@
+                }
+                else if (ViewBag.Type == "PayFollowUpList")
+                {<input type="button" id="btnPayFollowUpEntList" value="Search" class="btn btn-search" /> }
+                else if (ViewBag.Type == "DispatchOrd")
+                {<input type="button" id="btnDispatchOrd" value="Search" class="btn btn-search" /> }
+                else if (ViewBag.Type == "Order")
+                {<input type="button" id="FillOrder" value="Search" class="btn btn-search" /> }
+                else if (ViewBag.Type == "OrdFollowUp")
+                {<input type="button" id="btnGetOrdFollowUp" value="Search" class="btn btn-search" /> }
+                else if (ViewBag.Type == "OrdFollowUpList")
+                {<input type="button" id="btnGetOrdFollowUpList" value="Search" class="btn btn-search" /> }
+                else if (ViewBag.Type == "BankReceipt")
+                {<input type="button" id="btnBankReceiptEnt" value="Search" class="btn btn-search" /> }
+                else if (ViewBag.Type == "ComplaintList")
+                {<input type="button" id="btnComplaint_List" value="View" class="btn btn-search" /> }
+                else if (ViewBag.Type == "UserWork")
+                {<input type="button" id="btnUserWork" value="Search" class="btn btn-search" /> }
+                else if (ViewBag.Type == "PaymentPlanning")
+                {<input type="button" id="btnPaymentPlanning" value="Search" class="btn btn-search" /> }
+                else
+                {<input type="button" id="btnApprovedOrdList" value="Search" class="btn btn-search" /> }
+
+            </span>
+        </div>
+    }
+
+    <div id="divFollowUp"></div>
+</div>
+
+<script type="text/javascript">
+    $('#FollowUpSearch').click(function () {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("FollowUpList", "Quotation")",
+            data: { iStatus: $('#F_Status_S').val(), iEmpCode: $('#F_FollowBy_S').val(), iDays: $('#F_Days').val(), iType: $("#F_S_Type").val(), isDue: $("#F_S_Due").val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+
+    });
+    $('#FillCalling').click(function () {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetCallingData", "Quotation")",
+            data: { From_Date: $('#From_Date').val(), To_Date: $('#To_Date').val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+
+    });
+    $('#FillTrialBal').click(function () {
+        ShowHideLoader('show');
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("trialbal", "Report")",
+            data: { CompCode: $('#Company_TB').val(), From: $('#From_TB').val(), To: $('#To_TB').val(), DealerCode: $('#ddlDealer_TB').val(), StateID: $('#TB_StateID').val(), Executive: $('#TB_Executive').val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                ShowHideLoader('hide');
+                alert('Error');
+            }
+        });
+
+    });
+
+    $('#PrintTrialBal').click(function () {
+        ShowHideLoader('show');
+
+        var CompCode = 0; var State = 0; var City = 0; var DealerID = 0; var ExecutiveID = 0;
+        if ($("#Company_TB").val() > 0) CompCode = $("#Company_TB").val();
+        if ($("#TB_StateID").val() > 0) State = $("#TB_StateID").val();
+        if ($("#ddlDealer_TB").val() > 0) DealerID = $("#ddlDealer_TB").val();
+        if ($("#TB_Executive").val() > 0) ExecutiveID = $("#TB_Executive").val();
+
+        window.open('../Pages/Reports.aspx?Code=1&PType=TralBal&compcode=' + CompCode + '&sParty=' + DealerID + '&sFrom=' + $('#From_TB').val() + '&sTO=' + $('#To_TB').val() + '&StateID=' + State + '&Executive=' + ExecutiveID + '', '_blank');
+
+        ShowHideLoader('hide');
+    });
+
+    $('#FillOrder').click(function () {
+        debugger;
+        var CompCode = 0; var State = 0; var City = 0; var DealerID = 0; var ExecutiveID = 0;
+        if ($("#Company_A").val() > 0) CompCode = $("#Company_A").val(); //if ($("#Company_Or").val() > 0) CompCode = $("#Company_Or").val();
+        if ($("#oSateID_A").val() > 0) State = $("#oSateID_A").val();
+        if ($("#oCityID_A").val() > 0) City = $("#oCityID_A").val();
+        if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        if ($("#Executive_A").val() > 0) ExecutiveID = $("#Executive_A").val();
+        ShowHideLoader('show');
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetOrderData", "Quotation")",
+            data: { From_Date: $('#o_From_A').val(), To_Date: $('#o_To_A').val(), CompCode: CompCode, iState: State, iCity: City, DealerID: DealerID, ExecutiveID: ExecutiveID },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+
+    });
+
+    $('#btnGetOrdFollowUp').click(function () {
+        debugger;
+        var DealerID = "0"; CityID = "0"; Executive = "0"; StateID = "0";
+        if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        if ($("#oSateID_A").val() > 0) StateID = $("#oSateID_A").val();
+        if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+        if ($("#oCityID_A").val() > 0) CityID = $("#oCityID_A").val();
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("OrdFollowUp", "Quotation")",
+            data: { DealerID: DealerID, StateID: StateID, Executive: Executive, CityID: CityID, From: $('#o_From_A').val(), To: $('#o_To_A').val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+
+    });
+    $('#btnGetOrdFollowUpList').click(function () {
+        debugger;
+        var DealerID = "0"; CityID = "0"; Executive = "0"; StateID = "0"; OrdStatus = "0";
+        if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        if ($("#oSateID_A").val() > 0) StateID = $("#oSateID_A").val();
+        if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+        if ($("#oCityID_A").val() > 0) CityID = $("#oCityID_A").val();
+        if ($("#OrdStatus").val() > 0) OrdStatus = $("#OrdStatus").val();
+        //
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetOrdFollowUpList", "Quotation")",
+            data: { DealerID: DealerID, StateID: StateID, Executive: Executive, CityID: CityID, From: $('#o_From_A').val(), To: $('#o_To_A').val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+
+    });
+
+    $('#btnBankReceiptEnt').click(function () {
+        debugger;
+        var DealerID = "0"; CityID = "0"; Executive = "0"; StatusID = "0"; OrdStatus = "0";
+        if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        //if ($("#oSateID_A").val() > 0) StateID = $("#oSateID_A").val();
+        //if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+        //if ($("#oCityID_A").val() > 0) CityID = $("#oCityID_A").val();
+        //if ($("#OrdStatus").val() > 0) OrdStatus = $("#OrdStatus").val();
+        //
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetBank_Receipt", "Quotation")",
+            data: { DealerID: DealerID, From: $('#o_From_A').val(), TO: $('#o_To_A').val(), StatusID: $('#ddlBR_Status').val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+
+    });
+    $('#btnOrderReport').click(function () {
+        debugger;
+        var BrandID = "0"; DealerID = "0"; StateID = "0"; SubCateID = "0"; DealerID = "0"; Executive = "0"; Company = "0";
+        if ($("#itdmill_OR").val() > 0) BrandID = $("#itdmill_OR").val();
+        if ($("#ddlPartyDealer").val() > 0) DealerID = $("#ddlPartyDealer").val();
+        if ($("#oSateID").val() > 0) StateID = $("#oSateID").val();
+        if ($("#subCategoryID").val() > 0) SubCateID = $("#subCategoryID").val();
+        if ($("#Executive").val() > 0) Executive = $("#Executive").val();
+        if ($("#Company").val() > 0) Company = $("#Company").val();
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("PendingOrdList", "Quotation")",
+            data: { BrandID: BrandID, DealerID: DealerID, StateID: StateID, SubCateID: SubCateID, From_Date: $('#o_From').val(), To_Date: $('#o_To').val(), Executive: Executive, CompanyID: Company },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+
+    });
+    $('#btnApprovedOrdList').click(function () {
+        debugger;
+        var BrandID = "0"; DealerID = "0"; StateID = "0"; SubCateID = "0"; DealerID = "0"; Executive = "0"; Company = "0";
+        if ($("#itdmill_A").val() > 0) BrandID = $("#itdmill_A").val();
+        if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        if ($("#oSateID_A").val() > 0) StateID = $("#oSateID_A").val();
+        if ($("#subCategoryID_A").val() > 0) SubCateID = $("#subCategoryID_A").val();
+        if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+        if ($("#Company_A").val() > 0) Company = $("#Company_A").val();
+        ShowHideLoader('show');
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ApprovedOrdList", "Quotation")",
+            data: { BrandID: BrandID, DealerID: DealerID, StateID: StateID, SubCateID: SubCateID, From_Date: $('#o_From_A').val(), To_Date: $('#o_To_A').val(), Executive: Executive, CompanyID: Company },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+
+    });
+
+    $('#btnPaymentPlanning').click(function () {
+        debugger;
+        ShowHideLoader('show');
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("PaymentPlanning", "Service")",
+            data: { PayPlanningDate: $('#txtPayPlanningDate').val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+
+    });
+
+    $('#btnUserWork').click(function () {
+        debugger;
+        var BrandID = "0"; DealerID = "0"; StateID = "0"; SubCateID = "0"; DealerID = "0"; Executive = "0"; Company = "0";
+        //if ($("#itdmill_A").val() > 0) BrandID = $("#itdmill_A").val();
+        //if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        //if ($("#oSateID_A").val() > 0) StateID = $("#oSateID_A").val();
+        //if ($("#subCategoryID_A").val() > 0) SubCateID = $("#subCategoryID_A").val();
+        //if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+        if ($("#Company_A").val() > 0) Company = $("#Company_A").val();
+        ShowHideLoader('show');
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetUserWork", "User")",
+            data: { iUserCode: 0, To: $('#o_To_A').val(), From: $('#o_From_A').val(), ModeID: 5, CompCode: Company },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+
+    });
+    $('#btnPayFollowUpEnt').click(function () {
+        debugger;
+        var CompCode = "0"; State = "0"; City = "0"; AcctList = "2605"; Due = "0"; Commit = "0"; Planning = "0";// "1443,1530,2605,2607";
+        var PartyIds = $.map($("#dvAllParties .chkSelectDealer:checked"), function (n, i) {
+            return $(n).attr("data-dispatch-entry-id");
+        }).join(',');
+
+        //if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();  
+        if ($("#Company_A").val() > 0) CompCode = $("#Company_A").val();
+        if ($("#oCityID_A").val() > 0) City = $("#oCityID_A").val();
+        if ($("#oSateID_A").val() > 0) State = $("#oSateID_A").val();
+
+        if (document.getElementById('optDue').checked == true) Due = 1;
+        if (document.getElementById('optCommit').checked == true) Commit = 1;
+        if (document.getElementById('optPlanning').checked == true) Planning = 1;
+
+        ShowHideLoader('show');
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("PayFollowUp", "Quotation")",
+            data: { CompCode: CompCode, AcctList: PartyIds, UptoDate: $("#txtUptoDate").val(), State: State, City: City, Due: Due, Commit: Commit, Planning: Planning },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+
+    });
+
+    $('#btnComplaint_List').click(function () {
+        var CompCode = "0"; State = "0"; City = "0"; AcctList = "2605"; Due = "0"; DealID = "0"; StatusID = "0";// "1443,1530,2605,2607";
+        var IsRead = '@ViewBag.IsRead';
+        //var PartyIds = $.map($("#dvAllParties .chkSelectDealer:checked"), function (n, i) {
+        //    return $(n).attr("data-dispatch-entry-id");
+        //}).join(',');
+
+        //if ($("#Company_A").val() > 0) CompCode = $("#Company_A").val();
+        //if ($("#oCityID_A").val() > 0) City = $("#oCityID_A").val();
+        var CustID = '@ViewBag.CustID';//181030_1
+        if('@ViewBag.RpType'=="NC")StatusID="1";
+        if ($("#ddlPartyDealer_A").val() > 0) DealID = $("#ddlPartyDealer_A").val();
+        if ($("#ddlCompl_Status").val() > 0) StatusID = $("#ddlCompl_Status").val();
+
+        //if (document.getElementById('optDue').checked == true) Due = 1;
+        //if (document.getElementById('optCommit').checked == true) Commit = 1;
+        //From_Date: $('#o_From_A').val(), To_Date
+        ShowHideLoader('show');
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("getComplent", "Service")",
+            data: { CustID: CustID, DealID: DealID, From_Date: $('#o_From_A').val(), To_Date: $('#o_To_A').val(), StatusID: StatusID, aRpType: '@ViewBag.RpType', IsRead: IsRead },//181030
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+
+    });
+
+
+    $('#btnPayFollowUpEntList').click(function () {
+        debugger;
+        var BrandID = "0"; DealerID = "0"; StateID = "0"; CityID = "0"; SubCateID = "0"; DealerID = "0"; Executive = "0"; Company = "0";
+        if ($("#itdmill_A").val() > 0) BrandID = $("#itdmill_A").val();
+        if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        if ($("#oSateID_A").val() > 0) StateID = $("#oSateID_A").val();
+        if ($("#oCityID_A").val() > 0) CityID = $("#oCityID_A").val();
+        if ($("#subCategoryID_A").val() > 0) SubCateID = $("#subCategoryID_A").val();
+        if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+        if ($("#Company_A").val() > 0) Company = $("#Company_A").val();
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("PayFollowUpList", "Quotation")",
+            data: { BrandID: BrandID, DealerID: DealerID, StateID: StateID, SubCateID: SubCateID, From_Date: $('#o_From_A').val(), To_Date: $('#o_To_A').val(), Executive: Executive, CompanyID: Company, CityID: CityID },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+
+    });
+    $('#Executive_A').change(function () { SetDealerName(); });
+    function SetDealerName() {
+        debugger;
+        var Executive = "0";
+        if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetDealerJSon", "Quotation")",
+            data: { ExecID: $("#Executive_A").val() },
+            success: function (data) {
+                //$("#divFollowUp").html(data);
+                var str = ""; var Itm = "";
+                str = " <ul style='height: 100px'>";
+
+                //<li class='checkbox-inline'> <label class='radio-inline'> <input type='checkbox' name='chkAllDealer' id='chkAllDealer' /> Select All</label></li>
+
+                for (var i = 0; i < data.length; i++) {
+                    str += " <li class='checkbox-inline'><label  class='radio-inline'>  <input type='checkbox' data-dispatch-entry-id='" + data[i]["Code"] + "' class='chkSelectDealer' /> " + data[i]["Name"] + " </label> </li> ";
+                }
+                str += ' </ul>';
+                //$("#dvAllParties").val(Itm);
+                $("#dvAllParties").html(str);
+
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+    }
+
+    function chkAllDealer_a() {
+        alert("ss");
+        debugger;
+        $("#dvAllParties .chkAllDealer_a").prop('checked', $(this).prop("checked"));
+    }
+
+    $("#chkAllDealer").change(function () {
+        //alert("aa");
+        debugger;
+        $("#dvAllParties .chkSelectDealer").prop('checked', $(this).prop("checked"));
+    });
+
+
+    $('#btnDispatchOrd').click(function () {
+        debugger;
+        var BrandID = "0"; DealerID = "0"; StateID = "0"; SubCateID = "0"; DealerID = "0"; Executive = "0"; Company = "0";
+
+        BrandID = $.map($("#dvAllBrand .chkSelectBrand:checked"), function (n, i) {
+            return $(n).attr("data-Brand-entry-id");
+        }).join(',');
+        ShowHideLoader('show');
+        if ($("#itdmill_A").val() > 0) BrandID = $("#itdmill_A").val();
+        if ($("#ddlPartyDealer_A").val() > 0) DealerID = $("#ddlPartyDealer_A").val();
+        if ($("#oSateID_A").val() > 0) StateID = $("#oSateID_A").val();
+        if ($("#subCategoryID_A").val() > 0) SubCateID = $("#subCategoryID_A").val();
+        if ($("#Executive_A").val() > 0) Executive = $("#Executive_A").val();
+        if ($("#Company_A").val() > 0) Company = $("#Company_A").val();
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("DispatchOrd", "Quotation")",
+            data: { BrandID: BrandID, DealerID: DealerID, StateID: StateID, SubCateID: SubCateID, From_Date: $('#o_From_A').val(), To_Date: $('#o_To_A').val(), Executive: Executive, CompanyID: Company, DispatchStatus: $("#DispatchStatus").val() },
+            success: function (data) {
+                $("#divFollowUp").html(data);
+                ShowHideLoader('hide');
+            },
+            error: function () {
+                alert('Error');
+                ShowHideLoader('hide');
+            }
+        });
+
+    });
+    $('#btnLedgerReport').click(function () {
+        debugger;
+        var DealerNm = "";
+        var WithItem = 0;
+        if ($("#chkWithItem").prop('checked') == true) {
+            WithItem = 1;
+        }
+
+
+
+        //window.open('../../Report/Ledger?sFrom=' + $("#L_From").val() + '&sTO=' + $("#L_To").val() + '&sParty=' + $("#hdnParty").val(), '_blank');
+        window.open('../../Report/Ledger?sFrom=' + $("#L_From").val() + '&sTO=' + $("#L_To").val() + '&Compcode=' + $("#Company_Led").val() + '&sParty=' + $("#hdnParty").val() + ',' + $("#Dealer_Ldg").val() + '&WithItem=' + WithItem, '_blank');
+
+        @*if ($("#ddlPartyDealer").val() > 0)
+            DealerNm = $('#ddlPartyDealer :selected').text();
+
+        $.ajax({    
+            type: "GET",
+            url: "@Url.Action("Ledger", "Report")",
+            data: { L_From: $('#L_From').val(), L_To: $('#L_To').val(), DealerNm: DealerNm },
+            success: function (data) { 
+                $("#divFollowUp").html(data);
+            },
+            error: function () {
+                alert('Error');
+            }
+        });*@
+
+    });
+
+    function PrintLedger() {
+        debugger;
+        window.open('../Pages/Reports.aspx?Code=1&PType=Ledger&compcode=' + $("#Company_Led").val() + '&sFrom=' + $("#L_From").val() + '&sTO=' + $("#L_To").val() + '&sParty=' + $("#Dealer_Ldg").val() + '', '_blank');
+
+    }
+
+    $('#Deal_Tahsil').empty();
+    //FillMaxNo();
+
+
+    $("#chkAllBrand").change(function () {
+        $("#dvAllBrand .chkSelectBrand").prop('checked', $(this).prop("checked"));
+    });
+
+    function FillCity() {
+        //debugger;
+        $('#oCityID_A').empty();
+        $.get("../Master/GetCityList", { iState: $("#oSateID_A").val() }, function (data) {
+            if (data != null) {
+                var opt = new Option('--Select--', 0);
+                $("#oCityID_A").append(opt);
+
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].cityname, data[i].citycode);
+                    $("#oCityID_A").append(opt);
+                }
+            }
+        });
+    }
+
+</script>
+
+
+
+<script>
+
+    //$(document).ready(function () {  
+
+    //        $("#tblPendingOrder").tableExport({
+    //            bootstrap: true, ignoreCols: ([15,16]),
+    //        });
+
+    //    });
+
+    //$(function () { 
+    //    $('#tblDispatchEntries').DataTable({
+    //        "paging": true,
+    //        "lengthChange": true,
+    //        "searching": true,
+    //        "ordering": true,
+    //        "info": true,
+    //        "autoWidth": false
+    //    });
+    //});
+</script>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        $("#partyname").autocomplete({
+            source: function (request, response) {
+                debugger;
+                var customer = new Array();
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    type: "POST",
+                    url: "@(Url.Action("/GetDealer", "Master"))",
+
+                    data: { "sName": request.term },
+                    success: function (data) {
+                        for (var i = 0; i < data.length ; i++) {
+                            customer[i] = { label: data[i].Value, Id: data[i].Key };
+                        }
+                    }
+                });
+                response(customer);
+            },
+            select: function (event, ui) {
+                debugger;
+                $('#ddlPartyDealer_A').val(ui.item.Id);
+            }
+        });
+
+        $("#partyname").blur(function () {
+            if ($("#partyname").val() == "") {
+                $('#ddlPartyDealer_A').val(0);
+            }
+        });
+
+    });
+
+</script>
+

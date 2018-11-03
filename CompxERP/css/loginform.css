@@ -1,0 +1,30 @@
+﻿
+@font-face {font-family: BubblegumSans-Regular;  src: url(../fonts/BubblegumSans-Regular.ttf);}
+@font-face {font-family: fira;  src: url(../fonts/fira-sans.regular.ttf);}
+@font-face {font-family: Overlock-Regular;  src: url(../fonts/Overlock-Regular-OTF.otf);}
+/*partnerlogin*/
+.partnerlogin {height:auto;margin:0 auto; background-color:#fff;border: 1px solid #ddd;box-shadow: 0px 0px 25px #ccc;}
+.partnerlogin fieldset {  padding: 30px;}
+.partnerlogin fieldset legend {border:none; color:#E31E25; margin-bottom:0; font-family:Overlock-Regular; font-weight:600; font-size:32px;}
+.partnerlogin_row { background-image:url('../img/partner-bg.jpg'); background-size:100% 100%; padding-top:50px; padding-bottom:30px;}
+/*loginpage*/
+.login_page {background-color:#e31e25;}
+.top_dvlogin {  float: left;  width: 100%;}
+.logo_login img {width: 42%;}
+.gst_login img { float: right; width: 26%;}
+.container_login {width:35%; height:auto;margin:0 auto; background-color:#fff;border: 5px solid #920302;box-shadow: 0px 0px 15px #222; margin-top:-30px;}
+.container_login fieldset {  padding: 30px;}
+.container_login fieldset legend {border:none; color:#E31E25; margin-bottom:0; font-family:Overlock-Regular; font-weight:600; font-size:32px;}
+.width_100 {margin-bottom:10px;width:100%;float:left;}
+.compx_home { font-family: fira;font-size: 14px;}
+.logo_dv img { margin-top: 13px;}
+.address_menu { padding: 20px 0; width: 100%; float: LEFT;}
+span.Crm_name { font-size: 26px; font-weight: bold; color: white;line-height: 48px; padding-left: 18px;}
+.compx_home header .address_menu a {color: white;font-size: 14px;}
+.compx_home header .address_menu a:hover { background: transparent !important;}
+.compx_home header .dropdown-menu.multi-level {border-top: 3px solid #9a1311;}
+menu > li > a {  clear: both;  color: #333;  display: block; font-weight: 400; line-height: 1.42857; padding: 6px 20px;white-space: nowrap;cursor: pointer;}
+.dropdown-menu.multi-level a {color: black !important;}
+.compx_home header .dropdown-menu > li > a {clear: both; color: #333; display: block;font-weight: 400; line-height: 1.42857;  padding: 6px 20px; white-space: nowrap;cursor: pointer;}
+#page-footer { background-color: white; border-top: 1px solid #ccc; bottom: 0; float: left; position: fixed;text-align: center;width: 100%; line-height: 40px;color: #333;}
+#page-footer p {margin-bottom: 0px;}

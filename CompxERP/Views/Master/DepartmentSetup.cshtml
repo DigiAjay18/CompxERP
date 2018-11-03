@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "DepartmentSetup";
+}
+
+<h2>DepartmentSetup</h2>
+ <!--------departmentSetup--->
+    <div >
+        <div  >
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Department Setup</h4>
+                </div>
+                <div class="modal-body input_popup">
+                    <div class="form-group">
+                      @*  <div class="col-sm-2 padd_l padd_5">D.ID</div>
+                        <div class="col-sm-3 padd_l padd_5">
+                            <input style="background: #f2eded;" class="form-control" id="DepartmentID" name="DepartmentID" value="1" type="text" disabled>
+                        </div>*@
+                       
+                        <div class="col-sm-3 padd_l padd_5">Department Name</div>
+                        <div class="col-sm-4 padd_l padd_5">
+                           @Html.DropDownList("vwDepartment", (SelectList)ViewBag.vwDepartment, "--Select--", new { @class = "form-control", required = "required" })
+                        </div> 
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 padd_l padd_5">Designation</div>
+                        <div class="col-sm-10 padd_l padd_5">
+                              <input class="form-control" id="Designation" name="namtx" value="" type="text"> 
+                        </div>
+                    </div> 
+                </div>
+                   <div class="modal-footer">
+                   <input type="button" id="InsDepartment" value="Save" class="btn btn-default" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                     </div>
+            </div>
+        </div>
+    </div>
+ <script type="text/javascript">
+
+
+     $('#InsDepartment').click(function () {
+         debugger;
+
+         if ($('#Designation').val() == "") {
+             $('#Designation').focus();
+             alert('Please Enter Designation Name ...');
+             return
+         }
+         
+         if ($('#Designation').val() != '') {
+             $.get("/Home/InsDepartment", { Department_ID: $('#Department_ID').val(), Designation: $('#Designation').val() }, function (data) {
+                 if (data != null) {
+                     alert('Saved Successfully ...');
+                    
+                     $('#Department_ID').val('');
+                     $('#Designation').val('');
+
+                     FillDistributor();
+                 }
+             });
+         }
+     });
+
+
+ </script>

@@ -1,0 +1,133 @@
+﻿ 
+ <style>
+     .trasparent_btn {
+    background: transparent !important;
+    border: none;
+}
+ </style>
+  <div class="modal-dialog modal-md">
+   <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                    <h4   class="modal-title"> <div id="HeadNm"></div>  </h4>
+                </div>
+                <div class="modal-body input_popup"> 
+
+                    <div class="col-sm-4 padd_l padd_5">
+                         Type   @Html.DropDownList("ddlSrvType", (SelectList)ViewBag.vbService, "--Select--", new { @class = "form-control", required = "required" ,@onchange="getSrvCycle();" }) 
+                        </div>
+                         
+                        <div class="col-sm-4 padd_l padd_5">
+                         No.    <input type="text" class="form-control" id ="txtNo" onchange ="CrtSrvRow();" />  
+                        </div>
+   
+                </div>
+          <div class="col-sm-12"> <div id ="dvSrvCycleDet"></div></div>
+
+                <div class="modal-footer">
+                    <input type="button" id="InsSrvCycle"  value="Save" onclick="SaveService();"  class="btn btn-default" />  
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              <div class="col-sm-12"> <div id ="dvSrvCycle" style="margin-bottom:20px;"></div></div>
+            </div>
+</div>
+ 
+
+<script type ="text/javascript" >
+    function SaveService() {
+        debugger;
+
+        var i = 0;
+        var sOrderID = "";
+        $('#tblSrvRow').find('tr').each(function () {
+            var row = $(this);
+            //if (row.find('input[type="date"]').val() != "") {
+            sOrderID += row.find(txtSrvDt).val() + '^';
+
+            i = i + 1;
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SaveSrvCycle", "Service")",
+            data: { SrvTypeID: $('#ddlSrvType').val(), SrvNo: $("#txtNo").val(), SrvCycleDt: sOrderID },
+            success: function (data) {
+                alert(data);
+                $('#ddlSrvType').val(0); $('#txtNo').val(0); $('#ddlPF_Bank').val(0); $('#dvSrvCycleDet').html('');
+
+            },
+            error: function () {
+                alert(error);
+            }
+        });
+
+    }
+
+    function getSrvCycle() {
+        debugger;
+
+        var i = 0;
+        var sOrderID = "";
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("getSrvCycle", "Service")",
+            data: { TypeID: $('#ddlSrvType').val() },
+            success: function (data) {
+                var SrvNo = 0;
+                SrvNo = $('#txtNo').val();
+                var $table = $('<table id="tblSrvRow" class="table table-fixed table-bordered j_table_new table-striped"/>');
+                var $tbody = $('<tbody style="height:200px;"/>');
+                $.each(data, function (i, val) {
+                    var $row = $('<tr/>');
+                    var d = new Date(val.sSrvDate);
+                    $row.append($('<td width=2%"/>').html(i + 1));
+                    $row.append($('<td width="28%"/>').html("Service No " + (i + 1)));
+                    $row.append($('<td width="20%"/>').html(val.sSrvDate));
+
+                    $tbody.append($row);
+                });
+                $table.append($tbody);
+
+                $('#dvSrvCycle').html($table);
+
+            },
+            error: function () {
+                alert(error);
+            }
+        });
+
+    }
+
+    function CrtSrvRow() {
+        debugger;
+        var SrvNo = 0;
+
+        SrvNo = $('#txtNo').val();
+        var $table = $('<table id="tblSrvRow" class="table table-fixed table-bordered j_table_new table-striped"/>');
+        var $tbody = $('<tbody style="height:200px;"/>');
+
+
+        var sDate = "";
+        for (i = 0; i < SrvNo; i++) {
+            var $row = $('<tr/>');
+            var x = "'alias': 'dd/mm/yyyy'";
+            $row.append($('<td width=2%"/>').html(i + 1));
+            $row.append($('<td width="28%"/>').html("Service No " + (i + 1)));
+
+            //sDate = '<input type="text" class=\'form-control\' id="txtSrvDt_' + i + '"   data-inputmask="\'alias\': \'dd/mm/yyyy\'" data-mask />';
+
+            //$row.append($('<td width="5%"/>').html(sDate));
+            // $row.append($('<td width="5%"/>').html('<input type="date" style="width:200px" class="form-control" id="txtSrvDt_' + i + '"   />'));
+            $row.append($('<td width="5%"/>').html('<input type="date" style="width:200px" class="form-control" id="txtSrvDt"   />'));
+
+            $tbody.append($row);
+        }
+        $table.append($tbody);
+
+        $('#dvSrvCycleDet').html($table);
+    }
+
+
+
+</script>

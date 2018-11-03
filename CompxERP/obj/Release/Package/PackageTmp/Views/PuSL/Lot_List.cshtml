@@ -1,0 +1,46 @@
+﻿@model List<CompxERP.Models.clsPoItem>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr> 
+        <th>
+            @Html.DisplayNameFor(model => model.ItemID)
+        </th> 
+        <th>
+            @Html.DisplayNameFor(model => model.IsSelected)
+        </th> 
+        <th>
+            @Html.DisplayNameFor(model => model.LotNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PeLotNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Balance)
+        </th> 
+    </tr>
+
+@foreach (var item in Model) {
+    <tr> 
+        <td>
+            @Html.DisplayFor(modelItem => item.ItemID)
+        </td> 
+        <td>
+            @Html.DisplayFor(modelItem => item.IsSelected)
+        </td> 
+        <td>
+            @Html.DisplayFor(modelItem => item.LotNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PeLotNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Balance)
+        </td>
+         
+    </tr>
+}
+
+</table>

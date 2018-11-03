@@ -1,0 +1,299 @@
+﻿@{
+    Layout = null;
+}
+@using System.Web.Optimization
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>CRM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/Scripts/ng")
+    @Scripts.Render("~/Scripts/js")
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    
+    <style type="text/css">
+        header .header_bottom .nav.navbar-nav a {padding: 10px 24px !important;}
+        .right_sidebar .Quick_view.ClientDashboard li .risK_img {float: left;background: #CC1A57;margin-top: 0;padding: 4px;width: 37%;min-height: 76px;}
+        .right_sidebar .Quick_view.ClientDashboard li .risK_imgTxt {min-height: 76px;}
+        .modal-footer {border-top: 1px solid #f2eded;text-align: center;padding: 10px 0;}
+        .btn.btn-default {font-size: 16px;}
+        .panel {margin-bottom: 10px;}
+        .right_sidebar .Quick_view > li {padding: 5px;}
+        .dealerList .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {padding: 3px 8px !important;}
+        #btnDelete {background: #e31e25 !important;border: medium none !important;}
+        body {font-family: Verdana, Geneva, sans-serif;font-size: 14px;}
+        .slidingDiv {height: 200px;width: 400px;background-color: #151515;z-index: 999;padding: 20px;margin-top: 10px;border-bottom: 5px solid #3399FF;position: fixed;
+            bottom: 0;right: 0;display: none;color: #fff;}
+        .show_hide {float: right;position: relative;z-index: 99;margin-right: 5px;border: solid 2px transparent;margin-top: 2px;}
+    </style>
+    <script type="text/javascript">
+        google.load("visualization", "1", { packages: ["corechart"] });
+        $(document).on('click', function (e) {
+            if ($(e.target).closest('.show_hide').length) {
+                $(".slidingDiv").slideToggle();
+            } else if (!$(e.target).closest('.slidingDiv').length) {
+                $('.slidingDiv').hide();
+            }
+        });
+        $(document).ready(function () {
+            $(".slidingDiv").delay(200).fadeIn(500);
+        });
+    </script>
+</head>
+<body class="compx">
+    <header class="main_header">
+        <div class="top_header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3 col-sm-3 col-xs-12 logo"><a href="#" class="logo_dv logo_marg"><img src="~/img/CRMLogo.png" /></a></div>
+                    <div class="col-md-9 col-sm-9">
+                        <div class="top_head NewTopHead">
+                            <span class="Crm_name">Customer Relationship Management </span>
+                            <ul class="nav navbar-nav pull-right">
+                                <li><a href=""></a></li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                       <span>@ViewBag.UserName  @*|| @CompxERP.Models.SessionMaster.CompCode || @CompxERP.Models.SessionMaster.UserID *@  </span> <img src="/img/avatar.png" class="img-circle" style="border-radius: 50%; border-radius: 50%; border: 5px solid #F54F55; margin-bottom: 0px;width:60px;" />       
+                                  </a>
+                                </li>
+                                <li class="notification"><a href="#"><i class="fa fa-bell-o" aria-hidden="true"></i><span class="label label-success">4</span></a></li>
+                                <li class="notification"><a href="/Home/partnerlogin"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header_bottom">
+            <div class="navbar navbar-inverse" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <div class="pull-right outputDate"><span id="output" style="margin-right: 10px;"></span><span id="time"></span></div>
+                    <div class="right_head_bottom pull-right">
+                        <h2 class="text-right">
+                            @if (ViewBag.UserType == "0")
+                            { <span>Supper Admin</span>}
+                            @if (ViewBag.UserType == "1")
+                            { <span>Admin</span>}
+                            @if (ViewBag.UserType == "2")
+                            { <span>Partner</span>}
+                            @if (ViewBag.UserType == "3")
+                            { <span>Distributor</span>}
+                            @if (ViewBag.UserType == "4")
+                            { <span>Dealer</span>}
+                            @if (ViewBag.UserType == "5")
+                            { <span>Tele Caller</span>}
+                            @if (ViewBag.UserType == "6")
+                            { <span>Service Mgr</span>}
+                            @if (ViewBag.UserType == "7")
+                            { <span>Service Eng</span>}
+                            @if (ViewBag.UserType == "8")
+                            { <span>Employee</span>}
+                            @if (ViewBag.UserType == "9")
+                            { <span>Client</span>}
+                            @if (ViewBag.UserType == "10")
+                            { <span>Employee ,Sale</span>}
+                            @if (ViewBag.UserType == "11")
+                            { <span>Employee ,Tech Supp</span>}
+                            <img src="~/Img/company.png" /></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="content_center">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 col-sm-2 col-xs-12 icon-menu p0">
+                     <div id="MainMenu">
+                        <div class="list-group panel">
+        
+           <a href="#demofirst" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu"> 
+                <img src="~/images/Picture1.png" class="md-display" />
+               <span class="md-display">Masters</span>
+                <img src="~/images/Picture1.png" class="sm-display img-size"/><span class="sm-display">Masters</span><i class="fa fa-caret-down sm-display"></i></a>
+          @*<div class="collapse" id="demofirst">
+                        @foreach (var sub in ViewBag.adsubmenu)
+                        {
+                            if (@sub.mendesc != "")
+                            {
+                                <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                            else
+                            {
+                                 <a class="submenuAncher" target="_blank"  href="@sub.menopti">@sub.menname</a> 
+                            }
+                        }   
+          </div>*@
+          <a href="#demoTrans" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">
+               <img src="~/images/Picture7.png" class="md-display" />
+               <span class="md-display">Transactions</span>
+               <img src="~/images/Picture7.png" class="sm-display img-size"/><span class="sm-display">Transactions</span> <i class="fa fa-caret-down sm-display"></i>
+          </a>
+          @* <div class="collapse" id="demoTrans">
+                 @foreach (var sub in ViewBag.vbTransactions)
+                 {
+                     if (@sub.mendesc != "")
+                     {
+                                 <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                     else
+                     {
+                                 <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                     }
+                 }
+          </div>*@
+          <a href="#demo3" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">              
+              <img src="~/images/Picture4.png" class="md-display" />
+              <span class="md-display">Reports</span>
+               <img src="~/images/Picture4.png" class="sm-display img-size"/><span class="sm-display">Reports</span><i class="fa fa-caret-down sm-display"></i>
+          </a>
+   @*       <div class="collapse" id="demo3"> 
+                @foreach (var sub in ViewBag.vbReports)
+                {
+                    if (@sub.mendesc != "")
+                    {
+                                <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                    else
+                    {
+                                 <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                    }
+                }
+
+             
+          </div>*@
+          <a href="#demo4" class="list-group-item list-group-item-success" data-toggle="collapse" data-parent="#MainMenu">
+               <img src="~/images/Picture8.png" class="md-display"/>
+              <span class="md-display">Utilities</span>
+
+               <img src="~/images/Picture8.png" class="sm-display img-size"/><span class="sm-display">Utilities</span><i class="fa fa-caret-down sm-display"></i>
+
+          </a>
+          <div class="collapse" id="demo4">
+              <input type="button" class="btn_map" data-toggle="modal" data-target="#Calling" id="btnChangePassword" value="ChangePassword" data-backdrop="static" data-keyboard="true"  />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#InBoundImport" value="Calling Import" />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#DealerImport" value="Dealer Import" />
+             <input type="button" class="btn_map" data-toggle="modal" data-target="#OpeingImport" value="Opeing Import" />
+            <input type="button" class="btn_map" data-toggle="modal" data-target="#LedgerImport" value="Ledger Import" />
+            <a class="submenuAncher"  href ="../UploadImg/CallingData.xls" > Download Calling Template </a>
+            <a class="submenuAncher"  href ="../UploadImg/DealerData.xls" > Download Dealer Template </a>
+            <a class="submenuAncher"  href ="../UploadImg/DealerOpening.xls" > Download Dealer Opening </a>
+            <a class="submenuAncher"  href ="../UploadImg/Ledger.xls" > Ledger Template </a>
+               
+          </div>
+         
+  <a href="#demoService" class="list-group-item list-group-item-success" data-toggle="collapse"   data-parent="#MainMenu">
+       <img src="~/images/Picture5.png" class="md-display" />
+        <span class="md-display">Service</span>
+
+       <img src="~/images/Picture5.png" class="sm-display img-size"/><span class="sm-display"> Service </span><i class="fa fa-caret-down sm-display"></i></a>
+           @*<div class="collapse" id="demoService">
+
+                 @foreach (var sub in ViewBag.vbService)
+                 {
+                     if (@sub.mendesc != "")
+                     {
+                                 <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="@sub.mendesc" id="@sub.menopti" value="@sub.menname" />}
+                     else
+                     {
+                                 <a class="submenuAncher" target="_blank" href="@sub.menopti">@sub.menname</a> 
+                     }
+                 }
+                
+          </div>*@
+        </div>
+      </div>
+                    
+                 
+                </div>
+
+                <!----right side bar-->
+                <div class="col-md-10 col-sm-10 col-xs-12 padd_l right-screen">
+                    <div class="right_sidebar">
+                        <div class="panel panel-bd lobidisable">
+                            <div class="panel-heading">
+                                @* <div class="panel-title">
+				                        <h4>QUICK REVIEW</h4>
+				                    </div>*@
+                            </div>
+                            <div class="panel-body">
+
+                                <ul class="Quick_view ClientDashboard"> 
+                                 @*   @if (ViewBag.UserType == "8" || ViewBag.UserType == "10" || ViewBag.UserType == "11")
+                                    { 
+                                        *@<li> <span class="risK_img">
+                                        <img src="/img/planning.png"></span><span class="risK_imgTxt">
+                                             <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnPlanningEntry" value="Planning Entry" /> 
+                                                 <br>@ViewBag.TotalLead</span> </li>
+                                        <li> <span class="risK_img blue_bg">
+                                            <img src="/img/overdues.png"></span><span class="risK_imgTxt blue_bgText">   
+                                                 <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnOverDue" value="Over Due List" />  
+                                                 </span> </li>
+                                        <li> <span class="risK_img gn">
+                                            <img src="/img/followup.png"></span><span class="risK_imgTxt gnText"> 
+                                                <a href="/Quotation/PayFollowUpHisAll">    Recent Follow Up</a>
+                                                 <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnRecentFollowUp" value="Recent Follow Up" />     </span> </li>
+                                        <li> <span class="risK_img yw">
+                                            <img src="/img/ledger.png"></span><span class="risK_imgTxt ywText"><input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnLedger" value="Ledger" /> <br />
+                                            </span> 
+                                             
+                                        </li>
+                                        <li><a href="#"><span class="risK_img Dgn">
+                                            <img src="/img/Order.png"></span><span class="risK_imgTxt DgnTxt">  
+                                                  <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true"  data-target="#ParkLead" id="btnOrder" value="Order" /> 
+                                                <br />
+                                            </span></a></li>
+                                         <li><a href="#"><span class="risK_img bluelight">
+                                            <img src="/img/history.png"></span><span class="risK_imgTxt bluelightText">History<br />
+                                            </span></a></li>
+                                        <li><a href="#"><span class="risK_img Lyw">
+                                            <img src="/img/follow-summary.png"></span><span class="risK_imgTxt LywText"> Follow Up Summary
+                                                <br />
+                                            </span></a></li>
+                                   @* }*@
+                                </ul>
+
+                            </div>
+                        </div>
+                     @*   <div class="charts_div">
+                            <div class="row">
+                                
+                            </div>
+                        </div>*@
+
+                    </div>
+                </div>
+                <!----left side bar end-->
+
+
+
+
+            </div>
+            <div> @RenderBody()
+
+            </div>
+        </div>
+    </section>
+    <footer id="page-footer" class="text-center"> 
+        <p>
+            <span style="margin-top: 10px; text-align: center;"><strong>CRM</strong> &copy; copyright 2017</span>
+            <img src="~/Img/footer_logoNew.png" class="img-responsive" style="float: right; margin-right: 10px;">
+        </p>
+    </footer>
+    <div>
+        
+    </div>
+</body>
+</html>

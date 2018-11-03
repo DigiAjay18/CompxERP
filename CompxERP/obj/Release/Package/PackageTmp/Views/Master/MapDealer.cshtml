@@ -1,0 +1,163 @@
+﻿@model CompxERP.Models.tblMapDealer
+@{
+    Layout = null;
+}
+ 
+      <!-- Modal content-->
+     <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Account Mapping</h4>
+        </div>
+        <div class="modal-body input_popup">
+            
+              <div class="form-group">
+                  <div class="col-sm-3 padd_l padd_5">Dealer Name </div>
+                  <div class="col-sm-4 padd_l padd_5">
+                      @Html.DropDownList("DealMapID", (SelectList)ViewBag.vbDealer, "--Select--", new { @class = "form-control", required = "required" ,@onchange ="FillDealerMap();" })
+                  </div>
+                  <div class="col-sm-4 padd_l padd_5">
+                       <input type="button" id="btnMapAcctDealer" value="add" class="btn btn-default" style="margin-top:0px;"/>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-top:0px;">Close</button>
+                  </div>
+             </div> 
+            
+            <div class="form-group">
+                  <div class="col-sm-3 padd_l padd_5">Account Name </div>
+                  <div class="col-sm-4 padd_l padd_5">
+                      @Html.DropDownList("AcctMapID", (SelectList)ViewBag.vbAccount, "--Select--", new { @class = "form-control", required = "required"  })
+                  </div>
+             </div>
+            <div class="form-group">
+                 <div id="ShowTable_MapDealer" class="item_styl clearfix tablecontainer"></div>
+            </div>
+
+           @*      <button type="button" class="btn btn-default" onclick="delEmpAllot();" style="margin-top:0px;">Delete</button>
+            <div class="form-group">
+                 <input type="button" id="InsLead" value="Save" class="btn btn-default" style="margin-top:0px;">
+               
+            </div>*@
+        </div>
+     </div>
+
+  
+
+<script type ="text/javascript">
+     
+
+    var ArrDealer = [];
+     
+
+    $('#btnMapAcctDealer').click(function () {
+        debugger;
+
+        if ($('#AcctMapID').val() == "") {
+            $('#AcctMapID').focus();
+            alert('Please Select Account Name ...');
+            return
+        }
+
+        if ($('#DealMapID').val() == "0" || $('#DealMapID').val() == "") {
+            $('#DealMapID').focus();
+            alert('Please Select Dealer Name ...');
+            return
+        }
+
+        debugger;
+
+        var data = new FormData();  
+        data.append("AcctID", $("#AcctMapID").val());
+        data.append("DealID", $("#DealMapID").val());
+
+        console.log(typeof data); 
+
+        $.ajax
+        ({
+            url: "/Master/MapDealer",
+            type: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != null) {
+                    //$("#AcctMapID").val('');
+                    $("#AcctMapID").focus(); $("#AcctMapID").val(0);
+                     
+                    FillDealerMap();
+                }
+                else {
+                    alert('Not Saved Successfully ...');
+                }
+            }
+        });
+
+
+    });
+
+
+    function ShowMapDealer(ArrDealer) {
+        if (ArrDealer.length > 0) {
+            var $table = $('<table id="tblEmpMapDeal" class="table table-bordered table-striped"/>');
+            $table.append('<thead><tr><th style="width: 10%">S.No. </th><th style="width: 50%">Account</th>  <th style="width: 10%">Del</th></tr></thead>');
+            var $tbody = $('<tbody style="height:420px;"/>');
+
+            debugger;
+            $.each(ArrDealer, function (i, val) {
+                var $row = $('<tr/>');
+                $row.append($('<td  style="width: 10%"/>').html(i + 1));
+              
+                $row.append($('<td style="width: 50%"/>').html(val.acctname));
+
+              //  $row.append($('<input type="checkbox" data-id-EmpDeal="' + val.mstcode + '" class="chkSelectEmpDeal" /><input type="hidden" id="hdnMstCode" value="' + val.MstCode + '"  />').html(i + 1));
+
+                $tbody.append($row);
+                
+            });
+            $table.append($tbody);
+            $('#ShowTable_MapDealer').html($table);
+             
+        }
+    }
+
+    //function delEmpAllot() {
+    //    debugger;
+       
+    //    var ID = "";
+
+    //    $('#tblEmpDeal').find('tr').each(function () {
+    //        var row = $(this);
+    //        if (row.find('input[type="checkbox"]').is(':checked')) {
+    //            ID += row.find(hdnMstCode).val() + '|';
+    //        }
+    //    });
+
+    //   // alert(ID);
+       
+    //    $.post("../Master/delEmpAllotMulti", { sMstCode: ID }, function (data) {
+    //        if (data != null) {
+    //            if (data.length > 0)
+    //                if (data == "Delete Successfully !") {
+    //                     FillDealerList();
+    //                }
+    //                else { alert(data); }
+    //        }
+    //    });
+
+    //}
+      
+    function FillDealerMap() {
+        debugger;
+        var EmpAllotID = 0;
+        EmpAllotID = $("#DealMapID").val();
+
+        $.get("../Master/getMapDealer", { DealID: EmpAllotID }, function (data) {
+            if (data != null) {
+                if (data.length > 0)
+                    ShowMapDealer(data);
+                else { $('#ShowTable_MapDealer').html(''); }
+            }
+
+        });
+    }
+
+</script>

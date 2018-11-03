@@ -1,0 +1,46 @@
+﻿@model CompxERP.Models.CityData
+@*@using System.Web.Optimization*@
+
+@{
+    ViewBag.Title = "Create Country";
+}
+@*@Styles.Render("~/Content/angularcss")*@
+
+<script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+<script type="text/javascript" src="~/Scripts/Angular/app.js"></script>
+
+<div class="md-padding dialogdemoBasicUsage" data-ng-controller="cntrlCountryInfo" id="popupContainer" data-ng-cloak="" data-ng-app="CompXApp">
+    <h2>Create Country</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <fieldset>
+            <legend>Entry</legend>
+            <md-input-container>
+                <label>
+                    Country Name
+                </label>
+                @Html.TextBoxFor(model => model.cityname, new { data_ng_Model = "cityname" })
+                @Html.ValidationMessageFor(model => model.cityname)
+            </md-input-container>
+            <md-input-container>
+                <label>
+                    Alias
+                </label>
+                @Html.TextBoxFor(model => model.cityalia, new { data_ng_Model = "cityalia" })
+                @Html.ValidationMessageFor(model => model.cityalia)
+            </md-input-container>
+            <p>
+                <input type="button" value="Create" ng-click="SetCountry()" />
+                <input type="reset" value="Reset" />
+                <input type="button" value="Close" ng-click="hide()" />
+            </p>
+        </fieldset>
+    }
+</div>

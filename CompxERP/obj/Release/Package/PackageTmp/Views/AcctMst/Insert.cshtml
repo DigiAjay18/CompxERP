@@ -1,0 +1,1136 @@
+﻿@model CompxERP.Models.AccountMaster
+@{
+    ViewBag.Title = "Account Setup";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <!----bootstrap css---->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <!-----favicon.ico---->
+    <link href="~/img/favicon.png" rel="shortcut icon" type="image/x-icon">
+
+
+    <!------custom css---->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/css/custom.css">
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/shortcutKey.js"></script>
+    <script src="~/Scripts/jquery.mask.js"></script>
+    <script src="~/Scripts/keynload.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script type="text/javascript">
+        window.history.forward();
+        $(function () {
+            $('#acctname').focus();
+            $("#acctgrou").change(function () {
+                if ($(this).val() == "23") {
+                    $("#othdet").hide();
+                } else {
+                    $("#othdet").show();
+                }
+            });
+        });
+
+    </script>
+    <style>
+        body {
+            background-color: #e6e4e4;
+        }
+    </style>
+
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        
+        @Html.HiddenFor(model => model.acctagen)
+        @Html.HiddenFor(model => model.grourepo)
+        @Html.HiddenFor(model => model.groumain)
+        @Html.HiddenFor(model => model.grouaddr)
+        @Html.HiddenFor(model => model.isEdit)
+        @Html.HiddenFor(model => model.acctgrou)
+        @Html.HiddenFor(model => model.acctledg)
+        @Html.HiddenFor(model => model.acctcity)
+        @Html.HiddenFor(model => model.acctstat)
+        @Html.HiddenFor(model => model.compcode)
+        @Html.HiddenFor(model => model.acctarea)
+        @Html.HiddenFor(model => model.acctcode)
+
+        <!----compex_heading---->
+        <div class="compex_head">
+            <div class="container-fluid">
+                <div class="col-md-3 col-sm-3 col-xs-12"></div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2 id="sHeader">Account Master</h2>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-12 account_setup">
+                    <div class="btn_right">
+                        <a href="/Home/menuNew">
+                            <img src="~/Images/home.png" width="22" height="22" /></a>
+                        @*   @Html.ActionLink("Account List", "ShowAllAcctdetails", new { MstType = ViewBag.MstType }, new { title = "Back to list" })*@
+                        @Html.ActionLink("Account List", "ShowAllAcctdetails", new { MstType = ViewBag.MstType }, new { style = "background-image: url('/Images/bulleted-list1.png');background-position: center;background-repeat: no-repeat;color: transparent;text-align: right;background-size: 24px 24px;", title = "Back to list" })
+                        <a href='/Home/LogOff' style="border: none; font-size: 14px;">
+                            <img src="~/Images/logout.png" width="22" height="22" /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+        <!----compex_heading end---->
+        
+        <!----compex_BODY---->
+        <div class="compex_form">
+            <div class="container-fluid">
+                <div class="Personal_form">
+
+
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="row">
+
+                            <fieldset>
+                                <legend>Account Information</legend>
+                                <div id="tempdata" style="color: limegreen;"></div>
+                                <div class="col-md-6 padd_l padd_5">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">Name</label>
+                                        <div class="col-sm-10 padd_l padd_5">
+                                            <div id="v1">
+                                                @Html.TextBoxFor(model => model.acctname, new { onkeypress = "return CapFirstAllWords(event, this)", @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.acctname)
+                                                <input type="hidden" id="acctname1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2 padd_l padd_5">Account Type </label>
+                                        <div class="col-sm-6 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.acctgroup, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.acctgroup)
+                                        </div>
+                                        <label class="control-label col-sm-2 padd_l padd_5">Alias/Id   </label>
+                                        <div class="col-sm-2 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.acctalia, new { @class = "form-control" })
+                                        </div>
+                                         <label class="control-label col-sm-2 padd_l padd_5">Owner  </label>
+                                        <div class="col-sm-6 padd_l padd_5">
+                                            @Html.TextBoxFor(model => model.acctOwner, new { @class = "form-control" })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </fieldset>
+
+                        </div>
+
+
+                    </div>
+
+                    <fieldset style="margin-top: 7px !important; width: 100%; float: left;">
+                        <div class="form_new">
+                            <div class="form-group" id="dvacctledg">
+                                <label class="control-label col-sm-1 padd_l padd_5">Belongs To </label>
+                                <div class="col-sm-5 padd_l padd_5">
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-4 padd_l padd_5" id="dvacctaddr">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Address</label>
+                                            <div class="col-sm-8 padd_l padd_5">
+                                                @Html.TextAreaFor(model => model.acctaddr, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacformreq">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Form Req. </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.DropDownList("acformreq", new List<SelectListItem>
+                                                            {
+                                                                new SelectListItem{ Text="--Select--", Value = "-1" },
+                                                                })
+                                            </div>
+                                        </div>
+                                    </div>
+                                       <div class="col-sm-2 padd_l padd_5" id="dvCountry">
+                                            <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Country</label>
+                                            <div class="col-sm-9">
+                                                @*@Html.TextBoxFor(model => model.acctCntry, new { @class = "form-control" })*@
+                                                 @Html.DropDownList("acctCntry",new List<SelectListItem> {  
+           new SelectListItem { Text="India", Value="3"},
+           new SelectListItem { Text="England", Value="2"}, 
+           new SelectListItem { Text="Bahrain", Value="1"}, 
+           new SelectListItem { Text="Iran", Value="4"}, 
+           new SelectListItem { Text="Iraq", Value="5"}, 
+           new SelectListItem { Text="Kuwait", Value="6"}, 
+           new SelectListItem { Text="Northern Ireland", Value="7"}, 
+           new SelectListItem { Text="Oman", Value="8"}, 
+           new SelectListItem { Text="Saudi Arabia", Value="9"}, 
+           new SelectListItem { Text="Scotland", Value="10"}, 
+           new SelectListItem { Text="South africa", Value="11"}, 
+           new SelectListItem { Text="UAE", Value="12"}, 
+           new SelectListItem { Text="Wales", Value="13"}, 
+           }, new { @class="form-control" } )   
+                                            </div>
+                                        </div>
+                                       </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvStatename">
+                                          
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">State</label>
+                                            <div class="col-sm-9">
+                                                @Html.TextBoxFor(model => model.Statename, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvCityname">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">City </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.Cityname, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctareaname">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Area </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.acctareaname, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctpinc">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Pin Code </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.acctpinc, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctcurr">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Currency </label>
+                                            <div class="col-sm-9">
+                                               @* @Html.DropDownList("acctcurr", new List<SelectListItem>
+                                                    {
+                                                        new SelectListItem{ Text="INR", Value = "1" },
+                                                        new SelectListItem{ Text="USD", Value = "2" },
+                                                     })*@
+
+                                                 @Html.DropDownList("acctcurr",new List<SelectListItem> {  
+           new SelectListItem { Text="INR", Value="1"},
+           new SelectListItem { Text="USD($)", Value="2"}, 
+           new SelectListItem { Text="AED", Value="3"}, 
+           new SelectListItem { Text="KD", Value="4"}, 
+           new SelectListItem { Text="BHD", Value="5"}, 
+           new SelectListItem { Text="AUD", Value="6"}, 
+           new SelectListItem { Text="JPY (¥)", Value="7"}, 
+           new SelectListItem { Text="GBP (£)", Value="8"}, 
+           new SelectListItem { Text="EUR(€)", Value="9"}, 
+           }, new { @class="form-control" } )  
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctcate">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Category </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.DropDownList("acctcate", new List<SelectListItem>
+                                                    {
+                                                        new SelectListItem{ Text="--Select--", Value = "-1" },
+                                                        })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctitrd">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Trading Type </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.DropDownList("acctitrd", new List<SelectListItem>
+                                {
+                                    new SelectListItem{ Text="--Select--", Value = "-1" },
+                                 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctagen">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Related To </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.acctagen, new { @id = "acctagenName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctdsa">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">TDS </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.DropDownList("acctdsa", new List<SelectListItem>
+                                                        {
+                                                            new SelectListItem{ Text="No", Value = "0" },
+                                                            new SelectListItem{ Text="Yes", Value = "1" },
+                                                         })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctjmbl">
+                                        <div class="form-group">
+                                            <label id="dvacctjmblname" class="control-label col-sm-6 padd_l padd_5"></label>
+                                            <div class="col-sm-6 padd_l padd_5">
+                                                @Html.DropDownList("acctjmbl", new List<SelectListItem> { new SelectListItem { Text = "--Select--", Value = "-1" }, })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctrate">
+                                        <div class="form-group">
+                                            <label id="dvacctratename" class="control-label col-sm-3 padd_l padd_5"></label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.acctrate, new { value = "0", placeholder = "%", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-2 padd_l padd_5" id="DV_Hearder">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Header </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.acctpinc_Hearder, new { @maxlength = 10, @NumberOnly = true, @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*                                             <div class="col-sm-2 padd_l padd_5" id="DV_Hearder">
+				                                 <div class="form-group">
+					                                <label class="control-label col-sm-3 padd_l padd_5"> Header</label>
+					                                <div class="col-sm-9 padd_l padd_5">
+					                                      
+					                                </div>
+				                                 </div>
+		                                    </div>*@
+
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctgsta">
+                                        <div class="form-group">
+                                            <label id="dvacctgstaname" class="control-label col-sm-3 padd_l padd_5"></label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.DropDownList("acctgsta", new List<SelectListItem>
+                                                    {
+                                                        new SelectListItem{ Text="--Select--", Value = "-1" },
+                                                     })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctconp">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Person </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.TextBoxFor(model => model.acctconp, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 padd_l padd_5" id="dvacctcform">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 padd_l padd_5">Interstate </label>
+                                            <div class="col-sm-9 padd_l padd_5">
+                                                @Html.DropDownList("acctcform", new List<SelectListItem>
+                                                    {
+                                                        new SelectListItem{ Text="No", Value = "0" },
+                                                        new SelectListItem{ Text="Yes", Value = "1" },
+                                                     })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="bottom_dvAcc">
+
+                        <div class="col-sm-6 padd_l padd_5">
+                            <fieldset style="height: 126px;">
+                                <legend>Personal Information</legend>
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Mobile</label>
+                                                <div class="col-sm-9 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.acctphon, new { @maxlength = 10, @NumberOnly = true, @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.acctphon)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Mobile2</label>
+                                                <div class="col-sm-9 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.acctMob2, new { @maxlength = 10, @NumberOnly = true, @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.acctMob2)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Phone</label>
+                                                <div class="col-sm-9 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.acctPhone, new { @maxlength = 10, @NumberOnly = true, @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.acctPhone)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Email</label>
+                                                <div class="col-sm-9 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.acctmail, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.acctmail)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Fax</label>
+                                                <div class="col-sm-9 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.acctfax, new { @maxlength = 20, @class = "form-control" })
+                                                    @Html.ValidationMessageFor(model => model.acctfax)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 padd_l padd_5">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 padd_l padd_5">Sort</label>
+                                                <div class="col-sm-9 padd_l padd_5">
+                                                    @Html.TextBoxFor(model => model.acctsort, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-6 padd_l padd_5">
+                            <fieldset>
+                                <legend>Description</legend>
+                                <div class="form-group" id="dvCSTNo">
+                                    <label class="control-label col-sm-3 padd_l padd_5">CST </label>
+                                    <div class="col-sm-9 padd_l padd_5">
+                                        @Html.TextBoxFor(model => model.CSTNo, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="dvTinNo">
+                                    <label class="control-label col-sm-3 padd_l padd_5">TIN </label>
+                                    <div class="col-sm-9 padd_l padd_5">
+                                        @Html.TextBoxFor(model => model.TinNo, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.TinNo)
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="dvPAN">
+                                    <label class="control-label col-sm-3 padd_l padd_5">PAN </label>
+                                    <div class="col-sm-9 padd_l padd_5">
+                                        @Html.TextBoxFor(model => model.PAN, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.PAN)
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="dvacctrema">
+                                    <label class="control-label col-sm-3 padd_l padd_5">GSTIN </label>
+                                    <div class="col-sm-3 padd_l padd_5">
+                                        @Html.TextBoxFor(model => model.acctgstin, new { @maxlength = "15", @class = "form-control", onblur = "Chk_GSTIN();" })
+                                        @*@Html.ValidationMessageFor(model => model.acctgstin)*@
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3 padd_l padd_5">Description </label>
+                                    <div class="col-sm-9 padd_l padd_5">
+                                        @Html.TextAreaFor(model => model.acctrema, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+ 
+        <div class="container-fluid" style="margin-top: 10px;">
+
+
+
+
+
+
+            <div class="floatbox" style="float: none;">
+                @if (Model != null && Model.menaddi  == true){
+                <input type="submit" value="Save" class="btn btn-default" name="Command" id="btnSave" />
+                }
+
+                <input type="button" value="New" class="btn btn-default" id="btnNew" />
+            </div>
+
+
+            @{
+        if (ViewData["result"] != null && ViewData["result"].ToString() != "")
+        {
+            ViewData["result"] = null;
+                <script type="text/javascript" lang="javascript">
+                    alert("Data saved Successfully");
+                </script>
+        }
+            }
+
+
+            @{
+        if (TempData["Msg"] != null)
+        {    
+                <script type="text/javascript">
+                    alert("Saved Successfully ...");
+                </script>
+        } 
+            }
+
+
+
+
+        </div>
+    }
+    <script lang="ja" type="text/javascript">
+
+        function Chk_GSTIN() { 
+            debugger;
+            if ($('#acctgstin').val() != '') {
+                $.get("/Home/Chk_GSTIN", { sGSTIN: $('#acctgstin').val(), Type: 2 }, function (data) {
+                    if (data != null && data != 0) {
+                        alert('GSTIN (' + $('#acctgstin').val() + ') Already Exists ...');
+                        $('#acctgstin').val('');
+                        $('#acctgstin').focus();
+                    }
+                });
+            }
+        };
+
+        $(document).ready(function () {
+           
+            function clearData() {
+                $('#CSTNo').val("");
+                $('#PAN').val("");
+                //$('#PIN').val("");
+                $('#TinNo').val("");
+                $('#acctMob2').val("");
+                $('#acctPhone').val("");
+                $('#acctaddr').val("");
+                $('#acctalia').val("");
+                $('#acctarea').val("");
+                $('#acctcate').val("");
+                $('#acctcity').val("");
+                $('#acctcode').val("");
+                $('#acctconp').val("");
+                $('#acctcurr').val("");
+                $('#acctdsa').val("");
+                $('#acctgrou').val("");
+                //$('#accthind').val("");
+                $('#acctledg').val("");
+                $('#acctname').val("");
+                $('#acctname1').val("");
+                $('#acctphon').val("");
+                $('#acctrema').val("");
+                $('#acctsort').val("");
+                $('#acctstat').val("");
+                $('#acctfax').val("");
+                $('#acctmail').val("");
+                $('#acctcform').val("");
+                $('#acctpinc').val("");
+                $('#acctareaname').val("");
+                $('#Cityname').val("");
+                $('#Statename').val("");
+                $('#acctledgname').val("");
+                $('#acctgroup').val("");
+                $('#isEdit').val("false");
+                $('#btnSave').val("Save");
+            }
+            function showHide() {
+                //alert('ss');
+                debugger;
+                $('#dvacctaddr').hide();
+                $('#dvacctarea').hide();
+                $('#dvacctpinc').hide();
+                $('#dvacctareaname').hide();
+                $('#dvCityname').hide();
+                $('#dvStatename').hide(); $('#dvCountry').hide();
+                $('#dvacctMob2').hide();
+                $('#dvacctPhone').hide();
+                $('#dvacctphon').hide();
+                $('#dvacctfax').hide();
+                $('#dvacctmail').hide();
+                $('#dvacctcurr').hide();
+                $('#dvacctcate').hide(); 
+                $('#dvacctconp').hide();
+                $('#dvacctdsa').hide();
+                $('#dvacctcform').hide();
+                $('#dvCSTNo').hide();
+                $('#dvPAN').hide();
+                $('#dvTinNo').hide();
+                $('#dvacformreq').hide();
+                $('#dvacctrate').hide();
+                $('#dvacctagen').hide();
+                $('#dvacctjmbl').hide();
+                $('#dvacctitrd').hide();
+                $('#dvacctgsta').hide(); $('#DV_Hearder').hide();
+                $('#dvacctledg').show();
+                //$('#dvPIN').show();
+                //$('#dvaccthind').show();
+                if ($('#grouaddr').val() == "true") {
+                    $('#dvacctaddr').show();
+                    $('#dvacctarea').show();
+                    $('#dvacctpinc').show();
+                    $('#dvacctareaname').show();
+                    $('#dvCityname').show();
+                    $('#dvStatename').show(); $('#dvCountry').show();
+                    $('#dvacctMob2').show();
+                    $('#dvacctPhone').show();
+                    $('#dvacctphon').show();
+                    $('#dvacctfax').show();
+                    $('#dvacctmail').show();
+                    $('#dvacctcurr').show();
+                    $('#dvacctcate').show();
+                }
+                //alert('aa');
+                debugger;
+
+                switch ($('#groumain').val()) {
+
+                    case "9": $('#dvacformreq').show(); $('#dvacctrate').show(); $('#dvacctagen').show(); $('#DV_Hearder').show(); $('#dvacctratename')[0].innerHTML = "Penalty%"; break;
+                    case "10": $('#dvacformreq').show(); $('#dvacctrate').show(); $('#DV_Hearder').show(); $('#dvacctagen').show(); $('#dvacctratename')[0].innerHTML = "Penalty%"; break;
+                    case "11": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Type of Expense"; break;
+                    case "12": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Type of Expense"; break;
+                    case "13": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Type of Expense"; break;
+                    case "14": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Type of Expense"; break;
+                    //case "21": $('#dvacctjmbl').show(); break;
+                    case "23": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Show In Bill"; break;
+                    case "24": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Show In Bill"; break;
+                    case "30": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Type of Deduction"; break;
+                    case "33": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Type of Deduction"; break;
+                    case "36": $('#dvacctitrd').show(); break;
+                    case "37": $('#dvacctledg').hide(); $('#dvacctgsta').show(); $('#dvacctjmbl').show(); $('#dvacctrate').show(); $('#dvacctratename')[0].innerHTML = "Rate"; $('#dvacctjmblname')[0].innerHTML = "Treated As"; $('#dvacctgstaname')[0].innerHTML = "GST Type";
+                        break;
+                    case "40": $('#dvacformreq').show(); $('#dvacctrate').show(); $('#dvacctagen').show(); $('#dvacctagen').show(); $('#DV_Hearder').show(); $('#dvacctratename')[0].innerHTML = "Penalty%"; break;
+                    case "41": $('#dvacformreq').show(); $('#dvacctrate').show(); $('#dvacctagen').show(); $('#DV_Hearder').show(); $('#dvacctratename')[0].innerHTML = "Penalty%"; break;
+                    case "43": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Show In Bill"; break;
+                    case "45": $('#dvacctjmbl').show(); $('#dvacctjmblname')[0].innerHTML = "Treated As"; break;
+                }
+                if ($('#grourepo').val() == "-30001" || $('#grourepo').val() == "30001" || $('#grourepo').val() == "-40001") {
+                    $('#dvacctitrd').show();
+                }
+                switch (parseInt($('#acctgrou').val())) {
+                    case 34://Agent
+                        $('#dvacctconp').show();
+                        $('#dvacctdsa').show();
+                        $('#dvacctcform').show();
+                        $('#dvCSTNo').show();
+                        $('#dvPAN').show();
+                        $('#dvTinNo').show();
+                        break;
+                }
+            }
+            showHide();
+            $('#acctgstin').mask('00AAAAAAAAAA00AA');
+             
+            $("#btnNew").click(function () {
+                clearData();
+            });
+            $("#acctagenName").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetCategoryInfo", "Master"))",
+                        data: { "name": request.term },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $('#acctagenName').val(ui.item.label);
+                    $('#acctagen').val(ui.item.Id);
+                }
+            });
+            if ($('#acctcode').val() != "0")
+                FillAccountForm($('#acctcode').val());
+            function FillAccountForm(id) {
+                debugger;
+                $.ajax({ 
+                    type: "POST",
+                    url: "@(Url.Action("/GetAccountDet", "AcctMst"))",
+            data: { "iCode": id },
+            success: function (data) {
+                if (data.length != 0) {
+                    //$('#PIN').val(data[0].PIN);
+                    $('#acctMob2').val(data[0].acctMob2);
+                    $('#acctPhone').val(data[0].acctPhone);
+                    $('#acctaddr').val(data[0].acctaddr);
+                    $('#acctalia').val(data[0].acctalia);
+                    $('#acctarea').val(data[0].acctarea);
+                    $('#acctcate').val(data[0].acctcate);
+                    $('#acctcity').val(data[0].acctcity);
+
+                    $('#acctcode').val(id);
+
+                    $('#acctconp').val(data[0].acctconp);
+                    $('#acctcurr').val(data[0].acctcurr);
+                    $('#acctdsa').val(data[0].acctdsa);
+                    $('#acctgrou').val(data[0].acctgrou);
+                    //$('#accthind').val(data[0].accthind);
+                    $('#acctledg').val(data[0].acctledg);
+                    $('#acctname').val(data[0].acctname);
+                    $('#acctname1').val(data[0].acctname);
+                    $('#acctphon').val(data[0].acctphon);
+                    $('#acctsort').val(data[0].acctsort);
+                    $('#acctstat').val(data[0].acctstat);
+                    $('#acctfax').val(data[0].acctfax);
+                    $('#acctmail').val(data[0].acctmail);
+                    $('#acctcform').val(data[0].acctcform);
+                    $('#acctpinc').val(data[0].acctpinc);
+                    $('#acctareaname').val(data[0].acctareaname);
+                    $('#Cityname').val(data[0].Cityname);
+                    $('#Statename').val(data[0].Statename);
+                    $('#acctledgname').val(data[0].acctledgname);
+                    $('#acctgroup').val(data[0].acctgroup);
+                    $('#acctgstin').val(data[0].acctgstin);
+                    FillAccountDetail(data[0].acctgrou);
+                    showHide();
+                    $('#acctgsta').val(data[0].acctgsta);
+                    $('#acctcate').val(data[0].acctcate);
+                    $('#acformreq').val(data[0].acformreq);
+                    $('#acctjmbl').val(data[0].acctjmbl);
+                    $('#acctrate').val(data[0].acctrate);
+                    $('#acctagen').val(data[0].acctagen);
+                    $('#acctitrd').val(data[0].acctitrd);
+                    $('#acctOwner').val(data[0].acctOwner);
+                    $('#isEdit').val("true");
+                    $('#btnSave').val("Update");
+                    $('#CSTNo').val(data[0].acctrema.split(',')[0]);
+                    $('#PAN').val(data[0].acctrema.split(',')[1]);
+                    $('#TinNo').val(data[0].acctrema.split(',')[2]);
+                    $('#acctrema').val(data[0].acctrema.split(',')[3]);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+               // alert('Failed to retrieve states.');
+            }
+        });
+    }
+            $("#acctname").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetAccount", "Master"))",
+                data: { "acctname": request.term },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            FillAccountForm(ui.item.Id);
+        }
+    }).blur(function () {
+        if ($('#acctname').val() == "") {
+            $('#acctname').focus();
+        }
+        if ($('#acctname').val() != "" && $('#acctname1').val() != "" && $('#acctname').val() != $('#acctname1').val()) {
+            if (confirm('Already Exists Do You Want To Update...'))
+                $('#btnSave').val("Update");
+            else {
+                var a = $('#acctname').val();
+                clearData();
+                $('#acctname').val(a);
+                //$('#acctname1').val(a);
+            }
+        }
+    }); 
+
+            function GetOtp() {
+                var stateId = $('#acctname').val();
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "@(Url.Action("/Checkotp", "AcctMst"))",
+            data: "{username:'" + $('#acctname').val() + "'}",
+            dataType: "json",
+            success: function (data) {
+                if (data == 0) {
+                }
+                else {
+                    alert("Already Exist");
+                    $('#acctname').val('');
+                    $('#acctname1').val('');
+                    $('#acctname').focus();
+                }
+            },
+            error: function (result) {
+                alert("Error");
+            },
+        });
+    }
+            $('#RegisterForm').submit(function () {
+                var error = 0;
+                var name = $('#acctname').val();
+                if (name == '') {
+                    error = 1;
+                    $('#v1').html("Name cannot be empty");
+                }
+                if (error) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            $('#acctgroup').blur(function () {
+                if ($('#acctgroup').val() == "")
+                    $('#acctgroup').focus();
+            });
+
+            function FillAccountDetail(id) {
+                debugger;
+                $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: "@(Url.Action("/GetAccountGroupDet", "AcctMst"))",
+            data: { "iItemID": id },
+            success: function (data) {
+                $('#acctgrou').val(id);
+                $('#grouaddr').val(data[0].grouaddr);
+                $('#groumain').val(data[0].groumain);
+                $('#grourepo').val(data[0].grourepo);
+
+                $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: "@(Url.Action("/GetAccountDropDownDet", "AcctMst"))",
+                            data: { "grouaddr": data[0].grouaddr, "groumain": data[0].groumain, "grourepo": data[0].grourepo },
+                            success: function (data) {
+                                $("#acctcate").empty();
+                                $("#acctjmbl").empty(); $("#acctgsta").empty();
+                                $("#acctitrd").empty();
+                                $("#acctagen").empty();
+                                $("#acformreq").empty();
+                                if (data.acctcateData.length > 0) {
+                                    {
+                                        $.each(data.acctcateData, function () {
+                                            $("#acctcate").append($("<option />").val(this.Value).text(this.Text));
+                                        });
+                                    }
+                                }
+
+                                if (data.acctjmblData.length > 0) {
+                                    {
+                                        $.each(data.acctjmblData, function () {
+                                            $("#acctjmbl").append($("<option />").val(this.Value).text(this.Text));
+                                        });
+                                    }
+                                }
+                                if (data.acctgstaData.length > 0) {
+                                    {
+                                        $.each(data.acctgstaData, function () {
+                                            $("#acctgsta").append($("<option />").val(this.Value).text(this.Text));
+                                        });
+                                    }
+                                }
+                                if (data.acctitrdData.length > 0) {
+                                    {
+                                        $.each(data.acctitrdData, function () {
+                                            $("#acctitrd").append($("<option />").val(this.Value).text(this.Text));
+                                        });
+                                    }
+                                }
+                                if (data.acformreqData.length > 0) {
+                                    $.each(data.acformreqData, function () {
+                                        $("#acformreq").append($("<option />").val(this.Value).text(this.Text));
+                                    });
+                                }
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                alert('Failed to retrieve states.');
+                            }
+                        });
+
+                        showHide();
+                        action = data.Action;
+                    },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve states.');
+            }
+        });
+
+            }
+            $("#acctgroup").autocomplete({
+                source: function (request, response) {
+                    alert = ("check");
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetAccountGroup", "Master"))",
+                data: { "acctname": request.term },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            FillAccountDetail(ui.item.Id);
+        }
+    });
+            $("#acctledgname").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetAccountBelongsTo", "Master"))",
+                data: { "acctname": request.term },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/GetItemDet", "AcctMst"))",
+                        data: { "iItemID": ui.item.Id },
+                        success: function (data) {
+                            $('#acctledg').val(ui.item.Id);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                        }
+                    });
+                }
+    });
+            $("#Cityname").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetCity", "Master"))",
+                        data: { "acctcity": request.term, "iState": $('#acctstat').val() },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/GetItemDet", "AcctMst"))",
+                        data: { "iItemID": ui.item.Id },
+                        success: function (data) {
+                            $('#acctcity').val(ui.item.Id);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                        }
+                    });
+                }
+    })@*.blur(function () {
+        if ($('#acctstat').val() != "" && $('#acctstat').val() != "0" && $('#Statename').val() != "") {
+            if (($('#acctcity').val() == "" || $('#acctcity').val() == "0") && $('#Cityname').val() != "" && confirm('City Not Exists Do You Want To Save This City...')) {
+                $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: "@Url.Action("SetCityInfo", "AcctMst")",
+                            data: { "name": $(this).val(), state: $('#acctstat').val() },
+                            success: function (data) {
+                                $('#acctcity').val(data);
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+                                alert("Failed to Retrieve Status.");
+                            }
+                        });
+                    }
+                }
+                else {
+                    alert("Please Select Valid State First...");
+                    $('#Statename').focus();
+                }
+            });*@
+            $("#Statename").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetState", "Master"))",
+                        data: { "acctstat": request.term, "iCntry": $('#acctCntry').val() },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/GetItemDet", "AcctMst"))",
+                        data: { "iItemID": ui.item.Id },
+                        success: function (data) {
+                            $('#acctstat').val(ui.item.Id);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                        }
+                    });
+                }
+    })@*.blur(function () {
+        if (($('#acctstat').val() == "" || $('#acctstat').val() == "0") && $('#Statename').val() != "" && confirm('State Not Exists Do You Want To Save This State...')) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@Url.Action("SetStateInfo", "AcctMst")",
+                data: { "name": $(this).val(), "iCntry": $('#acctCntry').val() },
+                        success: function (data) {
+                            $('#acctstat').val(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert("Failed to Retrieve Status.");
+                        }
+                    });
+                }
+            });*@
+            $("#acctareaname").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false, cache: false, type: "POST",
+                        url: "@(Url.Action("/GetArea", "Master"))",
+                data: { "name": request.term },
+                success: function (data) {
+                    for (var i = 0; i < data.length ; i++) {
+                        customer[i] = { label: data[i].Value, Id: data[i].Key };
+                    }
+                }
+            });
+            response(customer);
+        },
+        select: function (event, ui) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@(Url.Action("/GetItemDet", "AcctMst"))",
+                        data: { "iItemID": ui.item.Id },
+                        success: function (data) {
+                            $('#acctarea').val(ui.item.Id);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                        }
+                    });
+                }
+    }).blur(function () {
+        if (($('#acctarea').val() == "" || $('#acctarea').val() == "0") && $('#acctareaname').val() != "" && confirm('Area Not Exists Do You Want To Save This Area...')) {
+            $.ajax({
+                cache: false,
+                async: false,
+                type: "POST",
+                url: "@Url.Action("SetAreaInfo", "AcctMst")",
+                        data: { "name": $(this).val() },
+                        success: function (data) {
+                            $('#acctarea').val(data);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert("Failed to Retrieve Status.");
+                        }
+                    });
+                }
+    });
+            $("#acctphon").keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            $("#acctMob2").keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            $("#acctPhone").keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    e.preventDefault();
+                    return false;
+                }
+            }); 
+        });
+    </script>
+</body>
+</html>
+
+

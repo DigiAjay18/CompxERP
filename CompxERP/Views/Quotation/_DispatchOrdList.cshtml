@@ -1,0 +1,124 @@
+﻿   
+@model List<CompxERP.Models.Jourmaster> 
+
+  <link href="~/Content/css/tableexport.min.css" rel="stylesheet" />
+<script src="~/Scripts/FileSaver.min.js"></script>
+<script src="~/Scripts/tableexport.min.js"></script>
+ 
+ <div class="col-sm-12">
+     
+
+    <table id= "List" class="table table-bordered table-striped" style="margin-top:10px;"> 
+    <thead>
+      <tr>
+            <th style="width:2%;">No</th> 
+           <th style="width:8%;">  Company</th>
+           <th style="width:17%;">  Dealer Name</th>
+           <th  style="width:6%;">  City </th>  
+          <th  style="width:6%;"> State</th>  
+          <th style="width:6%;">Order No</th>
+          <th style="width:6%;">Date</th> 
+            <th style="width:15%;">Item</th>     
+          <th style="width:8%;">Brand</th>  
+          <th style="width:4%;">Appr. Qty</th>   
+          @if (ViewBag.DispatchStatus == 1 ){
+          <th style="width:4%;">Disp. Qty</th> }
+          else {
+          <th style="width:4%;">Pending Qty</th> 
+          }
+          <th style="width:4%;">Bal</th> 
+           <th style="width:14%;">Remark</th>       
+        </tr>
+    </thead>
+    <tbody style="height:490px;">
+           @{
+               var iIndex = 0; var sOrderNo = ""; var isFirst = true; var iQty = 0; var sRemark = ""; var iPQty = 0;
+        if (Model != null && Model.Count > 0)
+        {
+            @*<tr class="diffBg"> <td width="100%">Lead List</td></tr>*@
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1; 
+                
+                 if (@item.mstchno != sOrderNo && isFirst == false)
+                {
+                    <tr >  
+                           <td style="width:2%;"></td> 
+           <td style="width:8%;"> </td>
+           <td style="width:17%;color:red"><b> @sRemark</b>  </td>
+           <td  style="width:6%;">   </td>  
+          <td  style="width:6%;"> </td>  
+          <td style="width:6%;"></td>
+          <td style="width:6%;"></td> 
+            <td style="width:15%;"></td> 
+                       @* <td colspan="8"  style="width:66%;color:red"><b> @sRemark</b></td>   *@
+<td style="width:8%;color:red" ><b>Total</b></td>     
+<td style="width:4%;color:red"><b>@iQty </b></td>     
+<td style="width:4%;color:red"><b>@iPQty </b> </td>   
+<td style="width:4%;"> </td>    
+<td style="width:14%;"> </td>   
+                    </tr>
+                    iQty = 0; iPQty= 0;
+                }
+
+                sRemark = @item.mstrema;
+                    sOrderNo = @item.mstchno;
+                    isFirst = false;
+                    iQty += (int)@item.Qty;
+                    iPQty += (int)@item.oldwht; 
+                    
+               <tr>  
+                     <td  style="width:2%;">@iIndex </td>   
+                    <td style="width:8%;">@item.mstrefno</td>
+                    <td style="width:17%;">@item.acctname</td>
+                    <td  style="width:6%;"> @item.Cityname</td>  
+                    <td  style="width:6%;"> @item.Statename</td>  
+                    <td  style="width:6%;"> @item.mstchno</td>  
+                    <td  style="width:6%;"> @item.mstdate.ToString("dd-MM-yyyy")</td>    
+                    <td style="width:15%;">@item.ItemNm.ToString()</td>
+                    <td  style="width:8%;">@item.mstbrhd</td>   
+                   <td  style="width:4%;">@item.Qty </td>     
+                   <td  style="width:4%;">@item.oldwht </td>    
+                   <td  style="width:4%;"> @item.TotQtyFini   </td>    
+                   <td  style="width:14%;">@item.Remark </td>    
+                   
+                </tr> 
+            }
+             <tr >  
+<td  style="width:2%;"></td> 
+<td  style="width:8%;"> </td>
+<td  style="width:17%;color:red"><b> @sRemark</b>  </td>
+<td   style="width:6%;">   </td>  
+<td   style="width:6%;"> </td>  
+<td  style="width:6%;"></td>
+<td  style="width:6%;"></td> 
+<td  style="width:15%;"></td> 
+                    @* <td colspan="8"  style="width:66%;color:red"><b> @sRemark</b></td>  *@    
+<td style="width:8%;color:red" ><b>Total</b></td>     
+<td style="width:4%;color:red"><b>@iQty </b></td>   
+<td style="width:4%;color:red"><b>@iPQty </b></td>   
+<td style="width:4%;"> </td>    
+<td style="width:14%;"> </td>     
+                    </tr> 
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+    
+</div>
+      
+<script>
+    $(document).ready(function () {
+        
+        $("#List").tableExport({ 
+            bootstrap: true, ignoreCols: ([9,10]),
+        });
+     
+    });
+    
+</script>

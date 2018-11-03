@@ -1,0 +1,258 @@
+﻿<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Dealer List</h4>
+    </div>
+    <div class="modal-body input_popup">
+        <div class="form-group">
+            <div class="col-sm-1 padd_l padd_5">State</div>
+            <div class="col-sm-2 padd_l padd_5">
+                @Html.DropDownList("Deal_State_I", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control", @onchange = "FillCity();" })
+            </div>
+            <div class="col-sm-1 padd_l padd_5">City</div>
+            <div class="col-sm-2 padd_l padd_5">
+                @Html.DropDownList("DL_City_I", (SelectList)ViewBag.vwState, "--Select--", new { @class = "form-control", @onchange = "FillTahsilList();", @onblur = "SetDisDealCode();" })
+            </div>
+            <div class="col-sm-1 padd_l padd_5">Distributor</div>
+            <div class="col-sm-3 padd_l padd_5">
+                @Html.DropDownList("DistributorNM_", (SelectList)ViewBag.vwDistributor, "--Select--", new { @class = "form-control", required = "required" })
+            </div>
+            <div class="col-sm-1 padd_l padd_5">
+                <span class="input-group-btn">
+                    <input type="button" id="DealerSearch_1" value="Search" class="btn btn-search" />
+                </span>
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <div class="table_j">
+                <div id="ShowTable" class="item_styl clearfix tablecontainer" style="height: 430px;"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+    $('#DL_City_I').empty();
+    function FillCity() {
+
+        $('#DL_City_I').empty();
+        $.get("../Master/GetCityList", { iState: $("#Deal_State_I").val() }, function (data) {
+            if (data != null) {
+                var opt = new Option('--Select--', 0);
+                $("#DL_City_I").append(opt);
+                for (var i = 0; i < data.length; i++) {
+                    opt = new Option(data[i].cityname, data[i].citycode);
+                    $("#DL_City_I").append(opt);
+                }
+            }
+        });
+    }
+
+    function GenratedItemTable(itm) {
+
+        var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+        $table.append('<thead><tr style="ba"><th width="3%">S.No</th><th width="8%">Dealer Code</th><th width="25%">Dealer Name</th><th width="8%">GSTIN</th><th width="17%">Contact Person</th><th width="8%">Mobile No</th><th width="25%">Email</th><th width="6%">&nbsp;</th></tr></thead>');
+        var $tbody = $('<tbody style="height:420px;"/>');
+
+        if (itm.length > 0) {
+
+            var iTotal = 0;
+            var iTax = 0;
+
+            $.each(itm, function (i, val) {
+                var $row = $('<tr/>');
+                $row.append($('<td width=3%"/>').html(i + 1));
+
+                //$row.append($('<td width="8%"/>').html(val.City));
+                $row.append($('<td width="8%"/>').html(val.DealCode));
+                $row.append($('<td width="25%"/>').html(val.DisName));
+                $row.append($('<td width="8%"/>').html(val.GSTIN));
+                $row.append($('<td width="17%"/>').html(val.ContactPerson));
+                $row.append($('<td width="8%"/>').html(val.Mob2));
+                $row.append($('<td width="25%"/>').html(val.Email));
+                //$row.append($('<td width="15%"/>').html(val.Add_I));
+                //$row.append($('<td width="10%"/>').html(val.Skype));
+
+                $row.append($('<td width="6%"/>').html('<button type="button" id="MapDealer"  data-toggle="modal" data-target="#MapDealer" class="deleteContact btn btn btn-danger btn-xs"><img src="../../img/eye.png" style="width:15px;"/></button> <input type ="hidden" id="hdnMstCode_' + i + '" value ="' + val.MstCode + '"  />'));
+
+                //<button type="button" id="btnDeleteDealer" onclick="delDealer(' + val.MstCode +');" class="btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Img/remove11.gif"  style="width:15px;" /></button>
+
+                //$row.append('<button type="button" id="btnDeleteDealer" onclick="delDealer(' + val.MstCode +');" class="btn btn btn-danger btn-xs" style="background: transparent !important;"><img src="../../Img/remove11.gif" /></button> ');
+
+                //$row.append($('<td width="6%"/>').html('<button type="button" id="btnDelete" data-dismiss="modal" data-toggle="modal" data-target="#MapDealer" class="deleteContact btn btn btn-danger btn-xs"><img src="../../img/eye.png" style="width:18px;"/></button> <input type ="hidden" id="hdnMstCode_' + i + '" value ="' + val.MstCode + '"  />'));
+                $tbody.append($row);
+            });
+            $table.append($tbody);
+            // $('#ShowTable').html($table);
+        }
+        $('#ShowTable').html($table);
+
+    }
+    function delDealer(MstCode) {
+
+
+        if (confirm("Do You Want To Delete It ?") == true) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("delDealer", "Quotation")",
+                data: { MstCode: MstCode },
+                success: function (data) {
+                    alert(data);
+                    $('#DealerSearch_1').click();
+                },
+                error: function () {
+                    alert(error);
+                }
+            });
+        }
+
+    }
+    //function GenratedItemTable(itm) {
+    //    $('#ShowTable').html('');
+    //    if (itm.length > 0) {
+    //        var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+    //        $table.append('<thead><tr style="ba"><th width="3%">S.No</th><th width="8%">Dealer Code</th><th width="25%">Dealer Name</th><th width="25%">Contact Person</th><th width="8%">Mobile No</th><th width="25%">Email</th><th width="6%">&nbsp;</th></tr></thead>');
+    //        var $tbody = $('<tbody style="height:420px;"/>');
+    //        var iTotal = 0;
+    //        var iTax = 0;
+    //        
+    //        $.each(itm, function (i, val) {
+    //            var $row = $('<tr/>');
+    //            $row.append($('<td width=3%"/>').html(i + 1));
+
+    //            //$row.append($('<td width="8%"/>').html(val.City));
+    //            $row.append($('<td width="8%"/>').html(val.DealCode));
+    //            $row.append($('<td width="25%"/>').html(val.DisName));
+    //            $row.append($('<td width="25%"/>').html(val.ContactPerson));
+    //            $row.append($('<td width="8%"/>').html(val.Mob1));
+    //            $row.append($('<td width="25%"/>').html(val.Email));
+
+    //            $row.append($('<td width="6%"/>').html('<button type="button" id="#MapDealer"   data-toggle="modal" data-target="#MapDealer" class="deleteContact btn btn btn-danger btn-xs"><img src="../../img/eye.png" style="width:18px;"/></button> <input type ="hidden" id="hdnMstCode_' + i + '" value ="' + val.MstCode + '"  />'));
+
+    //            $tbody.append($row);
+    //        });
+    //        $table.append($tbody);
+    //        $('#ShowTable').html($table);
+    //    }
+    //}
+
+
+@*    $('#DealerSearch').click(function () {
+        
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FillDealer", "Home")',
+                data: { DistributorID: $('#DistributorNM_').val(), CityID: $("#DL_City_I").val() },
+                success: function (data) {
+                    GenratedItemTable(data);
+                }
+            });
+    });*@
+
+    $(document).on("click", ".deleteContact", function () {
+
+
+        var index = $(this).closest("tr").index();
+        var iMstCode = 0;
+        if ($('#hdnMstCode_' + index).val() != "") iMstCode = $('#hdnMstCode_' + index).val(); else iMstCode = 0;
+
+        if (iMstCode > 0) {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Dist_Deal", "Master")",
+                data: { isDistributor: false },
+                success: function (data) {
+                    $("#dvDist_Deal").html(data);
+
+                    $.get("/Home/FillDistributorDet", { MstCode: iMstCode }, function (data) {
+                        if (data != null) {
+                            $('#Dis_ID').val(data[0].Dis_ID); //$('#Deal_ID').val(data[0].MstCode); 
+                            $('#DistributorNM').val(data[0].DistributorID);
+                            $('#Deal_City').val(data[0].CityID); $('#Deal_Add1').val(data[0].Add_I);
+                            $('#Deal_Add2').val(data[0].Add_II);
+                            $('#Deal_Add3').val(data[0].Add_III); $('#Deal_pobox').val(data[0].PO_Box);
+                            $('#Deal_City_I').val(data[0].CityID_I);
+                            $('#Deal_Name').val(data[0].DisName); $('#Deal_State').val(data[0].StateID);
+                            //$('#Deal_Country').val(data[0].CountryID);
+                            $('#hdnMstCode').val(data[0].MstCode);
+                            $('#Deal_ContactPerson').val(data[0].ContactPerson); $('#Deal_Mob1').val(data[0].Mob1);
+                            $('#Deal_Mob2').val(data[0].Mob2); $('#Deal_LandLine').val(data[0].LandLine);
+                            $('#Deal_Email').val(data[0].Email); $('#Deal_Skype').val(data[0].Skype);
+                            $('#Deal_GSTIN').val(data[0].GSTIN); $('#Deal_Code').val(data[0].DealCode);
+                            $('#hdnDealerCode').val(data[0].MstCode);
+
+                            $('#ChequeNo').val(data[0].ChequeNo);
+                            $('#CP_I').val(data[0].CP_I); $('#CP_II').val(data[0].CP_II);
+                            $('#CP_NO_I').val(data[0].CP_NO_I); $('#CP_NO_II').val(data[0].CP_NO_II);
+                            $('#DOB').val(data[0].DOB); $('#DOJ').val(data[0].DOJ);
+                            $('#AnniDt').val(data[0].AnniDt);
+
+                            $("#dvAllBrand input:checkbox").prop("checked", false);
+                            if (data[0].Brand != null && data[0].Brand != "") {
+                                var arr = data[0].Brand.split(',');
+                                for (var i = 0; i < arr.length; i++) {
+                                    if ($("#dvAllBrand #chk_" + arr[i]).attr('data-val') == arr[i])
+                                        $("#dvAllBrand #chk_" + arr[i]).prop('checked', true);
+                                }
+                            }
+                            $("#dvAllProduct input:checkbox").prop("checked", false);
+                            if (data[0].Product != null && data[0].Product != "") {
+                                var arrProduct = data[0].Product.split(',');
+                                for (var i = 0; i < arrProduct.length; i++) {
+                                    if ($("#dvAllProduct #chk_" + arrProduct[i]).attr('data-val') == arrProduct[i])
+                                        $("#dvAllProduct #chk_" + arrProduct[i]).prop('checked', true);
+                                }
+                            }
+                            var CityIDTmp = data[0].CityID_I;
+                            $('#Deal_City_I').empty();
+                            $('#Deal_Tahsil').empty();
+                            $.get("../Master/GetCityList", { iState: data[0].StateID }, function (data) {
+                                if (data != null) {
+                                    var opt = new Option('--Select--', 0);
+                                    $("#Deal_City_I").append(opt);
+
+                                    for (var i = 0; i < data.length; i++) {
+                                        opt = new Option(data[i].cityname, data[i].citycode);
+                                        $("#Deal_City_I").append(opt);
+                                    }
+                                    $('#Deal_City_I').val(CityIDTmp);
+                                }
+                                $('#Deal_City_I').val(CityIDTmp);
+                            });
+
+                        }
+                    });
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+    });
+    var aType = '@ViewBag.aType';
+    $('#DealerSearch_1').click(function () {
+        ShowHideLoader('show');
+        var DistributorNM_ = 0;
+        var DL_City_I = 0;
+        var Deal_State_I = 0;
+        if ($('#DistributorNM_').val() != "") DistributorNM_ = $('#DistributorNM_').val(); else DistributorNM_ = "0";
+        if ($('#DL_City_I').val() != undefined) DL_City_I = $('#DL_City_I').val(); else DL_City_I = "0";
+        if ($('#Deal_State_I').val() != "") Deal_State_I = $('#Deal_State_I').val(); else Deal_State_I = "0";
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FillDealer", "Home")',
+            data: { DistributorID: DistributorNM_, CityID: DL_City_I, StateID: Deal_State_I },
+            success: function (data) {
+                GenratedItemTable(data);
+                ShowHideLoader('hide');
+            }
+        });
+    });
+    if (aType == "1") { $('#DealerSearch_1').click(); }
+</script>

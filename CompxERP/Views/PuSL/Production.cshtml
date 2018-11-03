@@ -1,0 +1,1896 @@
+﻿@model CompxERP.Models.Jourmaster
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PUSL</title>
+
+
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+   @* <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/bootstrap/js/jquery.min.js"></script>*@
+
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+
+    <script src="~/Scripts/ddaccordion.js"></script>
+
+    <link href="~/Scripts/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <link href="~/Content/css/menu.css" rel="stylesheet" />
+    <link href="~/Content/css/my-style.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/jquery.ui.tabs.css" rel="stylesheet" />
+
+    @* <script>
+         $(document).ready(function () {
+             $("#H-tabs1").click(function () {
+                 $(".tab-raw").show();
+                 $(".tab-finish").hide();
+                 $(".tab-pack").hide();
+                 $(".tab-exp").hide();
+                 
+             });         
+
+         });
+    </script>*@
+
+    <script>
+        var iType = 0;
+        $(function () {
+           // $("#mstDate").datepicker();
+
+
+
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            if (hashes.length > 1) {
+                $('#MstCode').val(getUrl()["mstCode"]);
+            }
+            else {
+                $('#MstCode').val(0);
+            }
+
+          
+            iType = getUrl()["MstType"]
+
+            $('#MstType').val(iType);
+
+            if (iType == 74) {
+                $('#lgId').html("Production Scheme Information");
+                $('#sHeader').html("Production Scheme Information");
+            }
+            else if (iType == 75) { $('#lgId').html("Production Voucher"); $('#sHeader').html("Production Voucher"); }
+
+            var iMstCode = 0;
+            iMstCode = getUrl()["MstCode"]
+            if (iMstCode > 0) {
+                $('#IsEdit').val('true');
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetProduction", "PuSL")',
+                    data: { "iMstcode": +getUrl()["MstCode"], "iCompcode": +getUrl()["comp"], "iType": +getUrl()["MstType"] },
+                    success: function (data) {
+                        debugger;
+                        itmRaw = data.oItmRaw;
+                        itmFinish = data.oItmFini;
+                        itmPack = data.oItmPack;
+                        itmExp = data.oItmExp;
+
+                        if (data.oItmRaw.length > 0) GenratedItemRaw(data.oItmRaw);
+                        if (data.oItmFini.length > 0) GenratedFinished(data.oItmFini);
+                        if (data.oItmPack.length > 0) GenratedItemPacking(data.oItmPack);
+                        if (data.oItmExp.length > 0) GenratedItemExp(data.oItmExp);
+
+                    }
+                });
+            }
+            function getUrl() {
+                var vars = [], hash;
+                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            }
+
+            SetVoucherNo();
+            function SetVoucherNo() {
+                var sVoucher = ""; var someDate = new Date();
+                debugger;
+                //alert($('#mstcode').val());
+                sVoucher = someDate.getFullYear().toString().substr(2, 2) + '' + zeroFill(someDate.getMonth() + 1) + '' + someDate.getDate() + '' + GetVoucherNo($('#mstcode').val());
+                $('#mstchno').val(sVoucher);
+                //$('#mstdate').val( someDate.getDate()+ '/' +  zeroFill(someDate.getMonth() + 1) + '/' + someDate.getFullYear()  );
+
+            }
+
+            function zeroFill(i) {
+                return (i < 10 ? '0' : '') + i
+            }
+            function GetVoucherNo(ChNo) {
+                var str = new String(ChNo);
+                if (str.length == 1)
+                    return "000" + str;
+                else if (str.length == 2)
+                    return "00" + str;
+                else if (str.length == 3)
+                    return "0" + str;
+                else
+                    return str;
+            }
+
+        });
+
+        $(function () { $("#tabs").tabs(); });
+
+
+        //-------------------------------------- 
+        var itmRaw = [];
+        var itmFinish = [];
+        var itmPack = [];
+        var itmExp = [];
+        var iPack = 0;
+        var iPack_Fini = 0;
+        var iPack_Pack = 0;
+        var iPack_Exp = 0;
+
+        $(document).ready(function () {
+
+            $('#addRaw').click(function () {
+                var sUnit = ""; var iUnitID = 0;
+                if (parseInt($('#UnitID').val().split("~")[0].toString()) > 0) {
+                    iUnitID = parseInt($('#UnitID').val().split("~")[0].toString());
+                    sUnit = $('#UnitID :selected').text();
+                }
+
+                itmRaw.push({
+                    SrNo: itmRaw.length + 1,
+                    ItemID: $('#ItemID').val(),
+                    ddlItem: $('#ItemNm').val(),
+                    Cases: $('#Cases').val(),
+                    Qty: $('#Qty').val(),
+                    Rate: $('#Rate').val(),
+                    Amt: $('#Amt').val(),
+                    UnitID: iUnitID ,// $('#UnitID').val().split("~")[0].toString(), //$('#UnitID').val(),
+                    UnitID_Det: $('#UnitID').val(), //$('#UnitID').val(),
+                    unitname: sUnit,//$('#UnitID :selected').text()
+                    OrgQty: 0
+                });
+
+                $('#ItemNm').val('').focus(); $('#Qty').val('0'); $('#Rate').val('0');
+                $('#Amt').val(''); $('#ItemNetAmt').val('');
+
+                GenratedItemRaw(itmRaw);
+               
+            });
+            $('#addFinish').click(function () {
+                 
+                var sUnit=""; var iUnitID=0;
+                if ($('#UnitID_Fini').val() != null) {
+                    if (parseInt($('#UnitID_Fini').val().split("~")[0].toString()) > 0) {
+                        iUnitID = parseInt($('#UnitID_Fini').val().split("~")[0].toString());
+                        sUnit = $('#UnitID_Fini :selected').text();
+                    }
+                }
+
+                itmFinish.push({
+                    SrNo: itmFinish.length + 1,
+                    ItemID: $('#ItemID_Fini').val(),
+                    ddlItem: $('#ItemNm_Fini').val(),
+                    Cases: $('#Cases_Fini').val(),
+                    Qty: $('#Qty_Fini').val(),
+                    Rate: $('#Rate_Fini').val(),
+                    Amt: $('#Amt_Fini').val(),
+                    UnitID: iUnitID ,//$('#UnitID_Fini').val().split("~")[0].toString(), //$('#UnitID').val(),
+                    UnitID_Det: $('#UnitID_Fini').val(), //$('#UnitID').val(),
+                    unitname: sUnit ,//$('#UnitID_Fini :selected').text()
+                    OrgQty: 0
+            });
+
+                $('#ItemNm_Fini').val('').focus(); $('#Qty_Fini').val('0'); $('#Rate_Fini').val('0');
+                $('#Amt_Fini').val('');
+
+                GenratedFinished(itmFinish);
+            });
+
+            $('#addPacking').click(function () {
+                
+                var sUnit = ""; var iUnitID = 0;
+                if ($('#UnitID_Pack').val() != null) {
+                    if (parseInt($('#UnitID_Pack').val().split("~")[0].toString()) > 0) {
+                        iUnitID = parseInt($('#UnitID_Pack').val().split("~")[0].toString());
+                        sUnit = $('#UnitID_Pack :selected').text();
+                    }
+                }
+
+                itmPack.push({
+                    SrNo: itmPack.length + 1,
+                    ItemID: $('#ItemID_Pack').val(),
+                    ddlItem: $('#ItemNm_Pack').val(),
+                    Cases: $('#Cases_Pack').val(),
+                    Qty: $('#Qty_Pack').val(),
+                    Rate: $('#Rate_Pack').val(),
+                    Amt: $('#Amt_Pack').val(),
+                    UnitID: iUnitID ,// $('#UnitID_Pack').val().split("~")[0].toString(), //$('#UnitID').val(),
+                    UnitID_Det: $('#UnitID_Pack').val(), //$('#UnitID').val(),
+                    unitname: sUnit, //$('#UnitID_Pack :selected').text()
+                    OrgQty: 0
+            });
+
+                $('#ItemNm_Pack').val('').focus(); $('#Qty_Pack').val('0'); $('#Rate_Pack').val('0');
+                $('#Amt_Pack').val('');
+
+                GenratedItemPacking(itmPack);
+            });
+
+            $('#addExp').click(function () {
+                debugger;
+                itmExp.push({
+                    SrNo: itmExp.length + 1,
+                    ItemID: $('#ItemID_Exp').val(),
+                    ddlItem: $('#ItemNm_Exp').val(),
+                    //Cases: $('#Cases_Exp').val(),
+                    // Qty: $('#Qty_Exp').val(),
+                    Rate: $('#Rate_Exp').val(),
+                    Amt: $('#Amt_Exp').val(),
+                    UnitID: $('#UnitID_Exp').val(),//.split("~")[0].toString(), //$('#UnitID').val(),
+                    unitname: $('#UnitID_Exp :selected').text()
+                });
+
+                $('#ItemNm_Exp').val('').focus(); $('#Qty_Exp').val('0'); $('#Rate_Exp').val('0');
+                $('#Amt_Exp').val('');
+
+                GenratedItemExp(itmExp);
+            });
+
+
+
+            $(document).on("click", ".deleteContact", function () {
+                if (itmRaw.length > 0) {
+                    debugger;
+                    var index = $(this).closest("tr").index();
+
+                    var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+    $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+                    $('#ItemID').val(itmRaw[index].ItemID);
+                    
+                    $('#ItemNm').val($row.find("td:nth-child(2)").text());
+                    $('#Cases').val($row.find("td:nth-child(3)").text());
+                    $('#Qty').val($row.find("td:nth-child(5)").text());
+                    $('#Rate').val($row.find("td:nth-child(6)").text());
+                    $('#Amt').val($row.find("td:nth-child(7)").text());
+                    $('#UnitID').val(itmRaw[index].UnitID_Det);
+                    $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                    itmRaw.splice(index, 1);
+                     
+                    $('#sItemDet').val('{"LstItem":' + JSON.stringify(itmRaw) + '}');
+
+                    var total = 0;
+                    for (var i = 0; i < itmRaw.length; i++) {
+                        total += parseFloat(itmRaw[i].Amt);
+                    }
+                    $('#Total').val(total);
+                }
+
+            });
+
+            //$('#Qty').blur(function () {
+            //    debugger;
+            //    $('#UnitID').val(15);
+            //    $('#UnitID option[value="15"]').attr("selected", "selected");
+            //    $('#UnitID option:selected').attr("selected", null);
+            //    $('#UnitID option[value="' + $('#Cases_Fini').val() + '"]').attr("selected", "selected");
+            //});
+
+             
+            $('#Qty').blur(function () {
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Qty').val() != "") iQty = $('#Qty').val(); else iQty = 0;
+
+                if ($('#UnitID').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID').val().split("~")[1].toString(); else iUnitVal = 0;
+
+                iTotal = (iQty / iUnitVal).toFixed(2);
+                $('#Cases').val(iTotal);
+
+                Calc_Amt();  
+            });
+
+            $('#Rate').blur(function () {
+                Calc_Amt();  
+            });
+
+            $("#Cases").focus(function () {
+                iPack = $('#Cases').val();
+            });
+            $("#Cases_Pack").focus(function () {
+                iPack_Pack = $('#Cases_Pack').val();
+            });
+            $("#Cases_Exp").focus(function () {
+                iPack_Exp = $('#Cases_Exp').val();
+            });
+            //$("#Cases_Fini").focus(function () {
+            //    debugger;
+            //    iPack_Fini = $('#Cases_Fini').val();
+            //});
+            $("#Cases_Fini").focusout(function () { 
+                iPack_Fini = $('#Cases_Fini').val();
+            });
+            $("#Cases_Pack").focusout(function () { 
+                iPack_Pack = $('#Cases_Pack').val();
+            });
+            //$('#Qty').blur(function () { 
+            //    SetQty_Exp();
+            //    var iRate; var iQty;
+            //    if ($('#Rate_Exp').val() != "") iRate = $('#Rate_Exp').val(); else iRate = 0;
+            //    if ($('#Qty_Exp').val() != "") iQty = $('#Qty_Exp').val(); else iQty = 0;  
+            //    $('#Amt_Exp').val((iRate * iQty).toFixed(2) );
+
+            //}); 
+            $('#Rate_Exp').blur(function () {
+                GetExpAmt();
+            });
+            function GetExpAmt() {
+                debugger;
+                var iRate = 0; var iQty = 0; var iTotal = 0;
+                if ($('#Rate_Exp').val() != "") iRate = $('#Rate_Exp').val(); else iRate = 0;
+                if ($('#TotQtyFini').val() != "") iQty = $('#TotQtyFini').val(); else iQty = 0;
+                if ($('#msttota').val() != "") iTotal = $('#msttota').val(); else iTotal = 0;
+
+                if ($('#UnitID_Exp').val() == 3) $('#Amt_Exp').val(iRate);
+                else if ($('#UnitID_Exp').val() == 4) $('#Amt_Exp').val((iRate * iQty).toFixed(2));
+                else if ($('#UnitID_Exp').val() == 1) $('#Amt_Exp').val(((iRate * iTotal) / 100).toFixed(2));
+                else $('#Amt_Exp').val(0);
+            }
+
+            $('#Rate_Exp').blur(function () {
+                GetExpAmt();
+            });
+
+            $('#Cases_Fini').blur(function () {
+                //$('#UnitID_Fini').val(15);
+                debugger;
+                //$('#UnitID_Fini option[value="15"]').attr("selected", "selected");
+                //$('#UnitID_Fini option:selected').attr("selected", null);
+               // $('#UnitID_Fini option[value="'+ $('#Cases_Fini').val()+ '"]').attr("selected", "selected");
+  });
+
+            $("#UnitID_Exp").change(function () {
+                GetExpAmt();
+            });
+
+            $('#Qty_Pack').blur(function () {
+                debugger;
+                SetQty_Pack();
+                var iRate; var iQty;
+                if ($('#Rate_Pack').val() != "") iRate = $('#Rate_Pack').val(); else iRate = 0;
+                if ($('#Qty_Pack').val() != "") iQty = $('#Qty_Pack').val(); else iQty = 0;
+                $('#Amt_Pack').val((iRate * iQty).toFixed(2));
+            });
+            $('#Rate_Pack').blur(function () {
+                SetQty_Pack();
+                var iRate; var iQty;
+                if ($('#Rate_Pack').val() != "") iRate = $('#Rate_Pack').val(); else iRate = 0;
+                if ($('#Qty_Pack').val() != "") iQty = $('#Qty_Pack').val(); else iQty = 0;
+                $('#Amt_Pack').val((iRate * iQty).toFixed(2));
+            });
+
+            $('#Qty_Fini').blur(function () {
+                debugger;
+                SetQty_Fini();
+                var iRate; var iQty;
+                if ($('#Rate_Fini').val() != "") iRate = $('#Rate_Fini').val(); else iRate = 0;
+                if ($('#Qty_Fini').val() != "") iQty = $('#Qty_Fini').val(); else iQty = 0;
+                $('#Amt_Fini').val((iRate * iQty).toFixed(2));
+            });
+            $('#Rate_Fini').blur(function () {
+                SetQty_Fini();
+                var iRate; var iQty;
+                if ($('#Rate_Fini').val() != "") iRate = $('#Rate_Fini').val(); else iRate = 0;
+                if ($('#Qty_Fini').val() != "") iQty = $('#Qty_Fini').val(); else iQty = 0;
+                $('#Amt_Fini').val((iRate * iQty).toFixed(2));
+            });
+
+            function SetQty_Fini() {
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Cases_Fini').val() != "") iCases = $('#Cases_Fini').val(); else iCases = 0;
+               
+                if ($('#UnitID_Fini').val() != null) { if ($('#UnitID_Fini').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID_Fini').val().split("~")[1].toString(); else iUnitVal = 0; }
+
+                if (iPack_Fini == iCases)
+                    return;
+                 
+                iTotal = (iCases * iUnitVal).toFixed(2);
+                $('#Qty_Fini').val(iTotal);
+            }
+            function SetQty_Pack() {
+                debugger;
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Cases_Pack').val() != "") iCases = $('#Cases_Pack').val(); else iCases = 0;
+
+                if ($('#UnitID_Pack').val() != null) { if ($('#UnitID_Pack').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID_Pack').val().split("~")[1].toString(); else iUnitVal = 0; }
+
+                if (iPack_Pack == iCases)
+                    return;
+
+                iTotal = (iCases * iUnitVal).toFixed(2);
+                $('#Qty_Pack').val(iTotal);
+            }
+            function SetQty_Exp() {
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Cases_Exp').val() != "") iCases = $('#Cases_Exp').val(); else iCases = 0;
+
+                if ($('#UnitID_Exp').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID_Exp').val().split("~")[1].toString(); else iUnitVal = 0;
+
+                if (iPack_Exp == iQty)
+                    return;
+
+                iTotal = (iCases * iUnitVal).toFixed(2);
+                $('#Qty_Exp').val(iTotal);
+            }
+
+            $("#UnitID_Fini").change(function () {
+                SetQty_Fini();
+                var iRate; var iQty;
+                if ($('#Rate_Fini').val() != "") iRate = $('#Rate_Fini').val(); else iRate = 0;
+                if ($('#Qty_Fini').val() != "") iQty = $('#Qty_Fini').val(); else iQty = 0;
+                $('#Amt_Fini').val((iRate * iQty).toFixed(2));
+            });
+
+            $("#UnitID_Pack").change(function () {
+                SetQty_Pack();
+                var iRate; var iQty;
+                if ($('#Rate_Pack').val() != "") iRate = $('#Rate_Pack').val(); else iRate = 0;
+                if ($('#Qty_Pack').val() != "") iQty = $('#Qty_Pack').val(); else iQty = 0;
+                $('#Amt_Pack').val((iRate * iQty).toFixed(2));
+            });
+
+            $(document).on("click", ".deleteContact_Fini", function () {
+                if (itmFinish.length > 0) {
+                    debugger;
+                    var index = $(this).closest("tr").index();
+
+                    var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+                    $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+                    $('#ItemID_Fini').val(itmFinish[index].ItemID);
+
+                    $('#ItemNm_Fini').val($row.find("td:nth-child(2)").text());
+                    $('#Cases_Fini').val($row.find("td:nth-child(3)").text());
+                    $('#UnitID_Fini').val(itmFinish[index].UnitID_Det);
+                    $('#Qty_Fini').val($row.find("td:nth-child(5)").text());
+                    $('#Rate_Fini').val($row.find("td:nth-child(6)").text());
+                    $('#Amt_Fini').val($row.find("td:nth-child(7)").text());
+                    
+                    $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                    itmFinish.splice(index, 1);
+                     
+                    $('#sItemFinish').val('{"LstItem":' + JSON.stringify(itmFinish) + '}');
+                    var total = 0;
+                    for (var i = 0; i < itmFinish.length; i++) {
+                        total += parseFloat(itmFinish[i].Amt);
+                    }
+                    $('#TotalFini').val(total);
+                }
+
+            });
+
+            $(document).on("click", ".deleteContact_Pack", function () {
+                if (itmPack.length > 0) {
+                    debugger;
+                    var index = $(this).closest("tr").index();
+
+                    var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+                    $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+                    $('#ItemID_Pack').val(itmPack[index].ItemID);
+
+                    $('#ItemNm_Pack').val($row.find("td:nth-child(2)").text());
+                    $('#Cases_Pack').val($row.find("td:nth-child(3)").text());
+                    $('#UnitID_Pack').val(itmPack[index].UnitID_Det);
+                    $('#Qty_Pack').val($row.find("td:nth-child(5)").text());
+                    $('#Rate_Pack').val($row.find("td:nth-child(6)").text());
+                    $('#Amt_Pack').val($row.find("td:nth-child(7)").text());
+
+                    $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                    itmPack.splice(index, 1);
+
+                    $('#sItemPacking').val('{"LstItem":' + JSON.stringify(itmPack) + '}');
+                    var total = 0;
+                    for (var i = 0; i < itmPack.length; i++) {
+                        total += parseFloat(itmPack[i].Amt);
+                    }
+                    $('#TotalPack').val(total);
+                     
+                }
+
+            });
+
+            $(document).on("click", ".deleteContact_Exp", function () {
+                if (itmExp.length > 0) {
+                    var index = $(this).closest("tr").index();
+
+                    var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+                    $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+
+                    $('#ItemID_Exp').val(itmExp[index].ItemID);
+
+                    $('#ItemNm_Exp').val($row.find("td:nth-child(2)").text());
+                   // $('#Cases_Pack').val($row.find("td:nth-child(3)").text());
+                    $('#UnitID_Exp').val(itmExp[index].UnitID);
+                   // $('#Qty_Pack').val($row.find("td:nth-child(5)").text());
+                    $('#Rate_Exp').val($row.find("td:nth-child(4)").text());
+                    $('#Amt_Exp').val($row.find("td:nth-child(5)").text());
+
+                    $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                    itmExp.splice(index, 1);
+
+                    debugger;
+                     
+                    $('#sItemExp').val('{"LstItem":' + JSON.stringify(itmExp) + '}');
+                    var total = 0;
+
+                    for (var i = 0; i < itmExp.length; i++) {
+                        total += parseFloat(itmExp[i].Amt); 
+                    } 
+                    $('#TotalExp').val(total);
+
+
+                }
+
+            });
+
+        });
+
+        function GenratedItemRaw(itmRaw) {
+            if (itmRaw.length > 0) {
+                var $table = $('<table/>');
+                $table.append('<thead><tr><th style="width: 5%">S.No.</th><th style="width: 40%">Item ID</th><th style="width: 5%">Cases </th><th style="width: 10%">Unit</th> <th style="width: 10%">Quantity</th><th style="width: 10%">Rate</th><th style="width: 10%">Amount</th><th style="width: 15%">Remove</th></tr></thead>');
+                var $tbody = $('<tbody/>');
+                var iTotal = 0;
+                var iTax = 0;
+                debugger;
+                $.each(itmRaw, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.ddlItem));
+                    $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.unitname));
+                    $row.append($('<td/>').html(val.Qty));
+                    //$row.append('<input id="txtEditQty" name="txtEditQty" class="txtEditQty" type="text" value="' + val.Qty + '" />');
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(val.Amt));
+                    $row.append('<button type="button" id="btnDelete" class="deleteContact btn-color"></button>');
+                    $tbody.append($row);
+                    iTotal = iTotal + parseFloat(val.Amt);
+                    iTax = iTax + parseFloat(val.Qty);
+                });
+                $table.append($tbody);
+                $('#tblRaw').html($table);
+                $('#TotQtyRaw').val((iTax).toFixed(2));
+                $('#TotalRaw').val((iTotal).toFixed(2));
+
+                debugger;
+
+                $('#sItemRaw').val('{"LstItem":' + JSON.stringify(itmRaw) + '}');
+
+                if (iType == 74) {
+                    if ($('#RatioType').val() == 1)
+                        $('#Ratio').val($('#TotQtyRaw').val());
+                    else
+                        $('#Ratio').val($('#TotQtyFini').val());
+                } 
+            }
+        }
+
+//        $(document).ready(function () {
+//            $(document).on('focusout', '.txtEditQty', function () {
+                 
+//                //***********************
+//                var $table = $('<table/>');
+//                $table.append('<thead><tr><th style="width: 5%">S.No.</th><th style="width: 40%">Item ID</th><th style="width: 5%">Cases </th><th style="width: 10%">Unit</th> <th style="width: 10%">Quantity</th><th style="width: 10%">Rate</th><th style="width: 10%">Amount</th><th style="width: 15%">Remove</th></tr></thead>');
+//                var $tbody = $('<tbody/>');
+
+//                        debugger;
+//                        var index = $(this).closest("tr").index();
+
+//                        var iRatio = 0; var iOrgRatio = 0; var iQty = 0; var iOrgQty = 0;
+//                        if ($('#Cases').val() != "") iRatio = $('#Cases').val(); else iRatio = 0;
+//                        if ($('#Ratio_Org').val() != "") iOrgRatio = $('#Ratio_Org').val(); else iOrgRatio = 0;
+
+//                        $.each(itmRaw, function (i, val) {
+//                            if (i != index) {
+
+//                                if (val.Qty != "") iQty = val.Qty; else iQty = 0;
+//                                if (val.orgQty != "") iOrgQty = val.orgQty; else iOrgQty = 0;
+
+//                                iQty = (iOrgQty * iOrgRatio) / iRatio;
+
+//                                var $row = $('<tr/>');
+//                                $row.append($('<td/>').html(i + 1));
+//                                $row.append($('<td/>').html(val.ddlItem));
+//                                $row.append($('<td/>').html(val.Cases));
+//                                $row.append($('<td/>').html(val.unitname));
+//                                $row.append('<input id="txtEditQty" name="txtEditQty" type="text" value="' + iQty + '" />');
+//                                $row.append($('<td/>').html(val.Rate));
+//                                $row.append($('<td/>').html(iQty * val.Rate));
+//                                $row.append('<button type="button" id="btnDelete" class="deleteContact btn-color"></button>');
+//                                $tbody.append($row);
+
+//                                iQty = 0; iOrgQty = 0;
+//                            }
+//                        });
+//                        $table.append($tbody);
+//                        $('#tblRaw').html($table);
+                 
+////***********************
+//            })
+
+//        });
+
+        
+
+        function GenratedFinished(itmFinish) {
+            debugger;
+            if (itmFinish.length > 0) {
+                var $table = $('<table/>');
+                $table.append('<thead><tr><th style="width:5%;">S.No.</th><th style="width:40%;">Item ID</th><th style="width:10%;">Cases </th><th style="width:10%;">Unit</th> <th style="width:10%;">Quantity</th><th style="width:10%;">Rate</th><th style="width:10%;">Amount</th><th style="width:10%;">Remove</th></tr></thead>');
+                var $tbody = $('<tbody/>');
+                var iTotal = 0;
+                var iTax = 0;
+
+                $.each(itmFinish, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.ddlItem  ));
+                    $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.unitname));
+                    $row.append($('<td/>').html(val.Qty));
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(val.Amt));
+                    $row.append('<button type="button" id="btnDelete_Fini" class="deleteContact_Fini btn-color"></button>');
+                    $tbody.append($row);
+                    iTotal = iTotal + parseFloat(val.Amt);
+                    iTax = iTax + parseFloat(val.Qty);
+                });
+                $table.append($tbody);
+                $('#tblFinish').html($table);
+                $('#msttota').val((iTotal).toFixed(2));
+                $('#TotQtyFini').val((iTax).toFixed(2));
+                debugger;
+                $('#sItemFinish').val('{"LstItem":' + JSON.stringify(itmFinish) + '}');
+
+                if (iType == 74) {
+                    if ($('#RatioType').val() == 2)
+                        $('#Ratio').val($('#TotQtyFini').val());
+                    else
+                        $('#Ratio').val($('#TotQtyRaw').val());
+                }
+
+                Diff();
+
+            }
+        }
+
+        function GenratedItemPacking(itmPack) {
+            if (itmPack.length > 0) {
+                var $table = $('<table/>');
+                $table.append('<thead><tr><th style="width:5%;">S.No.</th><th style="width:35%;">Item ID</th><th style="width:10%;">Cases </th><th style="width:10%;">Unit</th> <th style="width:5%;">Quantity</th><th style="width:5%;">Rate</th><th style="width:15%;">Amount</th><th style="width:15%;">Remove</th></tr></thead>');
+                var $tbody = $('<tbody/>');
+                var iTotal = 0;
+                var iTax = 0;
+
+                $.each(itmPack, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.ddlItem ));
+                    $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.unitname));
+                    $row.append($('<td/>').html(val.Qty));
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(val.Amt));
+                    $row.append('<button type="button" id="btnDelete_Pack" class="deleteContact_Pack btn-color"></button>');
+                    $tbody.append($row);
+                    iTotal = iTotal + parseFloat(val.Amt);
+                    iTax = iTax + parseFloat(val.Qty);
+                });
+                $table.append($tbody);
+                $('#tblPacking').html($table);
+                $('#TotalPack').val((iTotal).toFixed(2));
+                $('#TotQtyPack').val((iTax).toFixed(2));
+                $('#sItemPacking').val('{"LstItem":' + JSON.stringify(itmPack) + '}');
+                Diff();
+
+            }
+        }
+
+        function GenratedItemExp(itmExp) {
+            if (itmExp.length > 0) {
+                var $table = $('<table/>');
+                $table.append('<thead><tr><th style="width:5%;">S.No.</th><th style="width:40%;">Item ID</th><th style="width:10%;">Unit</th> <th style="width:10%;">Rate</th><th style="width:25%;">Amount</th><th style="width:10%;">Remove</th></tr></thead>');
+                var $tbody = $('<tbody/>');
+                var iTotal = 0;
+                var iTax = 0;
+
+                $.each(itmExp, function (i, val) {
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.ddlItem ));
+                    // $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.unitname));
+                    // $row.append($('<td/>').html(val.Qty));
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(val.Amt));
+                    $row.append('<button type="button" id="btnDelete_Exp" class="deleteContact_Exp btn-color"></button>');
+                    $tbody.append($row);
+                    iTotal = iTotal + parseFloat(val.Amt);
+                });
+                $table.append($tbody);
+                $('#tblExp').html($table);
+                $('#TotalExp').val((iTotal).toFixed(2));
+
+                debugger;
+                $('#sItemExp').val('{"LstItem":' + JSON.stringify(itmExp) + '}');
+                Diff();
+            }
+        }
+         
+ function Diff() {
+     var iAmt_Raw = 0; var iAmt_Fini = 0; var iAmt_Pack = 0;
+     var iQty_Raw = 0; var iQty_Fini = 0; var iQty_Pack = 0; var iTotal; var iQtyDiff = 0; var iTotDiff = 0;
+
+     if ($('#TotQtyRaw').val() != "") iQty_Raw = $('#TotQtyRaw').val(); else iRate = 0;
+            if ($('#TotalRaw').val() != "") iAmt_Raw = $('#TotalRaw').val(); else iQty = 0;
+
+            if ($('#TotQtyFini').val() != "") iQty_Fini = $('#TotQtyFini').val(); else iRate = 0;
+            if ($('#msttota').val() != "") iAmt_Fini = $('#msttota').val(); else iQty = 0;
+
+            if ($('#TotQtyPack').val() != "") iQty_Pack = $('#TotQtyPack').val(); else iRate = 0;
+            if ($('#TotalPack').val() != "") iAmt_Pack = $('#TotalPack').val(); else iQty = 0;
+
+            iQtyDiff = (iQty_Fini - (iQty_Raw + iQty_Pack)).toFixed(2);
+            iTotDiff = (iAmt_Fini - (iAmt_Raw + iAmt_Pack)).toFixed(2);
+            $('#TotTax').val(iQtyDiff);
+            $('#TotDis').val(iTotDiff);
+
+ }
+
+        function Calc_Amt() {
+            var iRate; var iQty; var iTotal;
+
+            if ($('#Rate').val() != "") iRate = $('#Rate').val(); else iRate = 0;
+            if ($('#Qty').val() != "") iQty = $('#Qty').val(); else iQty = 0;
+
+            iTotal = (iRate * iQty).toFixed(2);
+            $('#Amt').val(iTotal);
+
+        }
+
+
+
+        function getUrl() {
+            debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+
+    </script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var iType = 0;
+            iType = getUrl()["MstType"]
+
+            $("#Compcode").change(function () {
+                var uri = "/Sauda/SetCompcode";
+                debugger;
+                $.getJSON(uri, { CompName: this.value })
+               .done(function (data) {
+                   //alert(data[0]);
+                   $('#Compcode').val(this.value);
+                   alert($('#Compcode').val());
+               });
+
+            });
+
+            debugger;
+            $("#acctname").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    //  alert(document.getElementById("compcode").value);
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/Cateogry", "OpeningBal"))",
+
+                        data: { "cateory": request.term, "iType": +getUrl()["MstType"] },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $('#PartyID').val(ui.item.Id);
+                }
+            });
+
+            $("#mstchnm").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetScheme", "PuSL"))",
+                        data: { "Schm": request.term },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].mstchnm, Id: data[i].mstcode };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                 select: function (event, ui) {
+                   @* $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetProduction_Scm", "PuSL")',
+                        data: { "iMstcode": +ui.item.Id, "iType": + 74 },
+                    success: function (data) {
+                        debugger;
+                        itmRaw = data.oItmRaw;
+                        itmFinish = data.oItmFini;
+                        itmPack = data.oItmPack;
+                        itmExp = data.oItmExp;
+
+                        if (data.oItmRaw.length > 0) GenratedItemRaw(data.oItmRaw);
+                        if (data.oItmFini.length > 0) GenratedFinished(data.oItmFini);
+                        if (data.oItmPack.length > 0) GenratedItemPacking(data.oItmPack);
+                        if (data.oItmExp.length > 0) GenratedItemExp(data.oItmExp);
+
+                    }
+                    });*@
+
+                }
+
+             });
+
+            $('#mstchnm').blur(function () {
+                debugger;
+                var sSchname;
+                sSchname = $('#mstchnm').val();
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetProduction_Scm", "PuSL")',
+                    data: { "sSchmNm": sSchname },
+                    success: function (data) {
+                        debugger;
+                        if (iType == 74) { } else {
+                            itmRaw = data.oItmRaw;
+                            itmFinish = data.oItmFini;
+                            itmPack = data.oItmPack;
+                            itmExp = data.oItmExp;
+
+                            if (data.oItmRaw.length > 0) GenratedItemRaw(data.oItmRaw); else $('#tblRaw').html("");
+                            if (data.oItmFini.length > 0) GenratedFinished(data.oItmFini); else $('#tblFinish').html("");
+                            if (data.oItmPack.length > 0) GenratedItemPacking(data.oItmPack); else $('#tblPacking').html("");
+                            if (data.oItmExp.length > 0) GenratedItemExp(data.oItmExp); else $('#tblExp').html("");
+                            if (data.iRatio > 0) { $('#Ratio_Org').val(data.iRatio); $('#Ratio').val(data.iRatio); }
+                            if (data.iRatioType > 0) { $('#RatioType').val(data.iRatioType); $('#RatioType').val(data.iRatioType); }
+                            $("#RatioType").attr("disabled", "disabled");
+                        }
+                    }
+                });
+            });
+
+            $('#Ratio').blur(function () {
+                debugger;
+              
+                if (iType == 74) return;
+
+                var iRatio = 0; var iOrgRatio = 0; var iQty = 0; var iOrgQty = 0; var iAmt = 0; var iTotal = 0; var iTax = 0;
+                if ($('#Ratio').val() != "") iRatio = $('#Ratio').val(); else iRatio = 0;
+                if ($('#Ratio_Org').val() != "") iOrgRatio = $('#Ratio_Org').val(); else iOrgRatio = 0;
+               // iOrgRatio = 100;
+
+                //******** Raw ******** 
+
+                var $table = $('<table/>');
+                $table.append('<thead><tr><th style="width: 5%">S.No.</th><th style="width: 40%">Item ID</th><th style="width: 5%">Cases </th><th style="width: 10%">Unit</th> <th style="width: 10%">Quantity</th><th style="width: 10%">Rate</th><th style="width: 10%">Amount</th><th style="width: 15%">Remove</th></tr></thead>');
+                var $tbody = $('<tbody/>');
+
+                $.each(itmRaw, function (i, val) {
+                     
+                    if (val.Qty != "") iQty = val.Qty; else iQty = 0;
+                    if (val.OrgQty != "") iOrgQty = val.OrgQty; else iOrgQty =0;
+
+                    if (iOrgQty == 0) {
+                        iQty = parseFloat(val.Qty).toFixed(2);
+                        iAmt = parseFloat(val.Amt).toFixed(2);
+                    } else
+                    {
+                        iQty = parseFloat((iOrgQty * iRatio) / iOrgRatio).toFixed(2);
+                        iAmt = parseFloat(iQty * val.Rate).toFixed(2);
+                    }
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.ddlItem));
+                    $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.unitname));
+                    $row.append($('<td/>').html(iQty));
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(iAmt));
+                    $row.append('<button type="button" id="btnDelete" class="deleteContact btn-color"></button>');
+
+                    itmRaw[i].Qty = iQty;
+                    itmRaw[i].Amt = iAmt;
+
+                    $tbody.append($row);
+                    iTax += parseFloat(iQty);
+                    iTotal += parseFloat(iAmt);
+                    iQty = 0; iOrgQty = 0;
+                });
+
+                $table.append($tbody);
+                $('#tblRaw').html($table);
+                $('#TotQtyRaw').val(parseFloat(iTax).toFixed(2));
+                $('#TotalRaw').val(parseFloat(iTotal).toFixed(2));
+                debugger;
+                //******** Finish ********
+                iQty = iOrgQty = iAmt = iTotal = iTax = 0;
+                $tbody = $table = '';
+                $table = $('<table/>');
+                $table.append('<thead><tr><th style="width:5%;">S.No.</th><th style="width:40%;">Item ID</th><th style="width:10%;">Cases </th><th style="width:10%;">Unit</th> <th style="width:10%;">Quantity</th><th style="width:10%;">Rate</th><th style="width:10%;">Amount</th><th style="width:10%;">Remove</th></tr></thead>');
+                $tbody = $('<tbody/>');
+
+                $.each(itmFinish, function (i, val) { 
+                    if (val.Qty != "") iQty = val.Qty; else iQty = 0;
+                    if (val.OrgQty != "") iOrgQty = val.OrgQty; else iOrgQty = 0;
+
+                    //iQty = parseFloat((iOrgQty * iOrgRatio) / iRatio).toFixed(2);
+                    //iAmt = parseFloat(iQty * val.Rate).toFixed(2);
+                    if (iOrgQty == 0) {
+                        iQty = parseFloat(val.Qty).toFixed(2);
+                        iAmt = parseFloat(val.Amt).toFixed(2);
+                    } else {
+                        iQty = parseFloat((iOrgQty * iRatio) / iOrgRatio).toFixed(2);
+                        iAmt = parseFloat(iQty * val.Rate).toFixed(2);
+                    }
+
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.ddlItem));
+                    $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.unitname));
+                    $row.append($('<td/>').html(iQty));
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(iAmt));
+                    $row.append('<button type="button" id="btnDelete_Fini" class="deleteContact_Fini btn-color"></button>');
+
+                    itmFinish[i].Qty = iQty;
+                    itmFinish[i].Amt = iAmt;
+
+                    $tbody.append($row);
+                    iTax += parseFloat(iQty);
+                    iTotal += parseFloat(iAmt);
+                    iQty = 0; iOrgQty = 0;
+                     
+                });
+                $table.append($tbody);
+                $('#tblFinish').html($table);
+                $('#msttota').val(parseFloat(iTotal).toFixed(2));
+                $('#TotQtyFini').val(parseFloat(iTax).toFixed(2));
+                
+                //******** Packing ******** 
+
+                iQty = iOrgQty = iAmt = iTotal = iTax = 0;
+                $tbody = $table = '';
+
+                var $table = $('<table/>');
+                $table.append('<thead><tr><th style="width:5%;">S.No.</th><th style="width:35%;">Item ID</th><th style="width:10%;">Cases </th><th style="width:10%;">Unit</th> <th style="width:5%;">Quantity</th><th style="width:5%;">Rate</th><th style="width:15%;">Amount</th><th style="width:15%;">Remove</th></tr></thead>');
+                $tbody = $('<tbody/>');
+                
+                $.each(itmPack, function (i, val) {
+                    if (val.Qty != "") iQty = val.Qty; else iQty = 0;
+                    if (val.OrgQty != "") iOrgQty = val.OrgQty; else iOrgQty = 0;
+
+                    //iQty = parseFloat((iOrgQty * iOrgRatio) / iRatio).toFixed(2);
+                    //iAmt = parseFloat(iQty * val.Rate).toFixed(2);
+
+                    if (iOrgQty == 0) {
+                        iQty = parseFloat(val.Qty).toFixed(2);
+                        iAmt = parseFloat(val.Amt).toFixed(2);
+                    } else {
+                        iQty = parseFloat((iOrgQty * iRatio) / iOrgRatio).toFixed(2);
+                        iAmt = parseFloat(iQty * val.Rate).toFixed(2);
+                    }
+
+                    var $row = $('<tr/>');
+                    $row.append($('<td/>').html(i + 1));
+                    $row.append($('<td/>').html(val.ddlItem));
+                    $row.append($('<td/>').html(val.Cases));
+                    $row.append($('<td/>').html(val.unitname));
+                    $row.append($('<td/>').html(iQty));
+                    $row.append($('<td/>').html(val.Rate));
+                    $row.append($('<td/>').html(iAmt));
+                    $row.append('<button type="button" id="btnDelete_Pack" class="deleteContact_Pack btn-color"></button>');
+                    $tbody.append($row);
+                    
+                    itmPack[i].Qty = iQty;
+                    itmPack[i].Amt = iAmt;
+
+                    $tbody.append($row);
+                    iTax += parseFloat(iQty);
+                    iTotal += parseFloat(iAmt);
+                    iQty = 0; iOrgQty = 0;
+                });
+                $table.append($tbody);
+                $('#tblPacking').html($table);
+                $('#TotalPack').val(parseFloat(iTotal).toFixed(2));
+                $('#TotQtyPack').val(parseFloat(iTax).toFixed(2));
+
+                $('#sItemPacking').val('{"LstItem":' + JSON.stringify(itmPack) + '}');
+
+                $('#sItemFinish').val('{"LstItem":' + JSON.stringify(itmFinish) + '}');
+
+                $('#sItemRaw').val('{"LstItem":' + JSON.stringify(itmRaw) + '}');
+                 
+             });
+
+            $("#UnitID").change(function () {
+                debugger;
+                var iCases; var iQty; var iTotal; var iUnitVal = 0;
+                if ($('#Cases').val() != "") iCases = $('#Cases').val(); else iCases = 0;
+
+                if ($('#UnitID').val().split("~")[1].toString() != "") iUnitVal = $('#UnitID').val().split("~")[1].toString(); else iUnitVal = 0;
+                iTotal = (iCases * iUnitVal).toFixed(2);
+                $('#Qty').val(iTotal);
+                Calc_Amt();  
+            });
+            $("#Broker").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    //  alert(document.getElementById("compcode").value);
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/Cateogry", "OpeningBal"))",
+
+                        data: { "cateory": request.term, "iType": +34 },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $('#mstbrok').val(ui.item.Id);
+                }
+            });
+
+            $("#ItemNm").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItem", "Comm"))",
+                        data: { "sName": request.term, "sType": "1,2" },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $.ajax({
+                        cache: false,
+                        async: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItemDet", "Comm"))",
+                        data: { "iItemID": ui.item.Id }, 
+                        success: function (data) { 
+                            debugger;
+                            $('#ItemID').val(ui.item.Id);
+                            $('#TaxPer').val(data[0]["vat"]);
+                            $('#PU_Qty2').val(data[0]["unitqty2"]);
+                            $('#UnitId').val(data[0]["unitcode"]);
+                            //$('#Rate').val(data[0]["Rate"]);
+                            $('#acctcode').val(data[0]["Acctcode"]);
+                            $('#CateNm').val(data[0]["unitname"]);
+                            $('#GrouNm').val(data[0]["Rate"]); 
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                            $('#TaxPer').val('');
+                            $('#PU_Qty2').val('');
+                            $('#UnitId').val('');
+                            $('#Rate').val('');
+                            $('#acctcode').val('');
+                        }
+                    });
+                }
+            });
+
+            $("#ItemNm_Fini").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItem", "Comm"))",
+                        data: { "sName": request.term, "sType": "0,2" },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $.ajax({
+                        cache: false,
+                        async: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItemDet", "Comm"))",
+                        data: { "iItemID": ui.item.Id },
+                        success: function (data) {
+                            $('#ItemID_Fini').val(ui.item.Id);
+                            $('#Rate_Fini').val(data[0]["Rate"]);
+                            $('#CateNm_Fini').val(data[0]["unitname"]);
+                            $('#GrouNm_Fini').val(data[0]["Rate"]);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                            $('#Rate_Fini').val('');
+                            $('#ItemID_Fini').val('');
+                        }
+                    });
+                }
+            });
+            $("#ItemNm_Pack").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetCountry", "OpStock"))",
+                        data: { "countryName": request.term },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $.ajax({
+                        cache: false,
+                        async: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItemDet", "Comm"))",
+                        data: { "iItemID": ui.item.Id },
+                        success: function (data) {
+                            $('#ItemID_Pack').val(ui.item.Id);
+                            $('#Rate_Pack').val(data[0]["Rate"]);
+                            $('#CateNm_Pack').val(data[0]["unitname"]);
+                            $('#GrouNm_Pack').val(data[0]["Rate"]);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                            $('#Rate_Pack').val('');
+                            $('#ItemID_Pack').val('');
+                        }
+                    });
+                }
+            });
+            debugger;
+            $("#ItemNm_Exp").autocomplete({
+                source: function (request, response) {
+                    var customer = new Array();
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetExpenses", "Comm"))",
+                        data: { "sName": request.term },
+                        success: function (data) {
+                            for (var i = 0; i < data.length ; i++) {
+                                customer[i] = { label: data[i].Value, Id: data[i].Key };
+                            }
+                        }
+                    });
+                    response(customer);
+                },
+                select: function (event, ui) {
+                    $.ajax({
+                        cache: false,
+                        async: false,
+                        type: "POST",
+                        url: "@(Url.Action("/GetItemDet", "Comm"))",
+                        data: { "iItemID": ui.item.Id },
+                        success: function (data) {
+                            $('#ItemID_Exp').val(ui.item.Id);
+                            //$('#Rate_Exp').val(data[0]["Rate"]);
+                            action = data.Action;
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert('Failed to retrieve states.');
+                            $('#ItemID_Exp').val('');
+                            $('#Rate_Exp').val('');
+                        }
+                    });
+                }
+            });
+            $('.pickdate').each(function () {
+                if ($(this).val() == '') {
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+
+                    var yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+                    var today = dd + '/' + mm + '/' + yyyy;
+                    $(this).val(today);
+                }
+            });
+            $("#ddlSearchChasisNo").on("change", function () {
+                ShowHideLoader('show');
+                var SrNo = $(this).val();
+                if (SrNo != "") {
+                    $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("GetDispatchEntryBySNo", "Transactions")",
+                        data: { SrNo: SrNo },
+                        success: function (data) {
+                            if (data != "No Record Found") {
+                                $("#divTabContent").html(data);
+                                $('#li1').removeClass('active');
+                                $('#li2').removeClass('active');
+                                $('#li3').removeClass('active');
+                                $('#li4').removeClass('active');
+                                $('#tab_1').removeClass('active'); $('#tab_2').removeClass('active');
+                                $('#tab_3').removeClass('active'); $('#tab_4').removeClass('active');
+                                $('#tab_1').addClass('active');
+                                $('#li1').addClass('active');
+                            }
+                            ShowHideLoader('hide');
+                        },
+                        error: function () {
+                            ShowHideLoader('hide');
+                        }
+                    });
+                }
+                else {
+                    ShowHideLoader('hide');
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" }); 
+        });
+    </script>
+
+
+    <style>
+        body {
+            background-color: #e6e4e4;
+        }
+       
+
+        .add {
+            background-image:url(/Images/addmore.svg);
+            background-repeat:no-repeat;
+            background-size:contain;
+            background-position-x:center;
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:brown;
+        }
+        .add:hover {
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:#FF8C00;
+        }
+             .next {
+            background-image:url(/Images/prev.svg);
+            background-repeat:no-repeat;
+            background-size:contain;
+            background-position-x:center;
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:brown;
+        }
+        .next:hover {
+            box-shadow:2px 2px 2px #666;
+            width:22px;
+            height:22px;
+            background-color:#FF8C00;
+        }
+      
+
+        .btn-color {
+            background-color: transparent;
+            border: none;
+            background-image: url(/Images/remove.svg);
+            background-repeat: no-repeat;
+            height: 25px;
+            width: 25px;
+        }
+        /*div.tablecontainer  table tr td:nth-child(1), th:nth-child(1) {width: 5%; }
+		div.tablecontainer  table tr td:nth-child(2), th:nth-child(2) {width: 35%;} 
+        div.tablecontainer  table tr td:nth-child(3), th:nth-child(3) {width: 5%; text-indent:7px;} 
+        div.tablecontainer  table tr td:nth-child(4), th:nth-child(4) {width: 5%; text-indent:5px;}
+        div.tablecontainer  table tr td:nth-child(5), th:nth-child(5) {width: 5%; text-indent:5px} 
+        div.tablecontainer  table tr td:nth-child(6), th:nth-child(6) {width: 5%; text-indent:5px} 
+        div.tablecontainer  table tr td:nth-child(7), th:nth-child(7) {width: 5%; text-indent:5px } 
+        div.tablecontainer  table tr td:nth-child(8), th:nth-child(8) {width: 10%; text-indent:5px} 
+         div.tablecontainer  table tr td:nth-child(9), th:nth-child(9) {width: 5%; text-indent:5px} 
+         div.tablecontainer  table tr td:nth-child(10), th:nth-child(10) {width:5%; text-indent:5px} 
+        div.tablecontainer  table tr td:nth-child(11), th:nth-child(11) {width: 10%; text-indent:5px}
+        div.tablecontainer  table tr td:nth-child(12), th:nth-child(12) {width: 5%;}*/
+
+
+        /*div.tablecontainer  table tr th:nth-child(1) {width: 40px;} 
+		 div.tablecontainer  table tr th:nth-child(2) {width: 25%;}*/
+
+        div.tablecontainer table thead tr {
+            color: #fff;
+            background-color: brown;
+            border-bottom: 1px solid #ccc;
+        }
+
+        div.tablecontainer table tbody tr {
+            border-bottom: 1px solid #ccc;
+        }
+
+            div.tablecontainer table tbody tr td {
+                font-size: 12px;
+            }
+
+        div.tablecontainer table thead tr th {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+      
+    </style>
+    </head>
+<body>
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+         <div>
+                        @{
+        if (TempData["message"] != null)
+        {
+                            <script type="text/javascript">
+                                alert(@Html.Raw(Json.Encode(TempData["message"])));
+                            </script>
+        }
+                        }
+                    </div>
+
+        <!--page header start-->
+        <div id="page-header" class="row" style="padding-right: 0; background-color: #fff; margin-left: 0px; box-shadow: 2px 2px 2px #ccc;">
+            <div class="box-padd col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="logo col-sm-2 col-md-2 col-lg-2 " style="padding: 10px 10px 0px 0; border: none;">
+                    <div style="width: 130px; border-right: 1px solid bisque; height: 50px;">
+                        <a href="#" style="font-family: 'Agency FB'; font-size: 30px; color: #951818; font-weight: 600; padding-left: 0;">
+                            <img src="~/Images/compx_logo.png" width="40" height="40" class="img-responsive" style="float: left; margin-right: 5px;" /><span style="float: left;">C<span style="color: #FF8C00;">o</span><span>m</span><span style="color: #FF8C00;">p</span>x</a>
+                    </div>
+                </div>
+
+                <div class="main-nav col-sm-6 col-md-6 col-lg-6" style="text-align: center;">
+                    <h3 id="sHeader" style="margin-top: 3px; margin-bottom: 0;"></h3>
+                </div>
+                <div class="right-nav col-sm-4 col-md-4 col-lg-4 " style="text-align: right;">
+                    <div class=" user-stat" style="padding: 10px 10px 10px 0; border-left: 1px solid bisque; padding-right: 0; border-right: none; float: right; text-align: right; padding-left: 10px;">
+                        <div id='cssmenu' style="padding-right: 0;">
+                            <h3 style="color: brown; font-size: 30px; font-family: 'Agency FB'; font-weight: 600; margin-top: 8px; margin-bottom: 0; margin-right: 10px;">ACCIL</h3>
+                            <ul class="menu-ul" style="padding-right: 0; padding-top: 5px;">
+
+
+                                <li style="border-left: 1px solid bisque;">
+                                <li><a href="/Home/Allmenu">
+                                    <img src="~/Images/home.svg" width="30" height="30" style="margin-top: -7px;" /></a></li>
+
+                                <li>@Html.ActionLink("PuSL", "PorductionList", new { MstType = ViewBag.MstType }, new { style = "background-image:url('/Images/list2.svg');background-position:center 3px; background-repeat:no-repeat; color:transparent;background-size:30px 30px; text-align:right;", title = "Back to list" })</li>
+
+                                <li><a href='#' style="border: none; font-size: 14px;">
+                                    @*<img src="~/Images/logout.svg" width="30" height="30" /><span style="margin-top:3px;">*@Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     
+        <div class="container-fluid" style="margin-top:5px;">           
+
+        @*<div> 
+          <div class="col-lg-6 col-md-6 col-sm-6" style="padding-left: 0; padding-right: 0;">
+                <fieldset>
+                    <legend id="Legend1" align="left"></legend>
+                    <table>
+                        <tr>
+                            <td>Party</td>
+                            <td colspan="3">
+                                @Html.TextBoxFor(model => model.acctname)
+                                @Html.HiddenFor(model => model.PartyID)
+                            </td>
+
+                        </tr>
+
+
+                    </table>
+                </fieldset>
+            </div>
+        </div>*@
+        <div class="row">
+            <div class="col-lg-12" style="background-color:#fff; padding-top:10px; padding-left:0;">                
+                      <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:15px;" >
+                        <fieldset>
+                             @Html.ValidationMessageFor(model => model.mstcode, "", new { style = "color:red;" })
+                    @Html.ValidationMessageFor(a => a.msttimes, "", new { style = "color:red;" })
+                            <table>
+                                <tr>
+                                    <td>Code</td>
+                                    <td>
+
+                                        @Html.HiddenFor(model => model.sItemRaw)
+                                        @Html.HiddenFor(model => model.sItemFinish)
+                                        @Html.HiddenFor(model => model.sItemPacking)
+                                        @Html.HiddenFor(model => model.sItemExp)
+
+
+                                        @Html.HiddenFor(model => model.ItemID_Fini)
+                                        @Html.HiddenFor(model => model.ItemID_Pack)
+                                        @Html.HiddenFor(model => model.ItemID_Exp)
+
+                                        @Html.HiddenFor(model => model.acctcode)
+                                        @Html.HiddenFor(model => model.ItemID)
+                                        @Html.HiddenFor(model => model.mstptcode)
+                                        @Html.HiddenFor(model => model.mstrefc)
+                                        @Html.HiddenFor(model => model.compcode)
+                                        @Html.HiddenFor(model => model.PU_Qty2)
+                                        @Html.HiddenFor(model => model.sItemDet)
+                                        @Html.HiddenFor(model => model.ItemRemark)
+                                        @Html.HiddenFor(model => model.sTrnDet)
+@Html.HiddenFor(model => model.Ratio_Org)
+                                        @Html.ValidationMessageFor(a => a.mstptcode)
+
+                                        @Html.TextBoxFor(model => model.mstcode, new { @Value = ViewBag.MstCode, @readonly = true, style = "width:50px;" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Date</td>
+                                    <td>
+                                      
+                                      @*  @Html.TextBoxFor(m => m.mstdate, "{0:dd/MM/yyyy}", new { @class = "pickdate", placeholder = "Enter Date" })*@
+@Html.TextBoxFor(m => m.ChallanDate, "{0:dd/MM/yyyy}", new { @class = "pickdate", placeholder = "Enter Date" })
+                                        @*   @Html.EditorFor(model => model.mstdate , new {  })*@
+
+                                    </td>
+                                    <td>Time
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(a => a.msttimes, new { @class = "form-control t1", @readonly = true })
+                                    </td>
+                                     <td>Ref</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.mstchnV)
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.mstchno)
+                                    </td>
+                                 
+                                </tr>
+                                <tr>                                   
+                                    <td>Scheme</td>
+                                    <td colspan="3">
+                                        @Html.TextBoxFor(model => model.mstchnm)
+                                    </td>
+   <td>I/O&nbsp;Ratio</td> 
+                                    <td> @Html.DropDownListFor(c => c.RatioType, new SelectList(
+                  new List<Object>{   
+                       new { value = 0 , text = "--Select--"  },  
+                       new { value = 1 , text = "Raw Dependent" },  
+                       new { value = 2 , text = "Finish dependent" } 
+                    },
+                  "value",
+                  "text", 2))</td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.Ratio)
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </div>
+             <div class="row" style="margin-top:5px;">
+            <div class="col-lg-12" style="background-color:#fff; padding-bottom:10px; padding-top:10px;">  
+            <div id="tabs" style="border-radius:0;">
+            <ul class="col-lg-12 col-md-12 col-sm-12" >
+                <li><a href="#tabs-1">Raw Material</a></li>
+                <li><a href="#tabs-2">Finished Goods</a></li>
+                <li><a href="#tabs-3">Packing Material</a></li>
+                <li><a href="#tabs-4">Expenses</a></li>
+
+            </ul>
+            <div id="tabs-1" style="padding-right:0; padding-left:0;">
+                <h3 style="width:200px; float:left; margin-top:5px; margin-bottom:10px; margin-left:5px; color:brown;">Raw Material</h3>               
+                <table style="border:1px solid #ccc; margin-top:10px;">
+                    <tr>
+                        <td colspan="2" style="width: 45%;">Item
+                            <br />
+                            @Html.TextBoxFor(model => model.ItemNm)
+
+
+                        </td>
+                        <td style="width: 5%;">Cases
+                                        <br />
+                            @Html.TextBoxFor(model => model.Cases, new { @type = "number", @style = "width:60px;" })
+                        </td>
+                        <td style="width: 10%;">Unit
+                                        <br />
+
+
+
+                            @Html.DropDownList("UnitID", Model.lstUnitMst, "--Select--")
+
+                        </td>
+                        <td style="width: 10%;">Qty
+                                        <br />
+                             
+  
+                               @Html.TextBoxFor(model => model.Qty , new { @type = "number", @style = "width:80px;" })
+                        @Html.TextBoxFor(model => model.CateNm , new {  @style = "width:50px;" ,disabled = true, @readonly = true }) 
+                        </td>
+                        <td style="width: 10%;">Rate
+                                        <br />
+
+                            @Html.TextBoxFor(model => model.Rate , new { @type = "number", @style = "width:80px;" })
+                        @Html.TextBoxFor(model => model.GrouNm , new {  @style = "width:50px;" ,disabled = true, @readonly = true }) 
+                        </td>
+
+                        <td style="width: 10%;">Amount<br />
+                            @Html.TextBoxFor(model => model.Amt, new { disabled = true, @readonly = true })
+                        </td>
+
+                        <td style="width: 15%;">
+                            <br />
+                            <input class="add" id="addRaw" type="button" />                             
+                            
+                            <input class="next" id="" type="button" />
+
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                            <div id="tblRaw" class="tablecontainer" style="height: 200px; overflow-y: auto; display: block; background-color: #FFF;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="width: 25%;"></td>
+                        <td></td>                        
+                        <td>@Html.TextBoxFor(model => model.TotQtyRaw)  </td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.TotalRaw)  </td>
+                        <td></td>
+                    </tr>
+
+                </table>
+            </div>
+            <div id="tabs-2" style="padding-right:0; padding-left:0;">
+                <h3 style="width:200px; float:left; margin-top:5px; margin-bottom:10px; margin-left:5px; color:brown;">Finished Goods</h3>
+                <table>
+                    <tr>
+                        <td colspan="2" style="width: 40%;">Item
+                            <br />
+                            @Html.TextBoxFor(model => model.ItemNm_Fini)
+
+
+                        </td>
+                        <td style="width: 5%;">Cases
+                                        <br />
+                            @Html.TextBoxFor(model => model.Cases_Fini, new { @type = "number" })
+                        </td>
+                        <td style="width: 10%;">Unit
+                                        <br />
+                            @Html.DropDownList("UnitID_Fini", ViewBag.UnitID_Fini as string)
+                        </td>
+                        <td style="width: 10%;">Qty
+                                        <br />
+                            @Html.TextBoxFor(model => model.Qty_Fini , new { @type = "number", @style = "width:80px;" })
+                        @Html.TextBoxFor(model => model.CateNm_Fini , new {  @style = "width:50px;" ,disabled = true, @readonly = true }) 
+                        </td>
+                        <td style="width: 10%;">Rate
+                                        <br />
+                            @Html.TextBoxFor(model => model.Rate_Fini , new { @type = "number", @style = "width:80px;" })
+                        @Html.TextBoxFor(model => model.GrouNm_Fini , new {  @style = "width:50px;" ,disabled = true, @readonly = true }) 
+                        </td>
+
+                        <td style="width: 10%;">Amount
+                            <br />
+                            @Html.TextBoxFor(model => model.Amt_Fini, new { disabled = true, @readonly = true })
+                        </td>
+
+                        <td style="width: 15%;">
+                            <br />                           
+                             <input class="add" id="addFinish" type="button" />                             
+                            
+                            <input class="next" id="" type="button" />
+
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                            <div id="tblFinish" class="tablecontainer" style="height: 200px; overflow-y: auto; display: block; background-color: #FFF;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="width: 45%;"></td>
+                        <td></td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.TotQtyFini)  </td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.msttota)  </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="tabs-3" style="padding-right:0; padding-left:0;">
+                <h3 style="width:200px; float:left; margin-top:5px; margin-bottom:10px; margin-left:5px; color:brown;">Packing Material</h3>
+                <table>
+                    <tr>
+                        <td colspan="2" style="width: 45%;">Item
+                            <br />
+                            @Html.TextBoxFor(model => model.ItemNm_Pack)
+
+
+                        </td>
+                        <td style="width: 5%;">Cases
+                                        <br />
+                            @Html.TextBoxFor(model => model.Cases_Pack, new { @type = "number" })
+                        </td>
+                        <td style="width: 10%;">Unit
+                                        <br />
+
+                            @Html.DropDownList("UnitID_Pack", ViewBag.UnitID_Pack as string)
+
+                        </td>
+                        <td style="width: 10%;">Qty
+                                        <br />
+                            @Html.TextBoxFor(model => model.Qty_Pack , new { @type = "number", @style = "width:80px;" })
+                        @Html.TextBoxFor(model => model.CateNm_Pack , new {  @style = "width:50px;" ,disabled = true, @readonly = true }) 
+                        </td>
+                        <td style="width: 10%;">Rate
+                                        <br />
+                            @Html.TextBoxFor(model => model.Rate_Pack , new { @type = "number", @style = "width:80px;" })
+                        @Html.TextBoxFor(model => model.GrouNm_Pack , new {  @style = "width:50px;" ,disabled = true, @readonly = true }) 
+                        </td>
+
+                        <td style="width: 10%;">Amount<br />
+                            @Html.TextBoxFor(model => model.Amt_Pack, new { disabled = true, @readonly = true })
+                        </td>
+
+                        <td style="width: 15%;">
+                            <br />                            
+                               <input class="add" id="addPacking" type="button" />                             
+                            
+                            <input class="next" id="" type="button" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="8">
+                            <div id="tblPacking" class="tablecontainer" style="height: 200px; overflow-y: auto; display: block; background-color: #FFF;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="width: 25%;"></td>
+                        <td></td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.TotQtyPack)  </td>
+                        <td></td>
+                        <td>@Html.TextBoxFor(model => model.TotalPack)  </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="tabs-4" style="padding-right:0; padding-left:0;">
+                <h3 style="width:200px; float:left; margin-top:5px; margin-bottom:10px; margin-left:5px; color:brown;">Expenses</h3>
+                <table >
+                    <tr>
+                        <td colspan="2" style="width: 45%;">Item
+                            <br />
+                            @Html.TextBoxFor(model => model.ItemNm_Exp)
+
+
+                        </td>
+                        @* <td  style="width: 5%;">Cases
+                                        <br />
+                                            @Html.TextBoxFor(model => model.Cases_Exp, new {  @type = "number", @style="width:60px;"})
+                                        </td>*@
+                        <td style="width: 10%;">Unit
+                                        <br />
+                            @Html.DropDownListFor(c => c.UnitID_Exp, new SelectList(
+                  new List<Object>{   
+                       new { value = 0 , text = "--Select--"  },  
+                       new { value = 1 , text = "%" },  
+                       new { value = 2 , text = "/Pack" },  
+                       new { value = 3 , text = "Fix"} , 
+                       new { value = 4 , text = "/Pcs"}  
+                    },
+                  "value",
+                  "text", 2))
+
+                            @* @Html.DropDownList("UnitID_Exp", ViewBag.UnitID_Exp as string)   *@
+                        </td>
+                        @* <td style="width: 10%;">Qty
+                                        <br />
+                                            @Html.TextBoxFor(model => model.Qty_Exp)
+                                        </td>*@
+                        <td style="width: 10%;">Rate
+                                        <br />
+                            @Html.TextBoxFor(model => model.Rate_Exp , new { @type = "number", @style = "width:80px;" })
+                        </td>
+
+                        <td style="width: 25%;">Amount<br />
+                            @Html.TextBoxFor(model => model.Amt_Exp, new { disabled = true, @readonly = true })
+                        </td>
+
+                        <td style="width: 10%;">
+                            <br />                           
+                             <input class="add" id="addExp" type="button" />                             
+                            
+                            <input class="next" id="" type="button" />
+
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <div id="tblExp" class="tablecontainer" style="height: 200px; overflow-y: auto; display: block; background-color: #FFF;"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="width: 25%;"></td>
+                        <td></td>
+                        <td></td>                                           
+                        <td>@Html.TextBoxFor(model => model.TotalExp)  </td>
+                         <td></td>    
+                    </tr>
+                </table>
+            </div>
+        </div>
+            </div>
+        </div>
+      </div>     
+        <div class="row" style="margin-top:5px; padding-left:15px; padding-right:15px;">
+            <div class="col-lg-12 col-md-12 col-sm-12" style=" padding-bottom:10px; background-color:#fff;">
+                <div class="col-lg-7 col-md-7 col-sm-12"  >           
+                    <fieldset style="border:none;">
+                        <legend id="Lege2" align="left"></legend>
+                        @Html.ValidationMessageFor(model => model.acctname, "", new { style = "color:red;" })
+                    @Html.ValidationMessageFor(model => model.Amt, "", new { style = "color:red;" })
+                    @Html.ValidationMessageFor(model => model.Amt, "", new { style = "color:red;" })
+                        <table>
+                            <tr>
+                                <td>Wt. Diff.</td>
+                                <td style="width: 10%;">
+                                    @Html.TextBoxFor(model => model.mstdifq)
+                                </td>                           
+                                <td>Qty Diff.</td>
+                                <td>@Html.TextBoxFor(model => model.TotTax, new { disabled = true, @readonly = true, style = "width:110px;" })</td>
+                                <td>Amt. Diff.</td>
+                                <td>@Html.TextBoxFor(model => model.TotDis, new { disabled = true, @readonly = true, style = "width:110px;" })</td>
+                            </tr>
+                              <tr>
+                            @*<td style="width: 5%;">@Html.Label("Day", new { id = "Day" })</td>*@
+                          @*  <td style="width: 20%;">@Html.TextBoxFor(model => model.DueDay) </td>*@
+                            <td style="width: 5%;">Remark</td>
+
+                            <td colspan="5">@Html.TextBoxFor(model => model.mstrema) </td>
+                            <td>
+                                <input type="submit" value="Save"/>
+                            </td>
+                        </tr>                             
+                        </table>   
+                          </fieldset>
+                </div> 
+               
+                </div>
+            </div> 
+
+                            @* <tr>
+                            <td>Net Amount</td>
+                            <td>@Html.TextBoxFor(model => model.mstneta, new { disabled = true, @readonly = true, style = "width:110px;" })</td>
+                        </tr>
+                        <tr>
+                            <td>Paid</td>
+                            <td>@Html.TextBoxFor(model => model.mstpaid, new { style = "width:110px;" })</td>
+                        </tr>
+                        <tr>
+                            <td>Balance</td>
+                            <td>@Html.TextBoxFor(model => model.mstbala, new { disabled = true, @readonly = true, style = "width:110px;" })</td>
+                        </tr>*@                             
+
+    }
+
+
+
+</body>
+
+
+</html>

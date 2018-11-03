@@ -1,0 +1,119 @@
+﻿   
+@model IEnumerable<CompxERP.Models.clsPayFollowUp> 
+
+  <link href="~/Content/css/tableexport.min.css" rel="stylesheet" />
+<script src="~/Scripts/FileSaver.min.js"></script>
+<script src="~/Scripts/tableexport.min.js"></script>
+
+ 
+
+ <div class="col-sm-12">
+     
+    <table id="tblPendingOrder" class="table table-bordered table-striped" style="margin-top:10px;">
+    <thead>
+      <tr>
+         
+          <th style="width:10%;">Date</th>       
+          <th style="width:20%;">Party</th>       
+           <th style="width:10%;">Commited Pay</th>
+          <th style="width:10%;">Commited Date</th>   
+          <th style="width:25%;">Remark</th>   
+        </tr>
+    </thead>
+    <tbody style="height:430px;">
+           @{
+               var iIndex = 0; var Amount = 00.00; 
+
+               foreach (var item in Model)
+               {
+                   iIndex = iIndex + 1;
+                   Amount = Amount + Convert.ToDouble(@item.CommitPay);
+               <tr>  
+                     <td  style="width:10%;">@item.FDate.ToString("dd/MM/yyyy")</td>   
+                    @* <td  style="width:10%;">@item.BillNo</td>   *@
+                     <td  style="width:20%;">@item.Acctname</td>   
+                     <td  style="width:10%;text-align:right;">@string.Format("{0:N}",@item.CommitPay)</td>   
+                     <td  style="width:10%;text-align:center;">@item.NextDt.ToString("dd/MM/yyyy")</td>   
+                     <td  style="width:25%;">@item.Remark</td>   
+                     
+                </tr>
+               }
+            
+              <tr>  
+                     <td  style="width:30%;text-align:center;color:red"">Total</td>   
+                     <td  style="width:10%;color:red;text-align:right;"">@string.Format("{0:N}", @Amount)</td>   
+                     <td  style="width:10%;"></td>   
+                     <td  style="width:25%;"></td>   
+                     
+                </tr>
+        }
+        
+    </tbody>
+</table>
+</div>
+   @*          
+<div class="modal-body input_popup"> 
+    <button type="button" id="btnApprov" name="Approve" class="btn btn-default" onclick="SetPayFollowUp();">Save </button> 
+</div>*@
+
+
+<script type ="text/javascript">
+
+    $(document).ready(function () {
+        $("#chkSelectAll").change(function () {
+            $("#tblPendingOrder .chkSelect").prop('checked', $(this).prop("checked"));
+        });
+
+        $("#tblPendingOrder .chkSelect").change(function () {
+            if ($("#tblPendingOrder .chkSelect").length == $("#tblPendingOrder .chkSelect:checked").length) {
+                $("#chkSelectAll").prop('checked', true);
+            }
+            else {
+                $("#chkSelectAll").prop('checked', false);
+            }
+        });
+
+    });
+     
+    function SetPayFollowUp() {
+        debugger;
+        var sOrderID = ""; 
+        $('#tblPendingOrder').find('tr').each(function () {
+            var row = $(this); 
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                sOrderID += row.find(txtCommitedPay).val() + ',' + row.find(F_From).val() + ',' + row.find(F_Status).val() + ',' + row.find(txtPF_Rema).val() + '|';
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SetPayFollowUp", "Quotation")",
+            data: { sPayFollowUp: sOrderID },
+            success: function (data) {
+                //if (data.Success == true) {
+                //    alert(data.Message); 
+                //}
+                //else {
+                alert(data);
+                $("#divFollowUp").html("");
+                $('#btnOrderReport').click(); 
+                //ClearDvData();
+                //}
+            },
+            error: function () {
+                alert(error);
+            }
+        }); 
+    }
+
+</script>
+
+             
+<script>
+    $(document).ready(function () {
+        $("#tblPendingOrder").tableExport({
+            bootstrap: true
+        });
+    });
+   
+</script>

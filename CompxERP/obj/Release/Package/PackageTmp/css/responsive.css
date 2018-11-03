@@ -1,0 +1,184 @@
+
+	
+
+
+/* Large desktops and laptops */
+@media (max-width: 1220px) {
+.right_sidebar .Quick_view.ClientDashboard li { width: 17.5%;}
+}
+
+@media (max-width: 1152px) {
+.right_sidebar .Quick_view.ClientDashboard li {width: 24.5% !important;}
+.site-stats li {width: 43%;}
+}
+/* Landscape tablets and medium desktops */
+@media (max-width: 1199px) {
+  .right_sidebar .Quick_view > li { width: 17.5% !important;}
+  .right_sidebar {  margin-bottom: 66px !important;}
+  .superadminDv {color:#811013;}
+  .Personal_form fieldset {height:auto !important;}
+}
+
+@media (max-width: 1024px) {
+    
+}
+/* Portrait tablets and small desktops */
+@media (max-width: 991px) {
+	header .header_bottom .nav.navbar-nav a {padding: 10px 21px !important;}
+	.right_sidebar .Quick_view > li { width: 24.5% !important;}
+    .right_btn { margin-top: 16px;}
+    .functionality_dv .who_buy_right {padding: 6% 4%;}
+    .multi_listDep { margin-left: 5%;}
+    .about_us .about_left {height: 456px;}
+    .form_changeCompany {margin-top:0px !important;width: 400px !important;}
+    .form_changeCompany h3 {font-size:24px !important;}
+    .left_panel.newProfile img{width:100%;}
+    span.Crm_name { font-size: 16px !important; }
+    #page-footer {padding:0px;position:relative !important;}
+    #page-footer img {width: 146px;margin-top: 10px;}
+    .site-stats li {width: 48% !important;;}
+    .bg_lh.bg15 {width: 98% !important;}
+}
+
+@media (max-width: 823px) {
+ .right_sidebar .Quick_view.ClientDashboard li {width: 24.5% !important; }
+ .right_sidebar .Quick_view.ClientDashboard li {width: 33% !important;}
+}
+
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    .nav.navbar-nav.superdashUL{width:100%;margin: 0px;float:left;}
+    .nav.navbar-nav.superdashUL li{width:100%;margin: 0px;float:left;}
+    /*.dropdown-menu.multi-level a, .btn_map {color: white !important;}*/
+    .col-sm-3.padd_l.padd_5.C42.crm_btnn { margin-top: 18px !important;}
+    crm_btnn .btn.btn-default { font-size: 12px !important;padding: 3px 14px !important;}
+    .scrolly_tab_new .j_table_new {width: 1400px !important;overflow-y: scroll; max-width: 1400px;}
+    .btn.btn-default.closeBtnCRm { margin: 0px;}
+    .customer_dv {width: 100% !important;margin: 0 !important;}
+    .customer_dv .nav.navbar-nav.pull-right { width: 100%;float: Left !important; margin: 0;}
+    .scrolly_tab_new {overflow-y:scroll;}
+   .customer_dv .nav.navbar-nav.pull-right li { width: 100%;text-align: left;}
+   .crmHead .navbar-toggle {
+    margin-top: 15px !important;
+}
+   .header_bottom #myNavbar {
+    padding: 0;
+}
+   .dropdown-menu.multi-level li {
+    border-bottom: 1px dashed #666060 !important;
+}
+  .customer_dv .dropdown-menu.multi-level a {
+    color: white !important;
+}
+  .col-md-10.col-sm-10.col-xs-12.padd_l.rightSidebarNEw {
+    padding: 0 15px !important;
+}
+    .Crm_name { display: none;}
+.ProfilePicNew .circle {position:relative !important;top:0px !important;}
+.ProfilePicNew .p-image{position:relative !important;top:0px !important;float:right;}
+.attachments .radio-inline { width: 100%; padding-left: 4px;}
+.Personal_form .col-sm-12 {float: left; width: 100%;}
+.Personal_form > fieldset {   float: left;   margin-bottom: 5px; width: 100%;}
+.logo{text-align: center;}
+.logo img {width: 90px;}
+header .top_header .top_head a {color: white;font-size: 14px !important;}
+.top_head .nav.navbar-nav.pull-right {float: left;width: 100%;margin: 0px;}
+header .top_header .top_head { margin-top: 0px;}
+.nav.navbar-nav.pull-right > li { float: left;}
+.navbar { height: auto !important; min-height: auto !important;}
+.padd_l, .padd_5{padding: 0  !important;}
+.col-md-12.col-sm-12 {float: left;width: 100%;}
+.compex_head h2 {text-align: left;}
+.btn-default { margin-bottom: 10px;}
+.container_login {margin: 0 auto;  width: 55%;}
+.left_panel {height: auto !important;margin-bottom:20px;width: 100%;float: left;}
+.buyer_info .col-sm-7, .buyer_info .col-sm-3, .buyer_info .col-sm-11{padding: 0;}
+.vehicalType .col-sm-7, .vehicalType .col-sm-3, .vehicalType .col-sm-6, .vehicalType .col-sm-5, .vehicalType .col-sm-9, .vehicalType .col-sm-4 {padding: 0;}
+.vehicalType .col-sm-6.padd_l.padd_5 { float: left;width: 100%;}
+.staff_btn .btn-default {margin-top: 10px !important;}
+.col-md-12.accordion_menu {  float: left; width: 100%;}
+.accordion_menu .panel-primary {margin:10px 0 !important;}
+#totCrAmt, #totDrAmt{width:100%;float:left;}
+#sMstdate, #mstchnH, #mstrema {margin-bottom:10px;}
+.Personal_form .col-sm-7.padd_l.padd_5 .col-sm-3, .Personal_form .col-sm-2, .Personal_form .col-sm-4{padding:0;}
+.compx_home .footer .info-list {float: left;width: 100%;}
+.footer .col-md-4.col-sm-4 {margin-bottom:50px;width:100%;float:left}
+ .about_usDv {background: rgba(0, 0, 0, 0) url("../img/img-page-title.jpg") no-repeat fixed 0 0 / 100% 69% !important;height: 350px !important;}
+.aboutus_inner { margin-top: 180px !important;}
+.bottom_dvAcc .col-sm-6 {width:100%;float:left;}
+#dvacctaddr .col-sm-8.padd_l.padd_5, #dvStatename .col-sm-9, #dvacctcurr .col-sm-9 {padding:0px;margin-left:0px !important;} 
+.compx_home header .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form { border-color: transparent; float: right; width: 300px; background: #B7070D;}
+.compx_home header .nav.navbar-nav.navbar-right {padding: 0px 0;}
+.responsive_padd {padding:0 !important;}
+#myModal11 .compex_head h2 {font-size:14px !important;}
+#myModal11 .modal-dialog {width:88% !important;}
+.control-label.col-sm-1.padd_l.padd_5.responsive_padd { width: 100%;}
+#ChangePassword .modal-dialog {  width: 315px  !important;}
+.item_buttons {width: 100%;float: left;}
+#mstcode {margin-bottom: 10px;}
+.btn_right {text-align:right !important;}
+.left_panel.newProfile img{width:30%;}
+.logo_marg img {
+    margin-top: 5px;
+}
+.top_head.NewTopHead {
+    float: right;
+}
+
+}
+@media (max-width: 608px) {
+    .site-stats li {
+    width: 98% !important;
+}
+
+}
+
+/* Portrait phones and smaller */
+@media (max-width: 480px) {
+  .right_sidebar .Quick_view > li { width: 32.5% !important;}
+  .container_login {margin: 0 auto;  width: 90%;}
+  .logo_login img {width: 70%;}
+  .gst_login img { float: right;width: 55%;}
+  .container_login {margin-top: 30px;}
+  .compx_home header .address_menu {float: left;padding: 0 !important;width: 100%;}
+  .slide__text {float: left;text-align: left !important;}
+  .slide__text-desc {display: block !important;}
+  .slide__text.home_screen img {padding-top: 30px;width: 36% !important;}
+  .slide__text-desc {padding-top: 30px;font-family: fira; font-size: 15px !important; margin-bottom: 1.5rem;}
+  .slide__text {text-align:center !important;}
+  .top_dep.height_300 > img {width: 62% !important;}
+  .compex_head h2 {font-size:16px;}
+  .about_usDv h2 { font-size: 24px !important;padding: 10px !important;width: 179px !important;}
+  .compx_home header .navbar-toggle {margin-top: 30px;}
+  .who_buy_right li { list-style: none; padding: 5px;font-size: 12px;}
+  .multi_listDep > li { list-style: outside none none; margin: 4.5px 0; font-size: 12px;}
+  .contacUS {  background: rgba(0, 0, 0, 0) url("../img/contactUs.jpg") no-repeat fixed 0 0 / 100% 54%; height: 368px;}
+  .about_usDv h2, .contacUS h2 {
+    background: rgba(226, 35, 40, 0.52) none repeat scroll 0 0;
+    border-radius: 0 1.2em;
+    font-family: Overlock-Regular;
+    font-weight: bold;
+    margin: 0 auto;
+        margin-top: 0px;
+    padding: 7px;
+    width: 137px;
+    border: 2px solid #e22328;
+    font-size: 19px;
+    margin-top: 33px;
+}
+.right_sidebar .Quick_view.ClientDashboard li { width: 50% !important;}
+
+}
+/* Portrait phones and smaller */
+@media (max-width: 412px) {
+    .top_head .dropdown img {display:none;}
+    .top_head .nav.navbar-nav.pull-right > li:nth-child(1) { display: none;}
+    .copp_box.text-left {padding: 0;}
+    .about_us .about_left {height: 362px !important; }
+    .right_sidebar .Quick_view.ClientDashboard li { width: 100% !important;}
+}
+@media (max-width: 320px) {
+	 .right_sidebar .Quick_view > li { width: 49.5% !important;}
+
+}
+

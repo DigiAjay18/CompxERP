@@ -1,0 +1,228 @@
+﻿@model CompxERP.Models.clsStockBal 
+
+@using GridMvc.Html
+@{
+    Layout = null;
+}
+
+ 
+
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Stock Balance</title>    
+<script src="~/Scripts/gridmvc.min.js"></script> 
+<link href="~/Content/gridmvc.datepicker.css" rel="stylesheet" />
+<link href="~/Content/gridmvc.datepicker.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.7.1.js"></script>
+  <link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/gridmvc.min.js")"></script>
+   
+    <link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />
+     <link href="~/Content/css/menu.css" rel="stylesheet" />
+    <link href="~/Content/css/my-style.css" rel="stylesheet" />
+          <!----jcss-font---->
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+ 
+   <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,500,500i,700,700i,800,800i,900,900i|Open+Sans:400,400i,600,600i,700,700i,800,800i'">
+  <!------custom css---->
+
+  <link rel="stylesheet" href="~/css/font-awesome.min.css">
+  <link rel="stylesheet" href="~/css/custom.css">
+  <link rel="stylesheet" href="~/css/responsive.css">
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+        });
+    </script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        function getUrl() {
+            debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        $('#Print').click(function () {
+            window.open('../../Report/Print?FromDt=' + $("#FromDt").val() + '&ToDt=' + $("#ToDt").val() + '&PartyID=' + $("#PartyID").val() + '&mencode=106', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=500, top=50, left=50');
+        });
+
+        $("#acctname").autocomplete({
+            source: function (request, response) {
+                var customer = new Array();
+                //  alert(document.getElementById("compcode").value);
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    type: "POST",
+                    url: "@(Url.Action("/Cateogry", "OpeningBal"))",
+                    data: { "cateory": request.term, "iType": +getUrl()["MstType"] },
+                    success: function (data) {
+                        for (var i = 0; i < data.length ; i++) {
+                            customer[i] = { label: data[i].Value, Id: data[i].Key };
+                        }
+                    }
+                });
+                response(customer);
+            },
+            select: function (event, ui) {
+                $('#PartyID').val(ui.item.Id);
+            }
+        });
+
+    });
+
+    </script>
+     
+     
+ <style>
+      body {
+           background-color:#fff;
+       }
+     table {
+         background-color:#fff;
+     }
+
+     table tbody tr td {
+         background-color:transparent;
+     }
+        .table-striped > tbody > tr:nth-of-type(2n+1) {
+  background-color: #f9f9f9 !important;
+}
+
+       table tbody tr
+{
+    background-color: #f5f5f5;
+}
+
+      table tbody tr:hover
+{
+    background-color: #ddd;
+}
+ 
+       tr td:nth-child(1){width: 4%; }
+	   tr td:nth-child(2) {width: 12%;} 
+	   tr td:nth-child(3) {width: 4%;} 
+       tr td:nth-child(4) {width: 10%; text-indent:7px;} 
+       tr td:nth-child(5) {width: 10%; text-indent:5px;}
+       tr td:nth-child(6){width: 12%; text-indent:5px} 
+      
+        tr td:nth-child(7){width: 8%; text-indent:5px } 
+        tr td:nth-child(8) {width: 8%; text-indent:5px} 
+        tr td:nth-child(9) {width: 10%; text-indent:5px } 
+        tr td:nth-child(10) {width: 12%; text-indent:5px } 
+
+   
+          .container {
+         margin-top:0px;
+     }
+    table thead tr {
+         background-color: brown;
+         background-image:none;         
+     }
+     table thead tr th {
+         color:#fff;
+     }
+th a:link{
+         color:#fff;
+     }
+.grid-header-title > span {
+  color: #a52a2a  !important;
+}
+thead tr {
+  background-color: #f5f5f5 !important;
+}
+        </style>
+</head>
+
+<body>
+     <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/ddaccordion.js"></script>
+    @*<link href="~/Content/css/StyleSheet1.css" rel="stylesheet" />*@
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+    <link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.inputmask.js"></script>
+    <script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+    <script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+    <link href="~/Content/css/menu.css" rel="stylesheet" />
+
+     
+    
+
+
+
+
+        @using (Html.BeginForm())
+    {
+            @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+       
+     <div class="compex_head">
+            <div class="container">
+                 <h2 id ="lgOrder">Stock Balance<sapn class="pull-right"><a href="/Home/menuNew"><i class="fa fa-home" aria-hidden="true"></i></a>
+                </sapn></h2></div>
+        </div>
+             
+              <div class="Personal_form">
+ <div class="form-group">
+     <table>
+         <tr>
+              <td>Sub Category</td>
+             <td > @Html.DropDownList("mstsale", ViewBag.mstsale as string) </td>
+             <td ><input type="submit"   name ="Submit" class="btn-default"  /> </td>
+             <td > 
+                  <input type="button" id="Print" value="Print"  class="btn-default" />  
+             </td>
+         </tr>
+     </table> 
+                    </div>
+                    </div>
+         
+        <div class="col-xs-10" style="width: 100%; overflow-x: auto;">
+                @Html.Grid(Model.LstItem).Columns(columns =>
+{
+   columns.Add().Titled("Action").Encoded(false)
+                        .Sanitized(false).SetWidth("4%")                        
+                        .RenderValueAs(d => @<b> 
+                            @Html.ActionLink("Edit", "Edit", new { mstsale = d.mstsale, compcode = d.compcode  }, new {  target = "_blank" , @class = "editDialog", style = "background-image:url('/Images/edit1.png');background-position:left top; background-repeat:no-repeat;color:transparent; background-size:15px 15px; border:none; ", title = "Edit" }) 
+                             
+                        </b>);
+    columns.Add(c => c.Itemname).Titled("Itemname").Filterable(true).SetWidth("10%").Encoded(false).Sanitized(false);
+    columns.Add(c => c.OpBal).Titled("OpBal").SetWidth("4%").Filterable(true);
+    columns.Add(c => c.ProductionOrIn).Titled("ProductionOrIn").SetWidth("10%").Filterable(true);
+    columns.Add(c => c.Purchase).Titled("Purchase").Filterable(true).SetWidth("10%");
+    columns.Add(c => c.ConsumptionOrOut).Titled("ConsumptionOrOut").Filterable(true).SetWidth("12%");
+    columns.Add(c => c.Sales).Titled("Sales").SetWidth("10%").Filterable(true);
+    columns.Add(c => c.ClBal).Titled("ClBal").Filterable(true).SetWidth("8%"); 
+}).WithPaging(13)
+          
+        </div>
+           
+  }
+</body>
+</html>
+
+ 

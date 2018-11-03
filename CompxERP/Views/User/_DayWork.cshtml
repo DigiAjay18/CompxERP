@@ -1,0 +1,50 @@
+﻿@model List<CompxERP.Models.clsDayWork>
+<div class="col-sm-12">
+    <table id="example1" class="table table-bordered table-striped" style="margin-top: 10px;">
+        <thead>
+            <tr> 
+                <th style="width: 5%;">SNo</th>
+                <th style="width: 10%;">VC</th>
+                <th style="width: 5%;">Type</th>
+                <th style="width: 30%;">Name</th> 
+                <th style="width: 30%;">Discription</th>
+                <th style="width: 10%;">DR</th>
+                <th style="width: 10%;">CR</th> 
+            </tr>
+        </thead>
+         
+    <tbody style="height: 430px;">
+        @{
+            var iIndex = 0; var Ddate ="";
+            if (Model != null && Model.Count > 0)
+            { 
+                foreach (var item in Model)
+                {
+                    iIndex = iIndex + 1; 
+                    if (Ddate != @item.WorDate.ToString()  )
+                    {
+                        Ddate = @item.WorDate.ToString();
+                 <tr class="diffBg"> <td width="100%">@item.WorDate </td>   </tr>
+        }
+            <tr>
+              <td style="width: 5%;">@iIndex</td>
+<td style="width: 10%;">@item.trnCode</td> 
+<td style="width: 5%;">@item.EType</td> 
+<td style="width: 30%;">@item.Acctname</td>
+<td style="width: 30%;">@item.Remark</td>
+<td style="width: 10%;">@item.DR</td>
+<td style="width: 10%;">@item.CR</td> 
+                 
+            </tr>
+                }
+            }
+            else
+            {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+            }
+}
+    </tbody>
+    </table>
+</div>

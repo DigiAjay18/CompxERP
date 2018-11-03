@@ -1,0 +1,209 @@
+﻿   
+@model List<CompxERP.Models.Jourmaster> 
+
+  <link href="~/Content/css/tableexport.min.css" rel="stylesheet" />
+<script src="~/Scripts/FileSaver.min.js"></script>
+<script src="~/Scripts/tableexport.min.js"></script>
+
+
+@*<script >
+    $(document).ready(function () {
+        try {
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            var today = dd + '/' + mm + '/' + yyyy;
+            $('#F_Date').val(today);
+            $('#From_Date').val(today);
+            $('#To_Date').val(today);
+            $('#O_From_Date').val(today);
+            $('#O_To_Date').val(today);
+
+
+            $(function () {
+                //Datemask dd/mm/yyyy
+                $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+                //Money Euro
+                $("[data-mask]").inputmask();
+            });
+
+        } catch (e) { }
+    });
+    </script>*@
+         
+
+
+ <div class="col-sm-12">
+     
+    <table id="PendingOrder" class="table table-bordered table-striped" >
+    <thead>
+      <tr>
+            <th><input type="checkbox" class="btn btn-default" name="chkSelectAll" id="chkSelectAll" /></th> 
+           <th>Company / Dealer Name</th>
+         @* <th style="width:5%;">Order No</th>
+          <th style="width:5%;">Date</th>
+          <th style="width:8%;">City</th>   
+            <th style="width:8%;">State </th>   
+            <th style="width:15%;">Item</th>     
+          <th style="width:5%;">Brand</th>  
+          <th style="width:5%;">Price</th>   
+          <th style="width:5%;">Order Qty</th>   
+          <th style="width:5%;">Bill Qty</th>    *@
+          <th>Bal Qty</th>   
+      @*    <th style="width:15%;">Remark</th>   
+          <th style="width:5%;"> </th>  
+          <th style="width:5%;"> aaa</th>  *@  
+          <th>Bal Qty</th>   
+          <th>Bal Qty</th>   
+          <th>Bal Qty</th>   
+        </tr>
+    </thead>
+    <tbody style="height:430px;">
+           @{
+                 var iIndex = 0;
+        if (Model != null && Model.Count > 0)
+        {
+            @*<tr class="diffBg"> <td width="100%">Lead List</td></tr>*@
+            foreach (var item in Model)
+            {
+                iIndex = iIndex +1;
+               @* if (@item.isLead == 1 && isFirst == true)
+                {
+                    <tr class="diffBg"> <td width="100%">Dealer List</td></tr>
+                    isFirst = false;
+                    iIndex = 1;
+                } *@
+               <tr>  
+                     <td >@iIndex<input type="checkbox" data-id="@item.mstcode" class="chkSelect" /></td>   
+                    <td>@item.acctname</td>
+                    @*<td  style="width:5%;"> @item.mstchno</td>  
+                    <td  style="width:5%;"> @item.mstdate.ToString("dd-MM-yyyy")</td>  
+                   <td style="width:8%;">@item.Cityname</td>   
+                   <td style="width:8%;">@item.Statename</td>  
+                    <td style="width:15%;">@item.ddlItem.ToString()</td>
+                    <td  style="width:5%;">@item.mstrema</td>   
+                   <td style="width:5%;">@item.Rate</td>  
+                   <td  style="width:5%;">@item.Qty </td>     
+                    <td  style="width:5%;"><input type="number" id ="txtO_Qty"   value ="@item.itdquan.ToString("0.00")" class="form-control no-spinners" /> </td>*@
+                  
+                         <td>@item.itdquan.ToString("0.00")  </td>
+
+                            <td> <input type="hidden" id="hdnCompCode" value="@item.compcode"  /> </td> 
+                       <td> <input type="hidden" id="hdnMstchno" value="@item.mstchno"  />  </td>
+                       <td> <input type="hidden" id="hdnItditem" value="@item.itditem" /> </td> 
+                   
+ @* <td  style="width:15%;"> 
+                       <textarea rows="1" id ="txtO_Rema" class="form-control"> @item.Remark</textarea> 
+                    </td>*@
+                   
+                  @*     <td>  </td>
+                        
+                  <td  style="width:10%;">  
+                         <input type ="text" style ="width:250px" id ="txtO_Rema" class="form-control" value ="@item.Remark" />  
+                       <textarea rows="1" id ="txtO_Rema" class="form-control"> @item.Remark</textarea> 
+
+                    </td>    *@
+                  
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">No Records Found</td>
+            </tr>            
+        }}
+    </tbody>
+</table>
+</div>
+             
+<div class="modal-body input_popup"> 
+    <button type="button" id="btnApprov" name="Approve" class="btn btn-default" onclick="SetOrder();">Approve </button> 
+</div>
+
+
+<script type ="text/javascript">
+
+    $(document).ready(function () {
+        $("#chkSelectAll").change(function () {
+            $("#PendingOrder .chkSelect").prop('checked', $(this).prop("checked"));
+        });
+
+        $("#PendingOrder .chkSelect").change(function () {
+            if ($("#PendingOrder .chkSelect").length == $("#PendingOrder .chkSelect:checked").length) {
+                $("#chkSelectAll").prop('checked', true);
+            }
+            else {
+                $("#chkSelectAll").prop('checked', false);
+            }
+        });
+
+    });
+    function chkQty(itdquan, iIndex) {
+        debugger;
+        var i = $(this).closest("tr").index();
+        alert(i); alert(iIndex);
+        alert(itdquan); alert($("#txtEQty_"+iIndex).val());
+    }
+    function SetOrder() {
+        debugger;
+        var sOrderID = "";
+        $('#PendingOrder').find('tr').each(function () {
+            var row = $(this);
+            if (row.find('input[type="checkbox"]').is(':checked')) {
+                if (row.find(hdnMstchno).val() != undefined) {
+                    sOrderID += row.find(hdnMstchno).val() + ',' + row.find(hdnItditem).val() + ',' + row.find(txtO_Qty).val() + ',' + row.find(txtO_Rema).val() + ',' + row.find(hdnCompCode).val() + '|';
+                }
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("SetOrderApprove", "Quotation")",
+            data: { OrderList: sOrderID },
+            success: function (data) {
+                //if (data.Success == true) {
+                //    alert(data.Message); 
+                //}
+                //else {
+                alert(data);
+                $("#divFollowUp").html("");
+                $('#btnOrderReport').click(); 
+                //ClearDvData();
+                //}
+            },
+            error: function () {
+                alert(error);
+            }
+        }); 
+    }
+
+</script>
+
+             
+<script>
+    $(document).ready(function () {
+        $("#PendingOrder").tableExport({
+            bootstrap: true
+        });
+    });
+    //$(function () { 
+    //    $('#tblDispatchEntries').DataTable({
+    //        "paging": true,
+    //        "lengthChange": true,
+    //        "searching": true,
+    //        "ordering": true,
+    //        "info": true,
+    //        "autoWidth": false
+    //    });
+    //});
+</script>

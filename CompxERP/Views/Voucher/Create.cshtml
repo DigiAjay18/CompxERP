@@ -1,0 +1,931 @@
+﻿ 
+@model CompxERP.Models.Jourmaster 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+@*Voucher*@
+<meta name="viewport" content="width=device-width" /> 
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.8.20.js"></script>
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.inputmask.js"></script>
+<script src="~/Scripts/jquery.inputmask.date.extensions.js"></script>
+<script src="~/Scripts/jquery.inputmask.extensions.js"></script>
+ 
+<script src="~/plugins/select2/select2.full.min.js"></script>
+<link href="~/plugins/select2/select2.min.css" rel="stylesheet" />
+<link href="~/plugins/select2/select2.css" rel="stylesheet" />
+<link href="~/Scripts/jquery-ui.css" rel="stylesheet" />
+
+@*j_css*@
+   
+ <!-----font---->
+ <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+ 
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,500,500i,700,700i,800,800i,900,900i|Open+Sans:400,400i,600,600i,700,700i,800,800i'">
+  <!------custom css---->
+ <link rel="stylesheet" href="~/css/bootstrap.min.css">
+ <link rel="stylesheet" href="~/css/font-awesome.min.css">
+ <link rel="stylesheet" href="~/css/custom.css">
+ <link rel="stylesheet" href="~/css/responsive.css">
+
+<script src="~/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="~/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script src="~/plugins/input-mask/jquery.inputmask.js"></script>
+<script src="~/plugins/input-mask/jquery.inputmask.numeric.extensions.js"></script>
+<script src="~/plugins/input-mask/jquery.inputmask.phone.extensions.js"></script>
+<script src="~/plugins/input-mask/jquery.inputmask.regex.extensions.js"></script>
+ <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="~/Scripts/Angular/angular.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/angular-animate.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/angular-aria.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/angular-material.js"></script>
+    <script type="text/javascript" src="~/Scripts/Angular/app.js"></script> 
+ 
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        //$(function () {
+        
+        // $('input[type="submit"]').attr('disabled', 'disabled');  //$("#Create").attr("disabled", "disabled");
+         
+        $("#ChallanDate").focus();
+        //$("#mstDate").datepicker();
+       // debugger;
+        //var someDate = new Date();
+        debugger;
+        //KRISHNA 8/6/2017
+        var iType = 0;
+        iType = getUrl()["MstType"]
+        ShowHideLoader('hide');
+       // alert(iType);
+          $('#tpSePuType').val(iType);
+          if (iType == 3) {
+              //$('#h2').html("Receipt Entry");
+              $('#tdshow').css("visibility", 'show');
+          }
+          else if (iType == 5) { 
+                 // $('#h2').html("Payment Entry"); 
+
+            $('#tdshow').css("visibility", 'show');
+        }
+        else if (iType == 6) {
+            //$('#h2').html("Journal Voucher");
+            $('#tdshow').css("visibility", 'show');
+            }
+        else if (iType == 108) {
+           // $('#h2').html("Contra Entry");
+         $('#tdshow').css("visibility", 'hidden');
+         }
+
+        else { $('#h2').html(""); }
+
+        if (itm.length == 0 && iType == 5) {
+            $("#tpCrAmt").attr("disabled", "disabled");
+        }
+        else if (itm.length == 0 && iType == 3) {
+            $("#tpDrAmt").attr("disabled", "disabled");
+            // $('#tpCrAmt').prop('disable', true)
+        }
+
+
+        $("#partyname").autocomplete({
+            source: function (request, response) {
+                var customer = new Array();
+                //  alert(document.getElementById("compcode").value);
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    type: "POST",
+                    url: "@(Url.Action("/Cateogry", "Master"))",
+
+                    data: { "cateory": request.term, "iType": +getUrl()["MstType"] },
+                    success: function (data) {
+                        for (var i = 0; i < data.length ; i++) {
+                            customer[i] = { label: data[i].Value, Id: data[i].Key };
+                        }
+                    }
+                });
+                response(customer);
+            },
+            select: function (event, ui) {
+                //fill selected customer details on form   
+                 debugger;
+                 
+                $.ajax({
+                    cache: false,
+                    async: false,
+                    type: "POST",
+                    url: "@(Url.Action("/GetDetails", "OpeningBal"))",
+                    data: { "iItemID": ui.item.Id, "iType": getUrl()["MstType"], "iMstcode": $("#mstcode").val(), "iDate": $("#ChallanDate").val() },
+                       success: function (data) {
+                           //  alert(data[0]["acctcode"]);
+                           //   $('#acctgrou').val(data[0]["acctgrou"]);
+                           var Bal;
+                           $('#acctgrou').val(data.Items[0].acctgrou);
+                           $('#tpPartyID').val(ui.item.Id);
+                           var string = data.Items1;
+                           var n = string.indexOf("-");
+                           var value = string.split('-');
+                           if (n == 0) {
+                               Bal = "Bl." + value +" "+"Cr.";
+                           }
+                           else
+                           {
+                               Bal = "Bl." + value +" "+"Dr.";
+                           }
+                           $('#BalAmt').val(Bal);
+                           action = data.Action;
+                       },
+                       error: function (xhr, ajaxOptions, thrownError) {
+                           alert('Failed to retrieve states.');
+                       }
+                   });
+               }
+        });
+
+        function stringToDate(_date, _format, _delimiter) {
+            var formatLowerCase = _format.toLowerCase();
+            var formatItems = formatLowerCase.split(_delimiter);
+            var dateItems = _date.split(_delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+            return formatedDate;
+        }
+
+        function getUrl() {
+            //debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        //SetVoucherNo();
+        //function SetVoucherNo() {
+        //    var sVoucher = ""; var someDate = new Date();
+        //    debugger;
+        //    //alert($('#mstcode').val());
+        //    sVoucher = someDate.getFullYear().toString().substr(2, 2) + '' + zeroFill(someDate.getMonth() + 1) + '' + zeroFill(someDate.getDate()) + '' + GetVoucherNo($('#mstcode').val());
+        //    $('#mstchno').val(sVoucher);
+            
+        //}
+
+        $('#ChallanDate').blur(function () { $('#IsPostDt').focus(); });
+        $('#IsPostDt').blur(function () { $('#mstchno').focus(); });
+        $('#mstclno').blur(function () { if ($('#mstclno').val() != '') $('#mstrema').val('Ch.No./Dt. ' + $('#mstclno').val()); });
+        $('#mstchno').blur(function () {
+            debugger;
+            angular.element(document.getElementById('mstchno')).scope().CheckVoucher();
+            var MstChNo = $('#MstChNo_Exists').val();
+
+            if (MstChNo != 0) {
+                //alert("Voucher No Already Exists ...");
+                return false;
+            }
+        });
+
+        $('#tpDrAmt').blur(function () {
+            var DrAmt; var CrAmt;var BalAmt;
+            if ($('#tpDrAmt').val() != "") DrAmt = $('#tpDrAmt').val(); else DrAmt = 0;
+            if ($('#BalAmt').val() != "") BalAmt = $('#BalAmt').val(); else BalAmt = 0;
+            if (itm.length == 0 && getUrl()["MstType"] == 5) {
+                //debugger;
+                if (DrAmt == 0) {
+                    $('#tpDrAmt').focus();
+                }
+            }
+            if ($('#tpCrAmt').val() != "") CrAmt = $('#tpCrAmt').val(); else CrAmt = 0;
+            if (DrAmt > 0) {
+                $('#tpCrAmt').val('0');
+                $('#Submit11').focus();
+             }
+
+            // Calc_Amt();
+        });
+
+        $('#tpCrAmt').blur(function () {
+            var CrAmt; var DrAmt;
+            if ($('#tpCrAmt').val() != "") CrAmt = $('#tpCrAmt').val(); else CrAmt = 0;
+            if (itm.length == 0 && getUrl()["MstType"] == 3) {
+               if (CrAmt == 0) {
+                    $('#tpCrAmt').focus();
+                }
+            }
+
+            if (CrAmt > 0) {
+                $('#tpDrAmt').val('0');
+            }
+
+            // Calc_Amt1();
+        });
+         
+    });
+
+
+
+</script>
+
+<script type="text/javascript">
+    //-------------------------------------- 
+    var itm = [];
+    var a;
+    var iDr = 0;
+    var iCr = 0;
+    // Add Button Click Function 
+    $(document).ready(function () {
+        //debugger;
+  
+        var iMstCode = 0;
+        //debugger;
+        iMstCode = getUrl()["MstCode"]
+        if (iMstCode > 0) {
+            $('#IsEdit').val('true');
+            //debugger; 
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetVoucherDet", "Voucher")',
+                      data: { "iMstcode": +getUrl()["MstCode"], "iCompcode": +getUrl()["comp"], "iType": +getUrl()["MstType"] },
+                      success: function (data) { 
+                          itm = data; 
+                          GenratedItemTable(data);
+                          $("#tpCrAmt").removeAttr('disabled');
+                          $("#tpDrAmt").removeAttr('disabled');
+                      }
+                  });
+        }
+
+        $('#Submit11').click(function () {
+
+            if ($('#tpPartyID').val() == '' || $('#acctgrou').val() == ''|| $('#partyname').val() == '' || parseInt( $('#tpPartyID').val()) == 0)
+            {
+                $('#partyname').val(''); $('#partyname').focus(); alert('Enter Account Name'); $('#tpPartyID').val() = 0;
+                return;
+            }
+             
+
+            if ($('#tpDrAmt').val() == '' && $('#tpCrAmt').val() == '')
+            {
+                $('#tpDrAmt').val('');$('#tpDrAmt').focus(); alert('Enter Amount');
+                return;
+ }
+ 
+            itm.push({
+                //  SrNo: itm.length + 1,
+                tpPartyID: $('#tpPartyID').val(),
+                partyname: $('#partyname').val(),
+                Remark: $('#Remark').val(),
+                tpDrAmt: $('#tpDrAmt').val(),
+                tpCrAmt: $('#tpCrAmt').val(),
+                acctgrou: $('#acctgrou').val(),
+                //  ListArea: null
+            });
+
+            //if ($('#tpDrAmt').val() != "") iDr = iDr + parseFloat($('#tpDrAmt').val());
+            //if ($('#tpCrAmt').val() != "") iCr = iCr + parseFloat($('#tpCrAmt').val());
+
+            $('#partyname').val('').focus();
+            $('#Remark').val('');
+            $('#tpDrAmt').val('');
+            $('#tpCrAmt').val('');
+            $('#acctgrou').val('');
+            $('#BalAmt').val('');
+            
+            //  GetMatchid(itm);
+            GenratedItemTable(itm);
+            //debugger;
+            // $('#sJourTrn').val('{"LstItem":' + JSON.stringify(itm) + '}');
+
+            $("#tpCrAmt").removeAttr('disabled');
+            $("#tpDrAmt").removeAttr('disabled');
+
+            //if (iDr != iCr) {
+            //    if (getUrl()["MstType"] == "5")
+            //        $('#tpCrAmt').val(iDr - iCr);
+            //    else
+            //        $('#tpDrAmt').val(iCr - iDr);
+
+            if (iCr != iDr && iCr > iDr) {
+                $('#tpDrAmt').val(iCr - iDr);
+                $('#tpCrAmt').val(0);
+            }
+            else if (iCr != iDr && iCr < iDr) {
+                $('#tpDrAmt').val(0);
+                $('#tpCrAmt').val(iDr - iCr);
+            }
+
+            debugger;
+            if (itm.length == 1) $('#mstprtc').val($('#tpPartyID').val());
+            if (itm.length == 2) $('#mstsale').val($('#tpPartyID').val());
+
+                
+                $('#acctgrou').val(0);
+
+                if (iCr == iDr) $('#mstrema').focus(); else {
+                    $('#tpPartyID').val(1);
+                    $('#partyname').val("Cash");
+                }
+
+            
+        });
+        // Function For Show Added Items in Table
+        function GenratedItemTable(itm) {
+            //debugger;
+            // alert("cfxbcx");
+            if (itm.length > 0) {
+                var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+
+                //  $table.append('<thead><tr><th>Particulars</th><th>Remark </th><th>Dr</th><th>Cr </th></tr></thead>');
+                var $tbody = $('<tbody style="height:240px;"/>');
+                var icr = 0;
+                var idr = 0;
+                // alert(itm);
+                $("#mstclno").attr("disabled", "disabled");
+                $("#mstchnm").attr("disabled", "disabled");
+                $.each(itm, function (i, val) {
+                    var $row = $('<tr/>');
+                    //$row.append($('<td/>').html(i + 1));
+                    $row.append($('<td width="37%"/>').html(val.partyname));
+                    $row.append($('<td width="23%"/>').html(val.Remark));
+                    $row.append($('<td width="15%"/>').html(val.tpDrAmt));
+                    $row.append($('<td width="15%"/>').html(val.tpCrAmt));
+                    $row.append($('<td width="10%"/>').html('<button type="button" id="btnDelete" class="deleteContact"><img src="../../Images/remove.png" /></button>'));
+                    //$row.append('<button type="button" id="btnDelete" class="deleteContact btn btn btn-danger btn-xs"><img src="~/Images/remove.png" /></button>');<img src="~/Images/remove.png" />
+                    $tbody.append($row);
+                    iDr =  idr = idr + parseFloat(val.tpDrAmt);
+                   iCr = icr = icr + parseFloat(val.tpCrAmt);
+                    
+                   if (val.acctgrou == 24 && val.tpCrAmt > 0)
+                   { $("#mstclno").removeAttr('disabled'); $("#mstchnm").removeAttr('disabled'); }
+                    //     alert(icr);
+                });
+               
+                $table.append($tbody);
+                //alert($table);
+                $('#ShowTable').html($table);
+                $('#totDrAmt').val((idr).toFixed(2));
+                $('#totCrAmt').val((icr).toFixed(2));
+                $('#mstneta').val((idr).toFixed(2));
+                $('#msttota').val((icr).toFixed(2));
+                // alert((icr).toFixed(2));
+                $('#sJourTrn').val('{"LstItem":' + JSON.stringify(itm) + '}');
+
+                if (idr == icr)
+                    $('input[type="submit"]').removeAttr('disabled');
+                else
+                    $('input[type="submit"]').attr('disabled', 'disabled');  //$("#Create").attr("disabled", "disabled");
+            }
+        }
+
+        //END TABLE //
+
+      @*  //ADD TABLE RECORD ////////////////
+        $('#submit').click(function () {
+            debugger;
+            alert('POP');
+            //e.preventDefault();
+
+            a = 'Compcode":"' + $('#').val() + '","mstCode":"' + $('#mstcode').val() + '","mstDate":"' + $('#').val() + '","msttota":"' + $('#totDrAmt').val() + '","mstneta":"' + $('#totCrAmt').val() + '","mstrema":"' + $('#Narration').val() + '","mstrefc":"' + $('#tpPartyID').val() + '","msttime":"' + $('#msttimes').val() + '""';
+
+            //if ($('#target').val() == '') {
+            //    e.preventDefault();
+            //}
+
+            $.ajax({
+                url: '@Url.Action("Create", "OpeningBal")',
+                type: "POST",
+                data: { "sData": '{' + a + '"LstItem":' + JSON.stringify(itm) + '}' },
+                datatype: "JSON",
+                ContentType: "application/json",
+                success: function (d) {
+                    // alert("hi");   
+                    alert("SuccessFully Done");
+                    alert(d.status);
+                    if (d.status == true) {
+                        alert(TempData["Msg"] + 'SuccessFully Done');
+                        // Clear Form
+                        itm = [];
+                        formItems = [];
+                        //  $('# itemcode').val('');
+                        // $('# itemsrno').val('');
+                        e.preventDefault();
+                        //  alert("hi");
+                    }
+                    else {
+                        alert('Failed to Save Data');
+                    }
+                },
+            });
+        });*@
+
+        function getUrl() {
+            //debugger;
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        $(document).on("click", ".deleteContact", function () {
+            if (itm.length > 0) {
+                debugger;
+                var index = $(this).closest("tr").index();
+
+                var $row = $(this).closest("tr"),        // Finds the closest row <tr> 
+                   $tds = $row.find("td:nth-child(3)"); // Finds the 2nd <td> element
+                //$('#ItemID').val(itm[index].ItemID);
+                //$('#partyname').val($row.find("td:nth-child(1)").text());
+                //$('#Remark').val($row.find("td:nth-child(2)").text());
+                //$('#tpDrAmt').val($row.find("td:nth-child(3)").text());
+                //$('#tpCrAmt').val($row.find("td:nth-child(4)").text());
+
+                $('#tpPartyID').val(itm[index].tpPartyID);
+                $('#partyname').val(itm[index].partyname);
+                $('#Remark').val(itm[index].Remark);
+                $('#tpDrAmt').val(itm[index].tpDrAmt);
+                $('#tpCrAmt').val(itm[index].tpCrAmt);
+                $('#acctgrou').val(itm[index].acctgrou);
+
+                $(this).closest("tr").remove(); // closest used to remove the respective 'tr' in which I have my controls 
+                itm.splice(index, 1);
+                GetTotal(itm);
+                $('#sJourTrn').val('{"LstItem":' + JSON.stringify(itm) + '}');
+            }
+
+        });
+
+
+
+
+        $(".digit").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                $("#errormsg").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+        });
+
+        $('#partyname').blur(function () {
+            if ($('#partyname').val() == "") {
+                $('#mstclno').focus();
+            }
+        });
+
+        $('#tpDrAmt').focus(function () {
+
+            if (iCr != iDr && iCr > iDr) {
+                $('#tpDrAmt').val(iCr - iDr);
+                $('#tpCrAmt').val(0);
+            }
+        });
+        $('#tpDrAmt').focus(function () { 
+            if (iCr != iDr && iCr < iDr) {
+                $('#tpDrAmt').val(0);
+                $('#tpCrAmt').val(iDr - iCr);
+            }
+        });
+          
+        $('#Prev').click(function () {
+            debugger; 
+            $.get("/Voucher/PrevNext", { comp: $("#compcode").val(), mstCode: $("#mstcode").val(), MstType: +getUrl()["MstType"], IsNext: false }, function (data) {
+                if (data != null) {
+                    if (data.MSG != null) { alert(data.MSG); return }
+                    $("#mstcode").val(data.mstcode);
+                    $("#compcode").val(data.compcode);
+                    $("#ChallanDate").val(data.ChallanDate);
+                    $("#mstpdc").val(data.mstpdc);
+                    $("#mstactpay").val(data.mstactpay);
+                    $("#mstchqadj").val(data.mstchqadj);
+                    $("#mststat").val(data.mststat);
+                    $("#msttime").val(data.msttime);
+                    $("#msttota").val(data.msttota);
+                    $("#mstrema").val(data.mstrema);
+                    $("#mstchno").val(data.mstchno);
+                    $("#mstneta").val(data.mstneta);
+                    $("#mstclno").val(data.mstclno);
+                    $("#mstchnm").val(data.mstchnm);
+                    $("#IsChqAdj").val(data.IsChqAdj);
+                    $('#IsEdit').val('true');
+                    //******************************
+                   $.get("/Voucher/GetVoucherDet", { iMstcode: $("#mstcode").val() , iCompcode: $("#compcode").val(), iType: +getUrl()["MstType"] } ,function (data1)
+                   { 
+                       if (data1 != null) {
+                           itm = data1;
+                           GenratedItemTable(data1);
+                           $("#tpCrAmt").removeAttr('disabled');
+                           $("#tpDrAmt").removeAttr('disabled');
+                           if (itm.length > 0) $('#mstprtc').val(itm[0].tpPartyID);
+                           if (itm.length > 1) $('#mstsale').val(itm[1].tpPartyID);
+                       }
+                       else {
+                           $('#ShowTable').html('');
+                           $('#totDrAmt').val(0);
+                           $('#totCrAmt').val(0);
+                           $('#mstneta').val(0);
+                           $('#msttota').val(0);
+                           // alert((icr).toFixed(2));
+                           $('#sJourTrn').val('');
+                       }
+                  }); 
+                    //******************************
+                }
+            });
+            ShowHideLoader('hide');
+        });
+        $('#Next').click(function () {
+            debugger; 
+            $.get("/Voucher/PrevNext", { comp: $("#compcode").val(), mstCode: $("#mstcode").val(), MstType: +getUrl()["MstType"], IsNext: true }, function (data) {
+                if (data != null) { 
+                    if (data.MSG != null) { alert(data.MSG); return }
+                     $("#mstcode").val(data.mstcode);
+                    $("#compcode").val(data.compcode);
+                    $("#ChallanDate").val(data.ChallanDate);
+                    $("#mstpdc").val(data.mstpdc);
+                    $("#mstactpay").val(data.mstactpay);
+                    $("#mstchqadj").val(data.mstchqadj);
+                    $("#mststat").val(data.mststat);
+                    $("#msttime").val(data.msttime);
+                    $("#msttota").val(data.msttota);
+                    $("#mstrema").val(data.mstrema);
+                    $("#mstchno").val(data.mstchno);
+                    $("#mstneta").val(data.mstneta);
+                    $("#mstclno").val(data.mstclno);
+                    $("#mstchnm").val(data.mstchnm);
+                    $("#IsChqAdj").val(data.IsChqAdj);
+                    $('#IsEdit').val('true');
+                    //******************************
+                   $.get("/Voucher/GetVoucherDet", { iMstcode: $("#mstcode").val(), iCompcode: $("#compcode").val(), iType: +getUrl()["MstType"] } ,function (data1)
+                   { 
+                       if (data1 != null) { 
+                          itm = data1; 
+                          GenratedItemTable(data1);
+                          $("#tpCrAmt").removeAttr('disabled');
+                          $("#tpDrAmt").removeAttr('disabled');
+                          if (itm.length > 0) $('#mstprtc').val(itm[0].tpPartyID);
+                          if (itm.length > 1) $('#mstsale').val(itm[1].tpPartyID);
+                       }
+                       else {
+                           $('#ShowTable').html('');
+                           $('#totDrAmt').val(0);
+                           $('#totCrAmt').val(0);
+                           $('#mstneta').val(0);
+                           $('#msttota').val(0);
+                           // alert((icr).toFixed(2));
+                           $('#sJourTrn').val('');
+                       }
+                  }); 
+                    //******************************
+                    
+                }
+            });
+            ShowHideLoader('hide');
+        });
+
+        $('#Print').click(function () {
+            
+            debugger;
+           // window.open('../../Voucher/Print?comp=' + $("#compcode").val() + '&mstCode=' + $("#mstcode").val() + '&msttype=' + getUrl()["MstType"] + '&mencode=105' , '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=500, top=50, left=50' );
+            window.open('../Pages/Reports.aspx?Code=' + $("#mstcode").val() + '&PType=' + getUrl()["MstType"] + '&compcode=' + $("#compcode").val() + '', '_blank');
+        });
+
+    });
+
+
+
+    function GetTotal(itm) {
+        if (itm.length > 0) {
+            var icr = 0;
+            var idr = 0;
+            $("#mstclno").attr("disabled", "disabled");
+            $("#mstchnm").attr("disabled", "disabled");
+            $.each(itm, function (i, val) {
+              iDr =  idr = idr + parseFloat(val.tpDrAmt);
+              iCr =  icr = icr + parseFloat(val.tpCrAmt);
+
+              if (val.acctgrou == 24 && val.tpCrAmt > 0)
+              { $("#mstclno").removeAttr('disabled'); $("#mstchnm").removeAttr('disabled'); }
+            });
+
+            $('#totDrAmt').val((idr).toFixed(2));
+            $('#totCrAmt').val((icr).toFixed(2));
+            $('#mstneta').val((idr).toFixed(2));
+            $('#msttota').val((icr).toFixed(2));
+
+            if (iCr != iDr && iCr > iDr) {
+                $('#tpDrAmt').val(iCr - iDr);
+                $('#tpCrAmt').val(0);
+            }
+            else if (iCr != iDr && iCr < iDr) {
+                $('#tpDrAmt').val(0);
+                $('#tpCrAmt').val(iDr - iCr);
+            }
+
+            if (idr == icr)
+                $('input[type="submit"]').removeAttr('disabled');
+            else
+                $('input[type="submit"]').attr('disabled', 'disabled');  //$("#Create").attr("disabled", "disabled");
+
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".pickdate").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
+    });
+    </script>
+
+
+<script type="text/javascript">
+
+
+    function zeroFill(i) {
+        return (i < 10 ? '0' : '') + i
+    }
+    function GetVoucherNo(ChNo) {
+        var str = new String(ChNo);
+        if (str.length == 1)
+            return "000" + str;
+        else if (str.length == 2)
+            return "00" + str;
+        else if (str.length == 3)
+            return "0" + str;
+        else
+            return str;
+    }
+</script>
+
+@*AngularDropDown*@
+
+<div class="compx">
+    <div class="compex_head">
+        <div class="container"><h2> @Html.DisplayFor(m => m.Header)   </h2> @*<h2 id="h2"></h2>*@</div>
+    </div>
+   
+           
+
+
+    <div class="md-padding dialogdemoBasicUsage" data-ng-controller="cntrlVoucher" id="popupContainer" data-ng-cloak="" data-ng-app="CompXApp">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="compex_form">
+             
+       <div class="container-fluid">
+            <div class="Personal_form">
+                 <span  class="pull-right back_btn">
+                   <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                   @Html.ActionLink("Back to List", "Index", "Voucher", new { MstType = ViewBag.MstType , MenCode = ViewBag.MenCode },  new { style = "background-image: url('/Images/bulleted-list1.png');background-position: center;background-repeat: no-repeat;color: transparent;text-align: right;background-size: 24px 24px;", title = "Back to list" })
+                 </span>
+                <div class="col-sm-7 padd_l padd_5"> 
+	             	<div class="form-group">
+					    <label class="control-label col-sm-1 padd_l padd_5" >@Html.LabelFor(model => model.ChallanDate)   </label>
+					    <div class="col-sm-3">
+						    @Html.TextBoxFor(m => m.ChallanDate, "{0:dd/MM/yyyy}", new { @class = "pickdate form-control", placeholder = "Enter Date" })
+					    </div>
+					   @* <label class="control-label col-sm-1 padd_l padd_5" >@Html.LabelFor(model => model.msttimes)  </label>
+					    <div class="col-sm-3">
+					        @Html.TextBoxFor(a => a.msttimes, new { @class = "form-control", @readonly = true })
+                            @Html.ValidationMessageFor(a => a.msttimes)
+					    </div>*@
+					    <div class="col-sm-3">
+					        <label class="checkbox-inline">
+                                @Html.LabelFor(model => model.IsPostDt) 
+                               @Html.CheckBoxFor(m => m.IsPostDt, new { @class = "options" }) @*Post Dated*@
+
+@Html.HiddenFor(model => model.mstcode_Print)
+                                @Html.HiddenFor(model => model.msttype   )
+                                @Html.HiddenFor(model => model.mstsale)
+                                @Html.HiddenFor(model => model.mstprtc)
+@Html.HiddenFor(model => model.mstrefc)
+
+								@Html.HiddenFor(model => model.compcode)
+								@Html.HiddenFor(model => model.msttota)
+								@Html.HiddenFor(model => model.mstneta)
+								@Html.HiddenFor(model => model.acctgrou) @Html.HiddenFor(model => model.IsEdit)
+
+                                <input type ="hidden" id ="MstChNo_Exists" ng-model="MstChNo_Exists" value ="0" />
+
+                            </label>
+					    </div>
+ 
+
+				   </div>
+				   <div class="form-group">
+				       <label class="control-label col-sm-1 padd_l padd_5" >@*Sr. No*@ @Html.LabelFor(model => model.mstcode)   </label>
+					    <div class="col-sm-3">
+					        @Html.TextBoxFor(a => a.mstcode, new { @Value = ViewBag.MstCode, @class = "form-control", @readonly = true })
+                           @Html.ValidationMessageFor(a => a.mstcode)
+					    </div>
+						<label class="control-label col-sm-1 padd_l padd_5" >@*Voucher No*@ @Html.LabelFor(model => model.mstchno)   </label>
+					    <div class="col-sm-3">
+                            @Html.TextBoxFor(a => a.mstchno, new {   @class = "form-control" })
+					     @*   @Html.TextBoxFor(a => a.mstchno, new {   @class = "form-control" , onkeyup="arabicValue(mstchno,"+ TempData["CurrentCulture"] +")"})*@@*,@ng_model="mstchno" *@
+                            @Html.ValidationMessageFor(a => a.mstchno)
+					    </div>
+				   </div>
+			   </div>
+			  
+                  <div class="col-sm-5 padd_l padd_5">
+                      </div>
+
+			   <div class="table_j">
+			       <table class="table table-fixed table-bordered j_table_new table-striped" id="example" width="100%" cellspacing="0">
+								<thead class="thead-default">
+								    
+									<tr>
+									  
+									  <th width="37%">Particulars</th>
+									  <th width="23%">Remark</th>
+									  <th width="15%">Dr </th>
+									  <th width="15%">Cr </th>
+									  <th width="10%">&nbsp </th>
+									  
+									</tr>
+									<tr>
+									  
+									  <th width="37%">
+									     @Html.TextBoxFor(a => a.partyname, new { @class = "t3", style = "width:310px;"   })
+                                         @Html.ValidationMessageFor(a => a.partyname)
+                                         @Html.TextBoxFor(a => a.BalAmt, new { @class = "t21", disabled = true, @readonly = true, style = "width:120px;"  }) 
+									  </th>
+									  <th width="23%">
+									    @Html.TextBoxFor(a => a.Remark, new { @class = "form-control" , onkeyup="arabicValue(Remark,"+ TempData["CurrentCulture"] +")" })
+                                        @Html.ValidationMessageFor(a => a.Remark)
+									  </th>
+									  <th width="15%">
+                                         @Html.TextBoxFor(a => a.tpDrAmt, new { @type = "number" ,@class = "form-control", @maxlength = "12" , onkeyup="arabicValue(partyname,"+ TempData["CurrentCulture"] +")"})
+ 									  </th>
+									  <th width="15%">
+                                        @Html.TextBoxFor(a => a.tpCrAmt, new {@type = "number" , @class = "form-control", @maxlength = "12" , onkeyup="arabicValue(partyname,"+ TempData["CurrentCulture"] +")" })
+ 									  </th>
+									  <th width="10%"> <input id="Submit11" type="button" value="add" class="btn btn-default" /></th>
+									  
+									</tr>
+							   </thead>
+                                
+							
+							   
+									      
+									
+
+								
+								
+						    </table>
+
+
+                            <div id="ShowTable" style="min-height: 240px">
+                               
+                            </div>
+                             <table class="table table-fixed table-bordered j_table_new table-striped">
+                                  <tfoot>
+                                       <th width="37%"></th>
+										<th width="23%"></th>
+										<th width="15%"> @Html.TextBoxFor(a => a.totDrAmt, new {@type = "number" , disabled = true, @readonly = true })</th>
+										<th width="15%"> @Html.TextBoxFor(a => a.totCrAmt, new { @type = "number" , disabled = true, @readonly = true })</th>
+										<th width="10%"></th>
+							    </tfoot>
+								       
+                             </table>
+			   </div>
+
+			   <fieldset>
+				        <legend>Print Name on Cheque</legend>
+				            <div id ="dvBank" class="form-group">
+							    <label class="control-label col-sm-1 padd_l padd_5" >Print Name  </label>
+								<div class="col-sm-3 padd_l padd_5">
+							      @Html.TextBoxFor(a => a.mstchnm, new { @class = "form-control" })
+							    </div>
+							    <label class="control-label col-sm-1 padd_l padd_5" >  ChqNo:-   </label>
+							    <div class="col-sm-2">
+							        @Html.TextBoxFor(a => a.mstclno, new { @class = "form-control" })
+							    </div>
+								<label class="control-label col-sm-1 padd_l padd_5" >Chq.Adj.   </label>
+								 <div class="col-sm-3 padd_l padd_5" >
+                                     <label class="radio-inline">
+									  @Html.CheckBoxFor(m => m.IsChqAdj, new { @class = "options" })Account Payee 
+									</label>
+									<label class="radio-inline">
+									  
+									    @Html.RadioButtonFor(model => model.IsAcctPay, "Yes", new { id = "rbisAcPayY", @checked = "checked" })
+                                       @Html.Label("rbisAcPayY", "Yes")
+									   
+									</label>
+									<label class="radio-inline">
+									  @Html.RadioButtonFor(model => model.IsAcctPay, "No", new { id = "rbisAcPayN" })
+                                     @Html.Label("rbisAcPayN", "No")
+									</label>
+								 </div>
+						    </div>
+							
+				           
+				    </fieldset>	
+
+			   <div class="form-group" style="margin-top:15px;">
+				    <label class="control-label col-sm-1 padd_l padd_5" > @Html.LabelFor(model => model.mstrema) </label>
+				    <div class="col-sm-3">
+				      @*   @Html.TextAreaFor(a => a.mstrema, new { @class = "form-control new_text" }), dir="rtl" *@
+                        @Html.TextAreaFor(a => a.mstrema, new { @class = "form-control new_text" , onkeyup="arabicValue(mstrema,"+ TempData["CurrentCulture"] +")"  })
+                          @* <input type ="text" value ="" id ="txtEngRemark" />*@
+				    </div>
+                      
+					@*<input type="submit" value="Save" onclick="ShowHideLoader('show');" class="btn-default"/>
+                       
+                  
+				    <input type="button" id="Prev" value="<<<<" onclick="ShowHideLoader('show');" class="btn-default" />
+                    <input type="button" id="Next" value=">>>>" onclick="ShowHideLoader('show');" class="btn-default" />    
+                    <input type="button" id="Print" value="Print"  class="btn-default" />   
+                   @Html.ActionLink("Create New", "Create","Voucher" ,new { MstType= ViewBag.MstType, MenCode = ViewBag.MenCode }, new { @class = "btn-default", @style = "margin-top: 0px;height: 29px !important;" ,onclick="ShowHideLoader('show');" }) *@
+				</div>
+   <div class="floatbox">
+                <div class="floatbox">
+                    @Html.HiddenFor(a => a.type)
+
+                </div>
+                @Html.HiddenFor(a => a.tpPartyID)
+            </div>
+            @Html.HiddenFor(model => model.sJourTrn)
+            <div class="floatbox">
+            </div>				
+			</div>
+       </div>
+   </div>
+   <!----compex_form end---->
+    }
+</div>
+</div>
+
+@*@{
+    if (TempData["message"] != null)
+    {
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["message"])));
+    </script>
+    }
+}*@
+
+
+@{
+    if (TempData["message"] != null && TempData["message"] == "Saved Successfully ...")
+    {    
+    <script type="text/javascript">  
+            var r = confirm("Saved Successfully , Do You Want To Print ? ");
+            if (r == true) { 
+                debugger;
+                //window.open('../../Voucher/Print?comp=' + $("#compcode").val() + '&mstCode=' + $("#mstcode_Print").val() + '&msttype=' + $("#msttype").val() + '&mencode=105', '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width=600, height=680, top=50, left=50' ); 
+                window.open('../Pages/Reports.aspx?Code=' + $("#mstcode_Print").val() + '&PType=' + $("#msttype").val() + '&compcode=' + $("#compcode").val() + '', '_blank');
+            } else { 
+            }  
+    </script>
+    }
+    else if (TempData["message"] != null)
+    {
+    <script type="text/javascript">
+        alert(@Html.Raw(Json.Encode(TempData["message"])));
+    </script>
+    }
+}
+
+<script type ="text/javascript">
+    $('form').submit(function () {
+        debugger; 
+        angular.element(document.getElementById('mstchno')).scope().CheckVoucher();
+        var MstChNo = $('#MstChNo_Exists').val();
+
+        if (MstChNo != 0) {
+            //alert("Voucher No Already Exists ...");
+               return false;
+           }
+       });
+
+
+    $("#mstrema").keyup(function (e) {
+        debugger  
+            $('#txtEngRemark').val(e.value) 
+         
+    });
+
+</script>
+ 
+ 
+
+

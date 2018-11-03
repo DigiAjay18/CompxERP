@@ -1,0 +1,49 @@
+﻿@model IEnumerable<CompxERP.Models.clsEmpAllotMst>
+
+  <style>
+       .table-bordered.listTable > tbody > tr > td, .table-bordered.listTable > tfoot > tr > td, .table-bordered.listTable > thead > tr > td {  border: 1px solid #ccc !important;}
+      
+    </style>
+
+ 
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Employee Wise Dealer List</h4>
+                </div>
+                <div class="modal-body input_popup">
+                     <table class="table table-fixed table-bordered j_table_new table-striped">
+    <thead>
+    <tr>  
+         <th style="width:10%;">SrNo</th> 
+         <th style="width:35%;">Dealer </th>
+         <th style="width:25%;">Contact Person </th>
+         <th style="width:20%;">Mobile </th>  
+    </tr>
+    </thead>
+ <tbody style="height:430px;">
+     @{
+         var iIndex = 0; var iEmpID =0;
+            foreach (var item in Model) {
+                iIndex = iIndex + 1;
+
+                if (@item.EmpID != iEmpID )
+                {
+                    <tr class="diffBg"> <td width="100%">@item.EmpNm </td></tr> 
+                    iIndex = 1;
+                    iEmpID = @item.EmpID;
+                }
+                
+    <tr> 
+        <td  style="width:10%;">@iIndex</td> 
+        <td  style="width:35%;"> @item.DisName</td>
+        <td  style="width:25%;"> @item.ContactPerson</td>
+        <td  style="width:20%;">@item.Mob1</td>     
+    </tr>
+} }
+     </tbody> 
+</table>
+                </div>
+
+ 
+ 
