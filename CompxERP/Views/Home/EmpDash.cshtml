@@ -444,6 +444,14 @@
                                         <img src="/img/follow-summary.png"></span><span class="risK_imgTxt LywText"> Follow Up Summary
                                                 <br />
                                         </span></a></li>
+                                     <li> <span class="risK_img Lyw">
+                                        <img src="/img/follow-summary.png"></span><span class="risK_imgTxt LywText">  
+                                                  <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#ParkLead" id="btnSurvey" value="Survey" />
+                                        </span> </li>
+                                     <li> <span class="risK_img Lyw">
+                                        <img src="/img/follow-summary.png"></span><span class="risK_imgTxt LywText">  
+                                                  <input type="button" class="btn_map" data-toggle="modal" data-backdrop="static" data-keyboard="true" data-target="#ParkLead" id="btnSurvey_InwardEntry" value="Survey Inward Entry" />
+                                        </span> </li>
                                     @* }*@
                                 </ul>
 
@@ -671,7 +679,33 @@
                 }
             });
         });
+        $('#btnSurvey').click(function () {
+            debugger;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Survey", "Service")", 
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
 
+        $('#btnSurvey_InwardEntry').click(function () {
+            debugger;
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Survey_InwardEntry", "Service")",
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
         $('#btnPlanningEntry').click(function () {
             debugger;
 
@@ -778,15 +812,1190 @@
             }
             return "0";
         }
-        //$(function () {
-        //    $("#datemask").inputmask("dd/mm/yyyy", { "placeholder": "dd/mm/yyyy" });
-        //    $("[data-mask]").inputmask();
-        //});
-        //$(document).keydown(function (e) {
-        //    if (e.keyCode == 27) {
-        //        window.close();
-        //    }
-        //});
+  
+        //##################
+
+
+        function SetNo(ChNo) {
+            var str = new String(ChNo);
+            if (str.length == 1)
+                return "00" + str;
+            else if (str.length == 2)
+                return "0" + str;
+            else
+                return str;
+        }
+
+        function ChkPasswordOwn() {
+
+            if ($('#newpass').val() != "" && $('#newpass').val() != $('#cnewpass').val()) {
+                alert('Password Not Match .');
+                $('#cnewpass').val('');
+            }
+        }
+
+        function ChkPassword_Deal() {
+
+            if ($('#Deal_Password').val() != "" && $('#Deal_Password').val() != $('#Deal_RePassword').val()) {
+                alert('Password Not Match .');
+                $('#Deal_RePassword').val('');
+            }
+        }
+
+        function ChkPassword_Dist() {
+
+            if ($('#Dis_Password').val() != "" && $('#Dis_Password').val() != $('#Dis_RePassword').val()) {
+                alert('Password Not Match .');
+                $('#Dis_RePassword').val('');
+            }
+        }
+
+        function SetUserNM() {
+
+
+
+            if ($('#sEmp_empname').val() != '') {
+                $('#sEmpUser').val(getFirstWord($('#sEmp_empname').val()) + $('#iEmp_empcode').val());
+            }
+        };
+        function getFirstWord(str) {
+            var spacePosition = str.indexOf(' ');
+            if (spacePosition === -1)
+                return str;
+            else
+                return str.substr(0, spacePosition);
+        };
+        function ChkNewPassword() {
+
+            if ($('#NewPass').val() != "" && $('#NewPass').val() != $('#ConfPass').val()) {
+                alert('Password Not Match .');
+                $('#ConfPass').val('');
+            }
+        }
+
+        $(document).ready(function () {
+            $('[id^=Dis_Mob2]').keypress(validateNumber);
+        });
+
+
+
+
+
+        function validateNumber(event) {
+            var key = window.event ? event.keyCode : event.which;
+            if (event.keyCode === 8 || event.keyCode === 46) {
+                return true;
+            } else if (key < 48 || key > 57) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+
+        $('#btnCityMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CityMaster", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#dvCityMaster").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnDepartmentSetup').click(function () {
+
+            FillDegignationList();
+
+        });
+
+        $('#btnDealerAllotment').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("EmpAllotMst", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#dvDealerAllotment").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnDealerMapAcct').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("MapDealer", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#dvDealerAllotment").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#LeadSearch').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            if ($('#mstrfvt').val() > 0)
+                iEmp = $('#mstrfvt').val();
+
+            if ($('#I_ItemNm').val() > 0)
+                iItem = $('#I_ItemNm').val();
+
+            if ($('#ddlIndustries').val() > 0)
+                iIndustries = $('#ddlIndustries').val();
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetLeadList", "Quotation")",
+                data: { iEmpCode: iEmp, ItemID: iItem, To: $('#T_To_Date').val(), From: $('#S_From_Date').val(), iIndustries: iIndustries, iMstType: 1147 },
+                success: function (data) {
+                    $("#divDispatchEntries").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#bntExportExcell').click(function () {
+            window.open('../Pages/Reports.aspx?Code=0&PType=InBoundExl', '_blank');
+        });
+
+        $('#btnEmployeeMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("EmployeeSetup", "Master")",
+                data: { empCode: 0 },
+                success: function (data) {
+                    $("#divEmployeeMaster").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+
+        $('#btnSourceMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 50 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#btnFinancialTerms').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 55 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#btnOtherTerms').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 44 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+
+        $('#btnNotification').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 870 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnBrand').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 61 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSrvMaster').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 873 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnDept').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 11 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnRegion').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SourceMaster", "Master")",
+                data: { iCode: 0, iType: 163 },
+                success: function (data) {
+                    $("#divSource").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnApproveDealer').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ApprovDealerList", "Master")",
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnFloatScheme').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FloatScheme", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPaymentFollowupPlanning').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PayFollowUpPlaning", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPaymentFollowupPlanningSearch').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PaymentPlanning" },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOfferAccept').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("OfferAccept", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSchemeMaster').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SchemeMaster", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        /*181030 %temp%*/
+        function ComplaintList(x, y) {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "ComplaintList", sCode: x, sRpType: y },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+        $('#btnComplaintList').click(function () { ComplaintList(0, 'CL'); });
+        $('#btnComplaintList1').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ManagerWsEmpComplainList", "Service")",
+                data: { sType: "ComplaintList", sCode: x, sRpType: y },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+            //ComplaintList(2, 'CL');
+        });
+        $('#btnComplaintList2').click(function () { ComplaintList(1, 'CL'); });
+        $('#btnComplaintList3').click(function () { ComplaintList(2, 'CL'); });
+        //{181029 %temp%
+        $('#btnPendingComplaint4').click(function () { ComplaintList(1, 'PC'); });
+        $('#btnPendingComplaint6').click(function () { ComplaintList(1, 'PC'); });
+        $('#btnPendingComplaint7').click(function () { ComplaintList(1, 'PC'); });
+        $('#btnPendingComplaint0').click(function () { ComplaintList(1, 'PC'); });//181030
+        $('#btnComplaintResolve0').click(function () { ComplaintList(2, 'CR'); });//181030
+        $('#btnComplaintResolve4').click(function () { ComplaintList(2, 'CR'); });
+        $('#btnComplaintResolve6').click(function () { ComplaintList(2, 'CR'); });
+        $('#btnComplaintResolve7').click(function () { ComplaintList(2, 'CR'); });
+        $('#btnRejectComplaint6').click(function () { ComplaintList(3, 'RC'); });
+        $('#btnRejectComplaint7').click(function () { ComplaintList(3, 'RC'); });
+        $('#btnRejectComplaint0').click(function () { ComplaintList(3, 'RC'); });//181030
+        $('#btnHaltedComplaint6').click(function () { ComplaintList(4, 'HC'); });
+        $('#btnHaltedComplaint7').click(function () { ComplaintList(4, 'HC'); });
+        $('#btnHaltedComplaint0').click(function () { ComplaintList(4, 'HC'); });//181030
+        $('#btnLogComplaint4').click(function () {//181030
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Complaint1", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+        $('#btnComplainReg7').click(function () {//181030
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CompalintRegister", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+
+        });
+        $('#btnTrackComplaint4').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("TrackComplaint", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });//181030_3
+        $('#btnAllotComplaint6').click(function () { ComplaintList(0, 'AC'); });
+        $('#btnUnAllotComplaint6').click(function () { ComplaintList(0, 'UC'); });
+        $('#btnBillSummary').click(function () { ComplaintList(0, 'CL'); });
+        $('#btnBillSummary0').click(function () { ComplaintList(0, 'CL'); });//181030
+        $('#btnBillSummary6').click(function () { ComplaintList(0, 'CL'); });//181031
+
+        $('#btnTotalComplaint7').click(function () { ComplaintList(0, 'CL'); });
+        $('#btnOldCompalint6').click(function () { ComplaintList(0, 'OC'); });
+        //}181029 %temp%
+        $('#btnNewComplaint').click(function () { ComplaintList(0, 'NC'); });//181030
+        $('#btnNewComplaint0').click(function () { ComplaintList(0, 'NC'); });//181030
+        $('#btnComplainStatus').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ComplainStatus", "Quotation")",
+                    success: function (data) {
+                        $("#dvDealerApprove").html(data);
+                    },
+                    error: function () {
+                        alert('Error');
+                    }
+                });
+            });//181031
+            $('#MnFollow').click(function () {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("FollowUp", "Quotation")",
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#FollowUpList').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "FollowUp" },
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#InsDepartment').click(function () {
+
+
+            if ($('#Designation').val() == "") {
+                $('#Designation').focus();
+                alert('Please Enter Designation Name ...');
+                return
+            }
+
+            if ($('#Designation').val() != '') {
+                $.get("/Home/InsDepartment", { Department_ID: $('#Department_ID').val(), Designation: $('#Designation').val() }, function (data) {
+                    if (data != null) {
+                        alert('Saved Successfully ...');
+
+                        $('#Department_ID').val('');
+                        $('#Designation').val('');
+                        FillDegignationList();
+
+                    }
+                });
+            }
+        });
+
+
+        function FillDegignationList() {
+
+            $.get("FillDegignationList", { iDept: $('#Department_ID').val() }, function (data) {
+                if (data != null) {
+                    var $table = $('<table class="table table-fixed table-bordered j_table_new table-striped"/>');
+                    $table.append('<thead><tr style="ba"><th width="10%">S.No</th><th width="35%">Department</th><th width="35%">Designation</th><th width="10%">&nbsp;</th><th width="10%">&nbsp;</th></tr></thead>');
+                    var $tbody = $('<tbody style="height:390px;"/>');
+
+
+                    $.each(data, function (i, val) {
+                        var $row = $('<tr/>');
+                        $row.append($('<td width=10%"/>').html(i + 1));
+                        $row.append($('<td width="35%"/>').html(val.studadd2));
+                        $row.append($('<td width="35%"/>').html(val.StudName));
+                        $tbody.append($row);
+                    });
+                    $table.append($tbody);
+                    $('#divDepartmentSetup').html($table);
+                }
+            });
+        }
+
+        $('#btnCallingSummary').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CallSummary", "Report")",
+                data: {},
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        function DealerList() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("DealerList", "Master")",
+                data: { aType: 1 },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+        $('#btnDealerList').click(function () { DealerList(); });
+        $('#btnDealerList1').click(function () { DealerList(); });
+
+        function SaleBookList() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Index", "PuSl")",
+                data: { aType: 1 },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+        $('#btnSaleBookList1').click(function () { SaleBookList(); });
+
+        $('#bntQuotList').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetQuotList", "Quotation")",
+                data: { iEmpCode: 0, ItemID: 0, To: "", From: "", iIndustries: 0, iMstType: 1163 },
+                success: function (data) {
+                    $("#divQuota").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#bntOrderList').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "Order" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdApprove').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdApprove" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnOrdApprove_II').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdApprove" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnOrdApprove_I').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdApprove_I" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdDispatch').click(function () {
+            var iEmp = 0; var iItem = 0; var iIndustries = 0;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "DispatchOrd" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnParkLead').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ParkLead", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "1147" },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnApproveOrder').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getProduction", "Quotation")",
+                data: { IsApprove: true },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnProductionList').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getProduction", "Quotation")",
+                data: { IsApprove: false },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPendingOrder').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PendingOrder", "Quotation")",
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        function PayFollowUp() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PayFollowUp" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+        $('#btnPayFollowUp').click(function () {
+            PayFollowUp();
+        });
+        $('#btnPayFollowUp1').click(function () {
+            PayFollowUp();
+        });
+        $('#btnPayFollowUp2').click(function () {
+            PayFollowUp();
+        });
+
+        $('#btnBankReceipt').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "BankReceipt" },
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnPayFollowUpList').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "PayFollowUpList" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnTrialBal').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "TrialBal" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdFollowUp').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdFollowUp" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSrvCycle').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("SrvCycle", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnSrvComplement').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Complaint", "Service")",
+                success: function (data) {
+                    $("#DealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnMnUserWork').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "UserWork" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrdFollowUpList').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "OrdFollowUpList" },
+                success: function (data) {
+                    $("#DealerApprove").html(data); // $("#dvDealerApprove").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnLedger').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_FollowUp", "Quotation")",
+                data: { sType: "Ledger" },
+                success: function (data) {
+                    $("#divParkLead").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnCalling').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("tblCallDet", "Quotation")",
+                data: {},
+                success: function (data) {
+                    $("#dvCalling").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnChangePassword').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ChangePassword", "User")",
+                data: {},
+                success: function (data) {
+                    $("#dvCalling").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        $('#btnQuotation').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Quotation", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "1163", mstcode_Print: 0 },
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnOrder').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Order", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "174", mstcode_Print: 0 },
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        /*start 181018 %temp%*/
+        $('#btnOrderQty').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetExeWiseOrder", "Quotation")",
+                data: { aCode: 1 },
+                success: function (data) {
+                    $("#dvDealerApprove").html(data);
+
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+        /*end 181018 %temp%*/
+        $('#btnPlanDispatch').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PlanDispatch", "Quotation")",
+                data: { comp: "62", mstCode: "0", MstType: "80", mstcode_Print: 0 },
+                success: function (data) {
+                    $("#divParkLead").html(data);//divQuotation
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnItemExtra').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ItemExin", "Master")",
+                data: { iItemCode: 1 },
+                success: function (data) {
+                    $("#divItemExtra").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+
+        $('#btnEmpList').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("_EmpList", "Master")",
+                data: {},
+                success: function (data) {
+                    $("#divEmpList").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        $('#btnEmpDealerList').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getDealerList", "Master")",
+                data: { empID: 0 },
+                success: function (data) {
+                    $("#dvEmpDealerList").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+
+        $('#btnRaiseTicket').click(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("RaiseTicket", "CRM")",
+                data: {},
+                success: function (data) {
+                    $("#divRaiseTicket").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        });
+
+        function ShowDealer_Park() {
+
+            $.get("FillReference", { RefTypeID: $("#mstrfvc").val() }, function (data) {
+                if (data != null) {
+                    $('#mstrfvt').empty();
+
+                    var opt = new Option('--Select--', 0);
+                    $("#mstrfvt").append(opt);
+
+                    for (var i = 0; i < data.length; i++) {
+                        opt = new Option(data[i].studName, data[i].studCode);
+                        $("#mstrfvt").append(opt);
+                    }
+                }
+            });
+        }
+
+
+        $('#btnImport').click(function () {
+
+
+            $.get("/Home/ImportData", {}, function (data) {
+                if (data != null) {
+                    alert('Saved Successfully ...');
+                }
+            });
+        });
+        $('#btnImportDataItem').click(function () {
+
+
+            $.get("/Home/ImportDataItem", {}, function (data) {
+                if (data != null) {
+                    alert('Saved Successfully ...');
+                }
+            });
+        });
+        $('#btnInBound').click(function () {
+
+
+            var data = new FormData();
+            var InBound_File = $('#InBound_Path').get(0).files[0];
+            data.append("ImageFile", InBound_File);
+
+            $.ajax
+           ({
+               url: "/Home/ImportInBound",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                   }
+               }
+           });
+
+        });
+        $('#btnDealerImport').click(function () {
+
+
+            var data = new FormData();
+            var Dealer_File = $('#Dealer_Path').get(0).files[0];
+            data.append("ImageFile", Dealer_File);
+            ShowHideLoader('show');
+            $.ajax
+           ({
+               url: "/Home/DealerImport",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                       ShowHideLoader('hide');
+                   }
+               }
+           });
+
+        });
+
+        $('#btnOpeingImport').click(function () {
+
+
+            var data = new FormData();
+            var Dealer_File = $('#Opeing_Path').get(0).files[0];
+            data.append("ImageFile", Dealer_File);
+
+            $.ajax
+           ({
+               url: "/Home/OpeningImport",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                   }
+               }
+           });
+
+        });
+
+        function getFirstWord(str) {
+            var spacePosition = str.indexOf(' ');
+            if (spacePosition === -1)
+                return str;
+            else
+                return str.substr(0, spacePosition);
+        };
+
+        $('#btnLedgerImport').click(function () {
+            var data = new FormData();
+            var Ledger_File = $('#Ledger_Path').get(0).files[0];
+            data.append("ImageFile", Ledger_File);
+
+            $.ajax
+           ({
+               url: "/Home/LedgerImport",
+               type: "POST",
+               data: data,
+               contentType: false,
+               processData: false,
+               success: function (response) {
+                   if (response != null) {
+                       alert(response);
+                   }
+               }
+           });
+
+        });
+
+        function FillLeadDet(Mstcode) {
+            alert('super');
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ParkLead", "Quotation")",
+                data: { MstCode: Mstcode, MstType: 1147, comp: 62 },
+                success: function (data) {
+                    $("#divParkLeadEdit").html(data);
+                },
+                error: function () {
+                    alert('Error');
+                }
+            });
+        }
+
     </script>
     @Scripts.Render("~/Scripts/boot")
 </body>
