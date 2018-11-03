@@ -979,5 +979,15 @@ namespace CompxERP.Controllers
             return View();
         }
 
+        public ActionResult Survey()
+        {
+            return View("Survey");
+        }
+        public ActionResult Survey_InwardEntry()
+        {
+            return View("Survey_InwardEntry");
+        }
+
+
     }
 }
