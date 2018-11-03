@@ -3,6 +3,9 @@
 }
  <style type="text/css">
      .collapse.in {width:100%;}
+     table.dataTable {margin:0 !important;}
+     .dataTables_scrollHeadInner {width:100% !important;
+     }
     </style>
 <link href="~/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" />
 <script src="~/plugins/datatables/jquery-3.3.1.js"></script>
@@ -30,7 +33,7 @@
                                     </div>
                                     <div id="collapse1" class="panel-collapse collapse in">
                                         <div class="panel-body">
-                                            <table id="ComplaintRegister" class="display nowrap" style="width: 100%">
+                                            <table id="table1" class="display nowrap" style="min-width: 100%">
                                                 <thead>
                                                     <tr>
                                                         <th>Sr. No.</th>
@@ -98,7 +101,7 @@
                                     </div>
                                     <div id="collapse2" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <table id="ComplaintRegister" class="display nowrap" style="width: 100%">
+                                            <table id="table2" class="display nowrap" style="width: 100%">
                                                 <thead>
                                                     <tr>
                                                         <th>Sr. No.</th>
@@ -166,7 +169,7 @@
                                     </div>
                                     <div id="collapse3" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <table id="ComplaintRegister" class="display nowrap" style="width: 100%">
+                                            <table id="table3" class="display nowrap" style="width: 100%">
                                                 <thead>
                                                     <tr>
                                                         <th>Sr. No.</th>
@@ -256,16 +259,28 @@
             "ordering": false
         });
 
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
         $('#table2').DataTable({
             "scrollY": 200,
             "scrollX": true,
             "ordering": false
         });
 
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
         $('#table3').DataTable({
             "scrollY": 200,
             "scrollX": true,
             "ordering": false
         });
+
     });
 </script>
+

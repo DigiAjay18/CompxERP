@@ -1,0 +1,152 @@
+﻿<style>
+    .modal-footer, .modal-body, .modal-content {
+        width: 65%;
+        float: none;
+        margin: auto;
+    }
+
+    .ml15 {
+        margin-left: 15px !important;
+    }
+
+    .p0 {
+        padding: 0 !important;
+    }
+</style>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @* <button type="button" class="close" onclick="ClosePopUpRec()">&times;</button>*@
+    <h4 class="modal-title">Survey Inward Entry</h4>
+</div>
+<div class="modal-body input_popup" style="width: 100%;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-sm-3 plr5">
+                    Survey No.
+                </label>
+                <div class="col-sm-3 plr5">
+                    <input class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 plr5">
+                    Name Of Person
+                </label>
+                <div class="col-sm-9 plr5">
+                    <input class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 plr5">
+                    Name Of Organisation
+                </label>
+                <div class="col-sm-9 plr5">
+                    <input class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 plr5">
+                    Address
+                </label>
+                <div class="col-sm-4 plr5">
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-sm-5 p0">
+                    <div class="form-group">
+                        <label class="col-sm-3 plr5">
+                            Mobile No.
+                        </label>
+                        <div class="col-sm-9 plr5">
+                            <input class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 plr5">
+                            Email Id.
+                        </label>
+                        <div class="col-sm-9 plr5">
+                            <input class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 plr5">
+                    Product / Item / Category
+                </label>
+                <div class="col-sm-9 plr5">
+                    <select class="form-control">
+                        <option></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 plr5">
+                    Item Detail
+                </label>
+                <div class="col-sm-4 plr5">
+                    <textarea class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-sm-5 p0">
+                    <div class="form-group">
+                        <label class="col-sm-3 plr5">
+                            Inward Date
+                        </label>
+                        <div class="col-sm-9 plr5">
+                            <input class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 plr5">
+                            Quantity
+                        </label>
+                        <div class="col-sm-9 plr5">
+                            <input class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 p0">
+                    <div class="form-group">
+                        <label class="col-sm-3 plr5">
+                            Mobile No.
+                        </label>
+                        <div class="col-sm-9 plr5">
+                            <input class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 plr5">
+                            Email Id.
+                        </label>
+                        <div class="col-sm-9 plr5">
+                            <input class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 p0">
+                    <label class="col-sm-3 plr5">
+                        Address
+                    </label>
+                    <div class="col-sm-4 plr5">
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+           
+
+           
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <div class="form-group">
+        <div class="col-sm-12 btn-div-c">
+            <input type="button" value="Save" id="btnComplaint" class="btn btn-default" />
+            <button type="button" onclick="ClearDvData();" class="btn btn-default">Close</button>
+        </div>
+    </div>
+</div>
